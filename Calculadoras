@@ -1,0 +1,1137 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate" />
+    <meta http-equiv="Pragma" content="no-cache" />
+    <meta http-equiv="Expires" content="0" />
+    
+    <title>Vigilante IA | Gestión Inteligente para tu Negocio</title>
+    
+    <link rel="manifest" href="/manifest_v4.json">
+    <meta name="theme-color" content="#141414">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
+
+    <style>
+        /* =========================================================================
+           ESTILOS ORIGINALES DE LA APP - INTACTOS (NO SE TOCÓ NADA DE ADENTRO)
+           ========================================================================= */
+        :root { --primary-blue: #0ea5e9; --dark-blue: #0284c7; --bg-dark: #141414; --card-dark: #1a1a1a; --text-light: #ffffff; --text-gray: #d2d2d2; }
+        * { box-sizing: border-box; font-family: 'Helvetica Neue', Helvetica, Arial, sans-serif; user-select: none; }
+        
+        input, select, textarea, button { user-select: auto !important; pointer-events: auto !important; }
+        
+        body { 
+            background-color: var(--bg-dark); 
+            background-image: radial-gradient(circle at center bottom, rgba(14, 165, 233, 0.25) 0%, rgba(20,20,20,1) 70%);
+            background-attachment: fixed;
+            background-repeat: no-repeat;
+            color: var(--text-light); 
+            margin: 0; 
+            min-height: 100vh; 
+            overflow-x: hidden; 
+        }
+        
+        .hidden { display: none !important; }
+        
+        @keyframes ia-listen { 0% { opacity: 1; box-shadow: 0 0 0px rgba(14, 165, 233, 0.5); } 50% { opacity: 0.8; box-shadow: 0 0 20px rgba(14, 165, 233, 0.9); transform: scale(1.02); } 100% { opacity: 1; box-shadow: 0 0 0px rgba(14, 165, 233, 0.5); } }
+        
+        #ia-radar-container { display: none; position: fixed; bottom: 30px; left: 0; width: 100%; justify-content: center; z-index: 9999; }
+        .radar-box { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; padding: 12px 25px; border-radius: 30px; font-weight: 900; animation: ia-listen 1s infinite; border: 1px solid #38bdf8;}
+        
+        #toast-container { position: fixed; top: 20px; left: 0; width: 100%; display: flex; justify-content: center; z-index: 9999; pointer-events: none; }
+        .toast { background: var(--primary-blue); color: white; padding: 12px 24px; border-radius: 50px; font-weight: 900; opacity: 0; transform: translateY(-20px); transition: 0.3s; box-shadow: 0 10px 25px rgba(0,0,0,0.5); pointer-events: auto; text-transform: uppercase; font-size: 1.05rem; }
+        .toast.show { opacity: 1; transform: translateY(0); }
+        
+        .btn { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); color: white; border: none; padding: 16px; border-radius: 6px; font-weight: 900; width: 100%; margin-top: 10px; text-transform: uppercase; cursor: pointer; transition: 0.3s; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.3); }
+        .btn:active { transform: scale(0.98); }
+        .input-text { width: 100%; padding: 16px; background: rgba(0,0,0,0.4); border: 1px solid #444; color: white; border-radius: 6px; font-size: 1.1rem; margin-bottom: 15px; transition: border 0.3s; }
+        .input-text:focus { border-color: var(--primary-blue); outline: none; }
+        select.input-text { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1rem center; background-size: 1em; }
+        
+        .view-container { display: flex; flex-direction: column; max-width: 500px; margin: 0 auto; padding: 20px; min-height: 100vh; }
+        
+        .paywall-box { text-align: center; background: rgba(30,30,30,0.6); border: 2px solid var(--primary-blue); padding: 30px 20px; border-radius: 12px; margin-top: 30px; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.2); backdrop-filter: blur(5px);}
+        
+        .top-bar { display: flex; justify-content: space-between; padding: 12px 0; font-weight: 900; align-items: center; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; position: relative; z-index: 100; gap:15px; }
+        .top-bar .ia-status { color: white; background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); padding: 5px 12px; border-radius: 20px; animation: ia-listen 2s infinite alternate; font-size: 0.8rem; font-weight: bold;}
+        .top-bar .dias-badge { font-size: 0.82rem; padding: 5px 10px; border-radius: 4px; font-weight: bold; border: 1px solid rgba(255,255,255,0.15); display: flex; align-items: center; gap: 4px; }
+        .btn-lock { background: transparent; border: 1px solid #666; color: #fff; padding: 6px 12px; border-radius: 4px; font-weight: bold; cursor: pointer; font-size: 0.8rem; }
+        
+        .display-container { display: flex; flex-direction: column; align-items: flex-end; justify-content: flex-end; min-height: 110px; padding: 10px 0 20px 0; }
+        
+        .monto-acumulado { font-size: 4.8rem; font-weight: 900; color: var(--primary-blue); text-shadow: 0 0 20px rgba(14, 165, 233, 0.6), 0 0 40px rgba(14, 165, 233, 0.3); line-height: 1; text-align: right; word-break: break-all; }
+        .display-monto { font-size: 2.8rem; color: #ffffff !important; font-weight: 800; min-height: 3.5rem; text-align: right; margin-top: 5px; text-shadow: 0 0 15px rgba(255, 255, 255, 0.5);}
+        
+        .top-ops { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; margin-bottom: 12px; }
+        .btn-op { font-weight: 900; font-size: 0.9rem; border-radius: 8px; padding: 14px 2px; border: none; color: white; opacity: 0.6; cursor: pointer; transition: 0.2s; background: #334155;}
+        .btn-op.active { opacity: 1; transform: scale(1.05); box-shadow: 0 4px 10px rgba(0,0,0,0.5); background: var(--primary-blue);}
+        
+        .bg-cierre { grid-column: span 3; background: var(--primary-blue) !important; color: white !important; font-weight: 900; padding: 15px; margin-bottom: 15px; margin-top: 0; border-radius: 8px;}
+        
+        .teclado { display: grid; grid-template-columns: repeat(4, 1fr); gap: 10px; flex-grow: 1; }
+        .btn-num { background: rgba(0,0,0,0.5); border-radius: 8px; font-size: 2.7rem; font-weight: 700; color: #fff; border: 1px solid #444; cursor: pointer; min-height: 75px; transition: 0.1s; backdrop-filter: blur(5px);}
+        .btn-num:active { background: #444; }
+        .btn-borrar { background: rgba(30,30,30,0.8); font-size: 2rem;}
+        .btn-mas { background: rgba(30,30,30,0.8); font-size: 2.7rem; color:var(--primary-blue);}
+        
+        .btn-pay { border-radius: 8px; font-weight: 800; font-size: 1.2rem; border: none; color: white; cursor: pointer; }
+        .btn-efectivo { background: var(--primary-blue); } .btn-debito { background: var(--primary-blue); }
+        .btn-transf { background: linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); font-size: 1.2rem; width: 100%; height: 65px; margin-top: 10px;}
+        
+        .totales-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; margin-bottom: 20px; }
+        .total-card { background: rgba(0,0,0,0.4); border-radius: 8px; padding: 15px 10px; text-align: center; border: 1px solid #333; box-shadow: 0 4px 10px rgba(0,0,0,0.3); backdrop-filter: blur(5px);}
+        .total-card.efectivo { grid-column: span 2; border-bottom: 3px solid var(--primary-blue); padding: 20px;}
+        .total-card.transf { border-bottom: 3px solid var(--primary-blue); } 
+        .total-card.tarjeta { border-bottom: 3px solid var(--primary-blue); }
+        .total-card.fiado { grid-column: span 2; border-bottom: 3px solid var(--primary-blue); padding: 20px;}
+        
+        .tc-label { font-size: 0.8rem; color: var(--text-gray); font-weight: 800; margin-bottom: 5px; text-transform: uppercase;} 
+        .tc-monto { font-size: 1.8rem; font-weight: 900; }
+        .c-celeste { color: var(--primary-blue) !important; text-shadow: 0 0 15px rgba(14, 165, 233, 0.6) !important; } 
+        
+        .tx-list { display: flex; flex-direction: column; gap: 15px; padding-bottom: 30px; }
+        .tx-item { display: grid; grid-template-columns: 1fr 2fr 1fr; align-items: center; text-align: center; font-size: 0.8rem; font-weight: 700; background: rgba(0,0,0,0.4); padding: 12px; border-radius: 8px; border: 1px solid var(--primary-blue); backdrop-filter: blur(5px);}
+        
+        #visor-foto { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(20,20,20,0.98); z-index: 99999; display: flex; flex-direction: column; align-items: center; justify-content: center; backdrop-filter: blur(5px); overflow: auto; }
+        #img-visor { max-width: 100%; border-radius: 8px; box-shadow: 0 10px 40px rgba(14, 165, 233, 0.5); object-fit: contain; }
+        .btn-cerrar-visor { position: fixed; bottom: 30px; background: #333; color: white; border: 1px solid #555; padding: 15px 40px; border-radius: 30px; font-weight: 900; font-size: 1.2rem; cursor: pointer; box-shadow: 0 5px 15px rgba(0,0,0,0.5); z-index: 100000; }
+        
+        .admin-filters::-webkit-scrollbar { height: 6px; }
+        .admin-filters::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.2); border-radius: 10px; }
+
+        #native-bottom-sheet { position: fixed; bottom: -100%; left: 0; width: 100%; background: #1f1f1f; border-radius: 20px 20px 0 0; z-index: 100000; transition: bottom 0.3s cubic-bezier(0.4, 0, 0.2, 1); padding: 10px 20px 35px 20px; box-shadow: 0 -10px 30px rgba(0,0,0,0.8); display: flex; flex-direction: column; gap: 10px; }
+        #native-bottom-sheet.show { bottom: 0; }
+        .sheet-drag { width: 40px; height: 5px; background: #555; border-radius: 5px; margin: 0 auto 15px auto; }
+        .sheet-options-row { display: flex; gap: 40px; justify-content: center; margin-top: 5px; }
+        .sheet-btn { display: flex; flex-direction: column; align-items: center; gap: 8px; border: none; background: transparent; cursor: pointer; color: #fff; font-size: 0.95rem; font-weight: 600; padding: 0;}
+        .sheet-btn-icon { width: 65px; height: 65px; border-radius: 50%; background: #2b2b2b; border: 1px solid #444; display: flex; align-items: center; justify-content: center; font-size: 2rem; color: var(--primary-blue); box-shadow: 0 4px 10px rgba(0,0,0,0.4);}
+        .sheet-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); z-index: 99999; display: none; opacity: 0; transition: opacity 0.3s; backdrop-filter: blur(3px); }
+        .sheet-overlay.show { display: block; opacity: 1; }
+
+        .modal-bg { position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; background: rgba(20,20,20,0.95); display: flex; justify-content: center; align-items: center; z-index: 999999; backdrop-filter: blur(5px); }
+        .modal-bg.hidden { display: none !important; }
+        .modal-box { background: rgba(30,30,30,0.95); padding: 25px; border-radius: 8px; width: 90%; max-width: 320px; border-top: 3px solid var(--primary-blue); border-bottom: 1px solid #444; border-left: 1px solid #444; border-right: 1px solid #444; box-shadow: 0 10px 30px rgba(0,0,0,0.5); text-align: center; }
+
+        /* =========================================================================
+           ✨ ESTILOS PREMIUM EXCLUSIVOS PARA LA LANDING PAGE DE VENTAS
+           (Totalmente aislados)
+           ========================================================================= */
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700;900&family=Inter:wght@400;600&display=swap');
+        
+        #view-landing.premium-landing {
+            max-width: 100%; padding: 0; margin: 0;
+            background: #05070D;
+            background-image: radial-gradient(circle at top, rgba(0, 153, 255, 0.12) 0%, #05070D 70%);
+            font-family: 'Inter', sans-serif;
+            min-height: 100vh;
+        }
+        .lp-container { max-width: 500px; margin: 0 auto; padding: 20px; }
+        .lp-hero { text-align: center; padding: 30px 10px 10px 10px; }
+        
+        /* 🎯 FIX: LOGO MÁS FINO Y ESTÉTICO */
+        .lp-logo { width: 90px; filter: drop-shadow(0 0 20px rgba(0,153,255,0.4)); margin-bottom: 12px; }
+        
+        .lp-title { font-family: 'Montserrat', sans-serif; font-size: 3.2rem; font-weight: 900; color: #FFF; line-height: 1; margin: 0 0 20px 0; letter-spacing: -1px; }
+        .lp-title span { color: #00C2FF; text-shadow: 0 0 20px rgba(0,194,255,0.4); }
+        .lp-desc { color: #A0B3C6; font-size: 1.15rem; line-height: 1.5; margin-bottom: 25px; margin-top: 5px;}
+        .lp-desc b { color: #FFF; }
+        
+        .onboarding-slider { width: 100%; overflow: hidden; margin-bottom: 25px; background: rgba(15, 20, 35, 0.5); border: 1px solid rgba(0, 194, 255, 0.15); border-radius: 16px; backdrop-filter: blur(10px); }
+        .slides-wrapper { display: flex; transition: transform 0.4s cubic-bezier(0.4, 0, 0.2, 1); width: 300%; }
+        .slide-item { width: 33.333%; padding: 25px 20px; flex-shrink: 0; text-align: center; animation: slide 0.3s ease; }
+        @keyframes slide { from { transform: translateX(20px); opacity: 0; } to { transform: translateX(0); opacity: 1; } }
+        .slide-item h4 { margin: 0 0 10px 0; font-size: 1.25rem; font-weight: 800; color: #00C2FF; letter-spacing: 0.5px; text-transform: uppercase; font-family: 'Montserrat', sans-serif;}
+        .slide-item p { margin: 0; font-size: 0.95rem; color: #FFF; line-height: 1.5; font-family: 'Inter', sans-serif;}
+        .slider-dots { display: flex; justify-content: center; gap: 8px; margin-bottom: 20px; }
+        .dot { width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.15); transition: 0.3s; }
+        .dot.active { background: #00C2FF; width: 20px; border-radius: 4px; box-shadow: 0 0 10px rgba(0,194,255,0.5);}
+
+        .lp-card { background: rgba(15, 20, 35, 0.7); border: 1px solid rgba(0, 194, 255, 0.15); border-radius: 16px; padding: 25px; margin-bottom: 25px; box-shadow: 0 10px 40px rgba(0,0,0,0.5); backdrop-filter: blur(10px); }
+        .lp-card-highlight { border-top: 4px solid #00C2FF; }
+        .lp-card-title { font-family: 'Montserrat', sans-serif; font-size: 1.3rem; font-weight: 800; color: #FFF; margin: 0 0 20px 0; text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; justify-content: center; gap: 8px;}
+        
+        .lp-input { width: 100%; padding: 18px; background: rgba(0,0,0,0.5); border: 1px solid rgba(255,255,255,0.1); color: white; border-radius: 10px; font-size: 1.05rem; margin-bottom: 15px; font-family: 'Inter', sans-serif; outline: none; transition: 0.3s; text-align: center; }
+        .lp-input:focus { border-color: #00C2FF; box-shadow: 0 0 15px rgba(0, 194, 255, 0.3); background: rgba(0,0,0,0.8); }
+        select.lp-input { appearance: none; background-image: url("data:image/svg+xml;charset=UTF-8,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%2300C2FF' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3e%3cpolyline points='6 9 12 15 18 9'%3e%3c/polyline%3e%3c/svg%3e"); background-repeat: no-repeat; background-position: right 1.2rem center; background-size: 1em; }
+        
+        .lp-btn { width: 100%; padding: 18px; background: linear-gradient(135deg, #0099FF, #0055AA); border: none; border-radius: 10px; color: #FFF; font-family: 'Montserrat', sans-serif; font-weight: 800; font-size: 1.1rem; text-transform: uppercase; letter-spacing: 1px; cursor: pointer; transition: 0.3s; box-shadow: 0 8px 25px rgba(0, 153, 255, 0.4); }
+        .lp-btn-outline { background: transparent; border: 1px solid #0099FF; color: #00C2FF; box-shadow: none; }
+        
+        .lp-btn-whatsapp { 
+            background: linear-gradient(135deg, #25D366, #128C7E); 
+            border: none; 
+            color: #FFFFFF; 
+            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.25); 
+            text-shadow: 0 1px 3px rgba(0,0,0,0.3);
+            display: flex; align-items: center; justify-content: center; gap: 10px;
+            padding: 18px; border-radius: 10px; font-family: 'Montserrat', sans-serif; font-weight: 800; text-transform: uppercase; font-size: 1.1rem; cursor: pointer; width: 100%; margin-top: 10px; transition: 0.3s;
+        }
+        .lp-btn-whatsapp:active { transform: scale(0.98); }
+        
+        .lp-feature-item { display: flex; align-items: flex-start; gap: 15px; margin-bottom: 20px; text-align: left; }
+        .lp-feature-icon { font-size: 2rem; background: rgba(0, 194, 255, 0.08); padding: 12px; border-radius: 12px; color: #00C2FF; }
+        .lp-feature-text h4 { margin: 0 0 5px 0; font-family: 'Montserrat', sans-serif; font-size: 1.1rem; color: #FFF; }
+        .lp-feature-text p { margin: 0; font-size: 0.9rem; color: #A0B3C6; line-height: 1.5; }
+        
+        .lp-footer { text-align: center; padding: 25px 20px; border-top: 1px solid rgba(255,255,255,0.05); margin-top: 20px; }
+        .lp-footer p { color: #5C748E; font-size: 0.85rem; margin: 5px 0; font-family: 'Inter', sans-serif; }
+        .lp-dev { color: #00C2FF; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+    <div class="modal-bg hidden" id="pin-modal">
+        <div class="modal-box">
+            <h3 style="margin-top:0; margin-bottom: 20px; font-size:1.3rem; font-weight:900; color:white;">🔒 Acceso Dueño</h3>
+            <input type="password" id="admin-pin-input" class="input-text" style="text-align:center; font-size:2rem; letter-spacing:10px; padding:15px;" maxlength="8" placeholder="****" autocomplete="off">
+            <div style="display:flex; gap:10px;">
+                <button class="btn" style="background:#333; margin-top:0; box-shadow:none;" onclick="document.getElementById('pin-modal').classList.add('hidden')">Cancelar</button>
+                <button class="btn" style="margin-top:0;" onclick="verifyAdminPinModal()">Entrar</button>
+            </div>
+        </div>
+    </div>
+
+    <div class="sheet-overlay" id="sheet-overlay" onclick="cerrarSheet()"></div>
+    <div id="native-bottom-sheet">
+        <div class="sheet-drag"></div>
+        <div class="sheet-options-row">
+            <button class="sheet-btn" onclick="elegirCamara()">
+                <div class="sheet-btn-icon">📷</div>
+                <span>Cámara</span>
+            </button>
+            <button class="sheet-btn" onclick="elegirGaleria()">
+                <div class="sheet-btn-icon">🖼️</div>
+                <span>Galería</span>
+            </button>
+        </div>
+    </div>
+
+    <div id="visor-foto" class="hidden">
+        <img id="img-visor" src="">
+        <button class="btn-cerrar-visor" onclick="cerrarFoto()">CERRAR FOTO</button>
+    </div>
+
+    <div id="ia-radar-container"><div class="radar-box" id="radar-text">🛡️ IA Auditando comprobante...</div></div>
+    <div id="toast-container"><div id="toast" class="toast"></div></div>
+
+    <!-- LANDING PAGE DE VENTAS PREMIUM (CON CARRUSEL Y LOGO AFINADO) -->
+    <div id="view-landing" class="premium-landing">
+        <div class="lp-container">
+            
+            <div class="lp-hero" onclick="secretTap()">
+                <svg class="lp-logo" viewBox="0 0 100 100">
+                    <path d="M50 5 L10 20 L10 50 C10 75 50 95 50 95 C50 95 90 75 90 50 L90 20 Z" fill="none" stroke="#00C2FF" stroke-width="6" stroke-linejoin="round"/>
+                    <path d="M50 5 L10 20 L10 50 C10 75 50 95 50 95 L50 5 Z" fill="#0A0F1D"/>
+                    <path d="M50 5 L90 20 L90 50 C90 75 50 95 50 95 L50 5 Z" fill="#0099FF"/>
+                    <path d="M25 50 Q50 25 75 50 Q50 75 25 50 Z" fill="#ffffff"/>
+                    <circle cx="50" cy="50" r="12" fill="#05070D"/><circle cx="50" cy="50" r="5" fill="#00C2FF"/>
+                </svg>
+                <div class="lp-title">VIGILANTE <span>IA</span></div>
+                <div class="lp-desc">¿Trabajás 14 horas por día y al final del mes no sabés en qué se fue la plata?<br><br><b>La Inteligencia Artificial que cuida tu caja, vigila cada movimiento y cobra tus fiados SOLA.</b></div>
+            </div>
+
+            <!-- CARRUSEL INTEGRADO -->
+            <div class="onboarding-slider">
+                <div class="slides-wrapper" id="slides-wrapper">
+                    <div class="slide-item">
+                        <h4>💸 No más plata perdida</h4>
+                        <p>La IA audita cada venta, retiro y descuento sospechoso en vivo. Te alerta al WhatsApp antes de que falte efectivo en el cierre.</p>
+                    </div>
+                    <div class="slide-item">
+                        <h4>⚡ Cobranza Automática NITRO</h4>
+                        <p>¿Plata en la calle? Con 1 solo botón la app les recuerda y cobra de forma personalizada a todos tus deudores por WhatsApp solo.</p>
+                    </div>
+                    <div class="slide-item">
+                        <h4>🏦 Control total desde tu cama</h4>
+                        <p>Subí los reportes de Fiserv, Getnet o Mercado Pago. La IA calcula comisiones reales y te dice qué día exacto se te acredita la plata.</p>
+                    </div>
+                </div>
+                <div class="slider-dots">
+                    <div class="dot active"></div>
+                    <div class="dot"></div>
+                    <div class="dot"></div>
+                </div>
+            </div>
+
+            <button id="btn-install-pwa" class="lp-btn hidden" style="margin-bottom: 25px;" onclick="instalarPWA()">⬇️ INSTALAR APP VIP EN CELULAR</button>
+
+            <!-- Card Registro Premium -->
+            <div class="lp-card lp-card-highlight">
+                <div style="text-align: center; margin-bottom: 20px;">
+                    <span style="background: rgba(0, 194, 255, 0.2); color: #00C2FF; padding: 4px 12px; border-radius: 20px; font-weight: bold; font-size: 0.8rem; text-transform: uppercase;">Promoción Exclusiva</span>
+                    <h2 style="color: white; font-family: 'Montserrat'; font-weight: 900; margin: 10px 0 5px 0; font-size: 2.2rem;">30 DÍAS GRATIS</h2>
+                    <p style="color: #A0B3C6; margin:0; font-size: 0.95rem;">Todo incluido. Sin tarjeta de crédito.</p>
+                </div>
+                
+                <input type="text" id="reg-nombre" class="lp-input" placeholder="Nombre de tu Local" autocomplete="off">
+                <select id="reg-provincia" class="lp-input">
+                    <option value="" disabled selected>Seleccioná tu Provincia</option>
+                    <option value="Buenos Aires">Buenos Aires</option><option value="CABA">CABA</option><option value="Catamarca">Catamarca</option><option value="Chaco">Chaco</option><option value="Chubut">Chubut</option><option value="Córdoba">Córdoba</option><option value="Corrientes">Corrientes</option><option value="Entre Ríos">Entre Ríos</option><option value="Formosa">Formosa</option><option value="Jujuy">Jujuy</option><option value="La Pampa">La Pampa</option><option value="La Rioja">La Rioja</option><option value="Mendoza">Mendoza</option><option value="Misiones">Misiones</option><option value="Neuquén">Neuquén</option><option value="Río Negro">Río Negro</option><option value="Salta">Salta</option><option value="San Juan">San Juan</option><option value="San Luis">San Luis</option><option value="Santa Cruz">Santa Cruz</option><option value="Santa Fe">Santa Fe</option><option value="Santiago del Estero">Santiago del Estero</option><option value="Tierra del Fuego">Tierra del Fuego</option><option value="Tucumán">Tucumán</option>
+                </select>
+                <input type="tel" id="reg-whatsapp" class="lp-input" placeholder="Tu WhatsApp (Solo avisos)" autocomplete="off">
+                <input type="password" id="reg-pin" class="lp-input" placeholder="Creá un PIN Seguro (4 dígitos)" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+                
+                <button class="lp-btn" onclick="register()">✅ ACTIVAR MIS 30 DÍAS</button>
+            </div>
+
+            <!-- Card Login Premium -->
+            <div class="lp-card">
+                <h3 class="lp-card-title">🛡️ YA TENGO CUENTA</h3>
+                <input type="text" id="login-nombre" class="lp-input" placeholder="Nombre de tu Local" autocomplete="off">
+                <input type="password" id="login-pin" class="lp-input" placeholder="PIN Secreto" inputmode="numeric" pattern="[0-9]*" autocomplete="off">
+                <!-- BOTÓN REPARADO Y FUNCIONAL -->
+                <button class="lp-btn lp-btn-outline" onclick="login()">ENTRAR A MI CAJA</button>
+            </div>
+
+            <!-- Funciones Premium -->
+            <div class="lp-card" style="padding: 30px 20px;">
+                <h3 class="lp-card-title" style="margin-bottom: 25px; color:#00C2FF;">⚙️ ¿POR QUÉ ELEGIRNOS?</h3>
+                
+                <div class="lp-feature-item">
+                    <div class="lp-feature-icon">⚡</div>
+                    <div class="lp-feature-text">
+                        <h4>Cobranza Automática NITRO</h4>
+                        <p>1 clic y la app le escribe sola por WhatsApp a los fiados recordando la deuda. Recuperá plata hoy mismo.</p>
+                    </div>
+                </div>
+                <div class="lp-feature-item">
+                    <div class="lp-feature-icon">🛡️</div>
+                    <div class="lp-feature-text">
+                        <h4>Auditoría IA 24/7</h4>
+                        <p>Vigila retiros, descuentos raros y descuadres. Alerta directo a tu teléfono para que no falte efectivo.</p>
+                    </div>
+                </div>
+                <div class="lp-feature-item">
+                    <div class="lp-feature-icon">🏦</div>
+                    <div class="lp-feature-text">
+                        <h4>Tesorero Virtual</h4>
+                        <p>Subí tu Excel de Posnet/Fiserv y sabé exactamente cuánta plata real te entra sin mover un dedo.</p>
+                    </div>
+                </div>
+            </div>
+
+            <button class="lp-btn-whatsapp" onclick="window.open('https://wa.me/5493815110171?text=Hola,+quiero+saber+más+sobre+Vigilante+IA', '_blank')">💬 Contactar Asesor (WhatsApp)</button>
+
+            <!-- Footer Argentino -->
+            <div class="lp-footer">
+                <p>Tecnología de alta seguridad para tu comercio.</p>
+                <p>Diseñado y desarrollado con 🤍 en Argentina por <span class="lp-dev">Tomás R. Software Engineer</span></p>
+                <p style="opacity: 0.5; font-size: 0.75rem; margin-top: 15px;">Vigilante IA © 2026. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- =========================================================================================
+         VISTAS ORIGINALES INTERNAS DEL SISTEMA (NO SE TOCÓ NINGÚN DISEÑO NI LOGICA)
+         ========================================================================================= -->
+
+    <div id="view-paywall" class="view-container hidden">
+        <div class="paywall-box">
+            <h1 style="color:white; font-size:2rem; margin-top:0;">⏳ Licencia Expirada</h1>
+            <p style="color:var(--text-gray); margin-bottom: 25px; font-size:1.1rem;">Transfiere <span style="color:var(--primary-blue); font-weight:bold;">$19.000 ARS</span> para renovar tu licencia por 30 Días.</p>
+            
+            <div style="background:rgba(0,0,0,0.5); padding:20px; border-radius:8px; text-align:left; border: 1px solid #333; margin-bottom:20px; backdrop-filter: blur(5px);">
+                <div style="color:#fff; font-family:monospace; font-size: 1.15rem; text-align:center;">TITULAR: <span style="color:var(--primary-blue);">Luis Acosta</span><br><br>ALIAS: <span style="color:var(--primary-blue);">noir.elite.ceo</span><br><br>CBU: <span style="color:var(--primary-blue);">0110257630025717844115</span></div>
+            </div>
+            
+            <input type="file" id="input-pago-ia" style="display:none;" accept="image/*" onchange="auditarPagoIA(event)">
+            <button class="btn" style="font-size: 1.2rem;" onclick="document.getElementById('input-pago-ia').click()">🤖 AUDITAR PAGO CON IA</button>
+            <p style="color:var(--text-gray); font-size:0.85rem; margin-top:12px; margin-bottom:25px;">Sube el comprobante. La IA lo aprobará al instante si es correcto.</p>
+            
+            <button class="btn" style="background:#009ee3; color:white; box-shadow:none;" onclick="pagarMercadoPago()">💳 O Pagar con Mercado Pago</button>
+            <button class="btn" style="background:transparent; border:1px solid #555; color:#ffffff; margin-top:20px; box-shadow:none;" onclick="logout()">Salir</button>
+        </div>
+    </div>
+
+    <div id="view-caja" class="view-container hidden" style="padding:0 15px 15px 15px;">
+        <div class="top-bar">
+            <div style="display:flex; gap:10px; align-items:center;">
+                <span class="ia-status">🛡️ IA Auditando</span>
+                <span id="dias-restantes" class="dias-badge">⏳ -- Días</span>
+            </div>
+            <div style="display:flex; align-items:center; gap:12px;">
+                <span onclick="openAdmin()" style="font-size:1.4rem; cursor:pointer; z-index:100; color:var(--primary-blue); font-weight:bold;" title="Panel de Dueño">🔒 Panel Dueño</span>
+                <button class="btn-lock" onclick="logoutConfirm()" style="z-index:100;">SALIR</button>
+            </div>
+        </div>
+        
+        <div class="display-container"><div class="monto-acumulado" id="display-acumulado">0</div><div class="display-monto" id="display-actual"></div></div>
+        
+        <div class="top-ops">
+            <button class="btn-op bg-proveedor" id="op-proveedor" onclick="setOp('proveedor')" style="background: #334155; opacity: 1;">Prov</button>
+            <button class="btn-op bg-cliente" onclick="abrirLibreta()" style="background: #334155; color: white !important; opacity: 1;">Cliente 📝</button>
+            <button class="btn-op bg-retiro" id="op-retiro" onclick="setOp('retiro')" style="background: #334155; opacity: 1;">Retiro</button>
+        </div>
+        
+        <button class="btn bg-cierre" onclick="cerrarTurno()">⚠️ CERRAR TURNO AL DUEÑO</button>
+        
+        <div class="teclado">
+            <button class="btn-num" onclick="addN('7')">7</button>
+            <button class="btn-num" onclick="addN('8')">8</button>
+            <button class="btn-num" onclick="addN('9')">9</button>
+            <button class="btn-num btn-borrar" onclick="backspace()">⌫</button>
+            
+            <button class="btn-num" onclick="addN('4')">4</button>
+            <button class="btn-num" onclick="addN('5')">5</button>
+            <button class="btn-num" onclick="addN('6')">6</button>
+            <button class="btn-num btn-mas" onclick="mathOp('*')">x</button>
+            
+            <button class="btn-num" onclick="addN('1')">1</button>
+            <button class="btn-num" onclick="addN('2')">2</button>
+            <button class="btn-num" onclick="addN('3')">3</button>
+            <button class="btn-num btn-mas" onclick="mathOp('-')">-</button>
+            
+            <button class="btn-num" onclick="clearAll()" style="color:var(--primary-blue);">C</button>
+            <button class="btn-num" onclick="addN('0')">0</button>
+            <button class="btn-num btn-mas" onclick="mathOp('+')">+</button>
+            <button class="btn-num btn-mas" style="background:linear-gradient(135deg, var(--primary-blue), var(--dark-blue)); border:none; color:white;" onclick="mathIgual()">=</button>
+        </div>
+        
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; margin-top:10px;">
+            <button class="btn-pay btn-efectivo" style="height:60px; font-size:1.2rem; border-radius:8px;" onclick="cobrar('efectivo')">💵 Efectivo</button>
+            <button class="btn-pay btn-debito" style="height:60px; font-size:1.2rem; border-radius:8px;" onclick="cobrar('tarjeta')">💳 Débito</button>
+        </div>
+        
+        <button class="btn-pay btn-transf" onclick="abrirSheet()">Transf. 📸</button>
+        
+        <input type="file" id="foto-input-camara" style="display:none;" accept="image/*" capture="environment" onchange="handleFoto(event)">
+        <input type="file" id="foto-input-galeria" style="display:none;" accept="image/*" onchange="handleFoto(event)">
+    </div>
+
+    <div id="view-libreta" class="view-container hidden" style="padding:0 15px 15px 15px;">
+        <div class="top-bar" style="border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom:10px;">
+            <div style="font-size:1.5rem; font-weight:900; color:white;">Libreta 📝</div>
+            <button class="btn-lock" style="border-color:var(--primary-blue); color:var(--primary-blue);" onclick="volverCaja()">VOLVER</button>
+        </div>
+        
+        <div style="background: rgba(14, 165, 233, 0.1); border: 1px dashed var(--primary-blue); border-radius: 8px; padding: 12px; margin-bottom: 15px; text-align: left;">
+            <h4 style="margin: 0 0 8px 0; color: var(--primary-blue); font-size: 0.95rem;">ℹ️ Guía de Operación:</h4>
+            <p style="margin: 0; color: var(--text-gray); font-size: 0.85rem; line-height: 1.5;">
+                <b>1.</b> Tipeá primero el monto en esta calculadora.<br>
+                <b>2.</b> Presioná el botón <b>"Seleccionar Cliente para Operar"</b>.<br>
+                <b>3.</b> Elegí a la persona y seleccioná <b>🔴 FIAR</b> (suma a su deuda) o <b>💵 COBRAR</b> (resta de su deuda).
+            </p>
+        </div>
+        
+        <div class="display-container" style="min-height:90px;"><div class="monto-acumulado" id="display-acumulado-libreta" style="color:var(--primary-blue); text-shadow:0 0 20px rgba(14, 165, 233, 0.6);">0</div><div class="display-monto" id="display-actual-libreta"></div></div>
+        
+        <div class="teclado">
+            <button class="btn-num" onclick="addNLibreta('7')">7</button>
+            <button class="btn-num" onclick="addNLibreta('8')">8</button>
+            <button class="btn-num" onclick="addNLibreta('9')">9</button>
+            <button class="btn-num btn-borrar" onclick="backspaceLibreta()">⌫</button>
+            
+            <button class="btn-num" onclick="addNLibreta('4')">4</button>
+            <button class="btn-num" onclick="addNLibreta('5')">5</button>
+            <button class="btn-num" onclick="addNLibreta('6')">6</button>
+            <button class="btn-num btn-mas" onclick="mathOpLibreta('*')">x</button>
+            
+            <button class="btn-num" onclick="addNLibreta('1')">1</button>
+            <button class="btn-num" onclick="addNLibreta('2')">2</button>
+            <button class="btn-num" onclick="addNLibreta('3')">3</button>
+            <button class="btn-num btn-mas" onclick="mathOpLibreta('-')">-</button>
+            
+            <button class="btn-num" onclick="clearAllLibreta()" style="color:var(--primary-blue);">C</button>
+            <button class="btn-num" onclick="addNLibreta('0')">0</button>
+            <button class="btn-num btn-mas" onclick="mathOpLibreta('+')">+</button>
+            <button class="btn-num btn-mas" style="background:var(--primary-blue); border:none; color:white;" onclick="mathIgualLibreta()">=</button>
+        </div>
+        
+        <button class="btn" style="background:var(--card-dark); border:1px solid var(--primary-blue); height:55px; margin-top:15px; font-size:1.05rem;" onclick="abrirBuscadorLibreta()">👥 SELECCIONAR CLIENTE PARA OPERAR</button>
+    </div>
+
+    <div id="view-clientes-list" class="view-container hidden">
+        <div style="display:flex; justify-content:space-between; margin-bottom: 15px; align-items:center;">
+            <div style="font-size:1.5rem; font-weight:900;">Seleccionar Cliente</div>
+            <button class="btn-lock" style="border-color:var(--primary-blue); color:var(--primary-blue);" onclick="showView('view-libreta')">ATRÁS</button>
+        </div>
+        
+        <div id="monto-libreta-confirm" style="font-size: 1.3rem; color: var(--primary-blue); text-align: center; font-weight: 900; margin-bottom: 15px; background: rgba(14, 165, 233, 0.1); padding: 12px; border-radius: 8px; border: 1px solid rgba(14, 165, 233, 0.3);"></div>
+        
+        <div class="box-landing" style="background:rgba(30,30,30,0.6); padding:15px; margin-bottom:20px; border-top: 2px solid var(--primary-blue);">
+            <h4 style="margin-top:0; color:white; margin-bottom:12px;">➕ Registrar Nuevo Cliente</h4>
+            <input type="text" id="nuevo-cliente-nombre" class="input-text" placeholder="✍️ Nombre completo..." style="margin-bottom: 10px;" autocomplete="off">
+            <input type="tel" id="nuevo-cliente-wa" class="input-text" placeholder="📱 WhatsApp (Ej: 3815...)" style="margin-bottom: 10px;" autocomplete="off">
+            <button class="btn" style="margin-top:0;" onclick="crearCliente()">GUARDAR CLIENTE</button>
+        </div>
+        
+        <div style="border-top: 1px solid #333; margin-bottom: 15px;"></div>
+        <input type="text" id="buscar-cliente" class="input-text" placeholder="🔎 Buscar por nombre..." oninput="filtrarClientes()" style="margin-bottom: 15px; background:rgba(0,0,0,0.4);" autocomplete="off">
+        <div class="tx-list" id="lista-clientes"></div>
+    </div>
+
+    <div id="view-boveda" class="view-container hidden">
+        <div style="display:flex; justify-content:space-between; margin-bottom: 20px; align-items:center;">
+            <div style="font-size:1.8rem; font-weight:900; line-height:1.2;">Panel Dueño |<br><span style="color:var(--primary-blue); text-shadow: 0 0 15px rgba(14,165,233,0.5);" id="boveda-name">LOCAL</span></div>
+            <button class="btn-lock" style="border-color:#ffffff; color:#ffffff;" onclick="volverCaja()">X VOLVER</button>
+        </div>
+        
+        <div style="display:flex; justify-content:space-between; margin-bottom:15px; align-items:center;">
+            <div style="color:#10b981; font-weight:bold;">🟢 En Vivo</div>
+            <div>
+                <button class="btn-lock" style="border-color:var(--primary-blue); color:var(--primary-blue); margin-right:5px;" onclick="descargarPDF()">📄 PDF</button>
+                <button class="btn-lock" style="border-color:var(--primary-blue); color:var(--primary-blue);" onclick="cargarBoveda()">↻ Actualizar</button>
+            </div>
+        </div>
+
+        <input type="file" id="file-fiserv" accept=".csv, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet, application/vnd.ms-excel" style="display:none;" onchange="procesarLiquidacion(event)">
+        <button class="btn-lock" style="background:rgba(30,30,30,0.6); border-color:var(--primary-blue); color:white; width:100%; margin-bottom:15px; padding:15px; font-size:1.1rem; border-radius:8px; box-shadow: 0 4px 15px rgba(14, 165, 233, 0.2);" onclick="document.getElementById('file-fiserv').click()">🏦 TESORERÍA IA (Importar Fiserv)</button>
+        
+        <div id="tesoreria-resultados" style="display:none; background:rgba(30,30,30,0.6); border: 1px solid var(--primary-blue); border-radius:8px; padding:20px; margin-bottom:20px; box-shadow: 0 10px 30px rgba(14, 165, 233, 0.1);"></div>
+
+        <div style="background:rgba(0,0,0,0.4); padding:15px; border-radius:8px; margin-bottom:20px; border:1px solid #333; backdrop-filter: blur(5px);">
+            <canvas id="wallStreetChart" height="150"></canvas>
+        </div>
+
+        <div class="totales-grid">
+            <div class="total-card efectivo"><div class="tc-label">💵 EFECTIVO EN CAJA</div><div class="tc-monto c-celeste" id="tot-efe">0</div></div>
+            <div class="total-card transf"><div class="tc-label">🏦 TRANSFERENCIA</div><div class="tc-monto c-celeste" id="tot-tra">0</div></div>
+            <div class="total-card tarjeta"><div class="tc-label">💳 DÉBITO/TARJETA</div><div class="tc-monto c-celeste" id="tot-tar">0</div></div>
+            <div class="total-card fiado" style="grid-column: span 2; border-bottom: 3px solid var(--primary-blue); padding: 20px;"><div class="tc-label" style="color:white; font-size:0.9rem;">📒 PLATA EN CALLE (FIADO TOTAL)</div><div class="tc-monto c-celeste" id="tot-fia" style="font-size:2.8rem;">0</div></div>
+        </div>
+        
+        <h3 style="color:white; margin-top:10px; margin-bottom:15px; font-size:1.1rem; border-bottom:1px solid #333; padding-bottom:5px;">👥 Mis Deudores (Cobranza Fin de Semana)</h3>
+        <div id="admin-deudores-list" style="margin-bottom:25px;"></div>
+        
+        <h3 style="color:white; margin-top:10px; margin-bottom:15px; font-size:1.1rem; border-bottom:1px solid #333; padding-bottom:5px;">📡 Transacciones de Caja</h3>
+        <div class="tx-list" id="tx-list"></div>
+    </div>
+
+    <div id="view-admin" class="view-container hidden">
+        <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+            <h1 style="color:var(--primary-blue); margin:0;">Panel de Configuración</h1>
+            <button class="btn-lock" style="border-color:#ffffff; color:#ffffff;" onclick="volverCaja()">X CERRAR</button>
+        </div>
+        <div id="admin-filters" class="admin-filters" style="display:flex; gap:10px; overflow-x:auto; margin-bottom:15px; padding-bottom:10px; white-space:nowrap;"></div>
+        <div id="admin-list"></div>
+    </div>
+
+<script>
+let deferredPrompt;
+window.addEventListener('beforeinstallprompt', (e) => { e.preventDefault(); deferredPrompt = e; let btn = document.getElementById('btn-install-pwa'); if(btn) btn.classList.remove('hidden'); });
+function instalarPWA() { if (deferredPrompt) { deferredPrompt.prompt(); deferredPrompt.userChoice.then((choiceResult) => { if (choiceResult.outcome === 'accepted') document.getElementById('btn-install-pwa').classList.add('hidden'); deferredPrompt = null; }); } }
+
+let currentPin = localStorage.getItem('v_pin'); let localName = localStorage.getItem('v_nombre') || "";
+
+let valActual = ""; let acumulado = 0; let operacionActual = "venta_normal";
+let valActualLibreta = ""; let acumuladoLibreta = 0; let lastMathOpLibreta = null;
+let currentTxsBoveda = []; let adminLocalesData = []; let wsChart = null;
+let clientesMemoria = []; let montoLibretaActual = 0;
+let lastMathOp = null;
+
+const dispAcu = document.getElementById('display-acumulado'); const dispAct = document.getElementById('display-actual'); 
+const dispAcuLib = document.getElementById('display-acumulado-libreta'); const dispActLib = document.getElementById('display-actual-libreta');
+const radar = document.getElementById('ia-radar-container');
+
+if(currentPin && localName) checkLogin(currentPin, localName);
+
+function volverCaja() {
+    showView('view-caja');
+    updateDisp();
+}
+
+function showView(id) { ['view-landing','view-paywall','view-caja','view-boveda','view-admin', 'view-libreta', 'view-clientes-list'].forEach(v => document.getElementById(v).classList.add('hidden')); document.getElementById(id).classList.remove('hidden'); window.scrollTo(0,0); }
+function showToast(msg, bg) { let t = document.getElementById('toast'); t.innerText = msg; t.style.background = bg; t.classList.add('show'); setTimeout(()=>t.classList.remove('show'), 4000); }
+
+async function pagarMercadoPago() {
+    showToast("⏳ Abriendo Mercado Pago...", "#009ee3");
+    try { let res = await fetch('/api/pagar', { method: 'POST', headers: {'Content-Type':'application/json'}, body: JSON.stringify({ pin: currentPin }) }); let data = await res.json(); if(data.success && data.url) window.location.href = data.url; else showToast("❌ Error al abrir pago", "#e11d48"); } catch(e) { showToast("❌ Sin conexión", "#e11d48"); }
+}
+
+async function register() {
+    let nombre = document.getElementById('reg-nombre').value; let pin = document.getElementById('reg-pin').value; let provincia = document.getElementById('reg-provincia').value; let whatsapp = document.getElementById('reg-whatsapp').value;
+    if(!nombre || !pin || !provincia || !whatsapp) return showToast("❌ Faltan datos", "#e11d48");
+    showToast("⏳ Creando...", "var(--primary-blue)");
+    try {
+        let res = await fetch('/api/auth/register', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({nombre, pin, provincia, whatsapp})});
+        let data = await res.json();
+        if(data.success) { currentPin = pin.trim(); localName = nombre.trim(); localStorage.setItem('v_pin', currentPin); localStorage.setItem('v_nombre', localName); checkLogin(currentPin, localName); } else { showToast("❌ " + data.error, "#e11d48"); }
+    } catch(e) { showToast("❌ Sin conexión", "#e11d48"); }
+}
+
+// ⚡ INGRESO INSTANTÁNEO, BOTON REPARADO
+async function login() {
+    let pin = document.getElementById('login-pin').value; let nombre = document.getElementById('login-nombre').value;
+    if(!pin || !nombre) return showToast("❌ Ingrese su Nombre de Local y PIN", "#e11d48");
+    checkLogin(pin, nombre);
+}
+
+async function checkLogin(pin, nombre) {
+    showToast("⏳ Verificando...", "var(--primary-blue)");
+    try {
+        let res = await fetch('/api/auth/login', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pin, nombre})}); 
+        let data = await res.json(); 
+        if(data.success) {
+            currentPin = pin.trim(); localName = data.local.nombre_local; localStorage.setItem('v_pin', currentPin); localStorage.setItem('v_nombre', localName); document.getElementById('boveda-name').innerText = localName;
+            
+            if(data.vencido) { 
+                showView('view-paywall'); 
+            } else {
+                showView('view-caja'); clearAll();
+                
+                let vencDate = new Date(data.local.fecha_vencimiento); vencDate.setHours(0,0,0,0);
+                let today = new Date(); today.setHours(0,0,0,0);
+                let diffDays = Math.round((vencDate - today) / (1000 * 60 * 60 * 24));
+                let badge = document.getElementById('dias-restantes');
+                if(badge) {
+                    if(diffDays <= 0) { badge.innerHTML = "⚠️ VENCIDO"; badge.style.color = "#fca5a5"; } 
+                    else { badge.innerHTML = "⏳ " + diffDays + " Días"; badge.style.color = "#10b981"; }
+                }
+                
+                cargarBoveda(); 
+            }
+        } else { localStorage.removeItem('v_pin'); localStorage.removeItem('v_nombre'); showView('view-landing'); showToast("❌ " + data.error, "#e11d48"); }
+    } catch(e) { showToast("❌ Sin conexión", "#e11d48"); }
+}
+
+function auditarPagoIA(e) {
+    let file = e.target.files[0]; if(!file) return;
+    document.getElementById('radar-text').innerText = "🤖 IA Auditando Pago...";
+    radar.style.display='flex';
+    
+    let r = new FileReader();
+    r.readAsDataURL(file);
+    r.onload = async (evt) => {
+        try {
+            let res = await fetch('/api/auth/renovar-ia', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ pin: currentPin, nombre: localName, fotoBase64: evt.target.result })
+            });
+            let data = await res.json();
+            radar.style.display='none';
+            if(data.success) {
+                showToast("✅ " + data.mensaje, "#10b981");
+                setTimeout(() => { checkLogin(currentPin, localName); }, 2000);
+            } else {
+                showToast("❌ " + data.error, "#e11d48");
+            }
+        } catch(err) {
+            radar.style.display='none';
+            showToast("❌ Error de red", "#e11d48");
+        }
+    };
+    e.target.value = "";
+}
+
+function logoutConfirm() { if(confirm("¿Estás seguro que deseas salir?")) { logout(); } }
+function logout() { currentPin = null; localName = ""; localStorage.removeItem('v_pin'); localStorage.removeItem('v_nombre'); showView('view-landing'); }
+
+let taps=0; function secretTap(){ taps++; setTimeout(()=>taps=0, 2000); if(taps===3){ openAdmin(); } }
+
+function openAdmin() {
+    document.getElementById('admin-pin-input').value = "";
+    document.getElementById('pin-modal').classList.remove('hidden');
+    document.getElementById('admin-pin-input').focus();
+}
+
+function verifyAdminPinModal() {
+    let p = document.getElementById('admin-pin-input').value;
+    if(p === 'noir2026') { 
+        document.getElementById('pin-modal').classList.add('hidden');
+        cargarAdmin(); 
+    } else if (p === currentPin) { 
+        document.getElementById('pin-modal').classList.add('hidden');
+        showView('view-boveda'); 
+        cargarBoveda(); 
+    } else { 
+        showToast("❌ PIN Incorrecto", "#e11d48"); 
+    }
+}
+
+async function cargarAdmin() { showView('view-admin'); document.getElementById('admin-list').innerHTML = "Cargando locales..."; let res = await fetch('/api/admin/locales'); let data = await res.json(); adminLocalesData = data.locales || []; renderizarCEO('Todas'); }
+function renderizarCEO(provinciaFiltro) {
+    let provinciasUnicas = new Set(adminLocalesData.map(l => l.provincia).filter(Boolean)); let arrayProvincias = ['Todas', ...Array.from(provinciasUnicas).sort()]; let htmlFiltros = "";
+    arrayProvincias.forEach(p => { let bg = p === provinciaFiltro ? 'var(--primary-blue)' : '#333'; htmlFiltros += `<button onclick="renderizarCEO('${p}')" style="background:${bg}; color:white; border:none; padding:8px 15px; border-radius:4px; font-weight:bold; cursor:pointer;">${p}</button>`; });
+    document.getElementById('admin-filters').innerHTML = htmlFiltros;
+    let filtrados = provinciaFiltro === 'Todas' ? adminLocalesData : adminLocalesData.filter(l => l.provincia === provinciaFiltro); let htmlLista = "";
+    filtrados.forEach(l => {
+        let vencido = new Date(l.fecha_vencimiento) < new Date(); let colorBorde = vencido ? '#e11d48' : '#333'; let colorVence = vencido ? '#e11d48' : '#10b981'; let alerta = vencido ? '⚠️ VENCIDO' : '✅ ACTIVO';
+        let waText = (l.whatsapp && l.whatsapp !== 'No especificado' && l.whatsapp !== 'null') ? `<span style="color:#10b981;">💬 ${l.whatsapp}</span>` : `<span style="color:#9ca3af;">S/D</span>`;
+        let waParam = (l.whatsapp && l.whatsapp !== 'No especificado' && l.whatsapp !== 'null') ? l.whatsapp : '';
+        htmlLista += `<div style="background:var(--card-dark); padding:15px; margin-bottom:10px; border-radius:8px; border:1px solid ${colorBorde}; position:relative;"><span style="position:absolute; top:10px; right:10px; background:rgba(255,255,255,0.1); padding:3px 8px; border-radius:4px; font-size:0.7rem; color:#9ca3af;">📍 ${l.provincia || 'S/D'}</span><b>${l.nombre_local}</b> (PIN: ${l.pin_acceso})<br>WA: ${waText}<br>Estado: <span style="color:${colorVence}; font-weight:900;">${alerta}</span><br><div style="display:flex; gap:10px; margin-top:10px;"><button onclick="renovar('${l.pin_acceso}','${l.nombre_local}', '${waParam}')" style="background:var(--primary-blue); color:white; padding:8px 10px; border:none; border-radius:4px; font-weight:bold; flex:1;">Dar +30 Días</button><button onclick="cambiarPin('${l.pin_acceso}','${l.nombre_local}')" style="background:#d97706; color:white; padding:8px 10px; border:none; border-radius:4px; font-weight:bold; flex:1;">Cambiar PIN</button><button onclick="eliminarLocal('${l.pin_acceso}', '${l.nombre_local}')" style="background:#e11d48; color:white; padding:8px 10px; border:none; border-radius:4px; font-weight:bold; flex:1;">🗑️ Borrar</button></div></div>`;
+    });
+    if(filtrados.length === 0) htmlLista = "<p style='color:#9ca3af; text-align:center;'>No hay clientes.</p>"; document.getElementById('admin-list').innerHTML = htmlLista;
+}
+
+async function renovar(pin, nombre, wa) { await fetch('/api/admin/renovar', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pin, nombre})}); cargarAdmin(); showToast("✅ Renovado", "#10b981"); }
+async function cambiarPin(pinViejo, nombre) { let nuevo = prompt("Ingrese el NUEVO PIN:"); if(nuevo && nuevo.trim() !== "") { if(confirm("¿Seguro?")) { await fetch('/api/admin/cambiar-pin', {method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pinViejo: pinViejo, pinNuevo: nuevo, nombre: nombre})}); cargarAdmin(); showToast("✅ PIN Cambiado", "#10b981"); } } }
+async function eliminarLocal(pin, nombreLocal) { if(confirm("🚨 ATENCIÓN: ¿Seguro deseas ELIMINAR?")) { let res = await fetch('/api/admin/eliminar', { method: 'POST', headers: {'Content-Type': 'application/json'}, body: JSON.stringify({ pin: pin, nombre: nombreLocal }) }); let data = await res.json(); if(data.success) { showToast("🗑️ Local eliminado", "#e11d48"); cargarAdmin(); } } }
+
+// LÓGICA CALCULADORA CAJA PRINCIPAL
+function isResta() { return operacionActual === 'proveedor' || operacionActual === 'retiro'; }
+function getTotalPendiente() {
+    let v = parseInt(valActual) || 0;
+    if(lastMathOp === '+') return acumulado + v;
+    if(lastMathOp === '-') return acumulado - v;
+    if(lastMathOp === '*') return acumulado === 0 ? v : acumulado * v;
+    return isResta() ? acumulado - v : acumulado + v;
+}
+function mathOp(op) { if(valActual !== "") { acumulado = getTotalPendiente(); valActual = ""; } lastMathOp = op; updateDisp(); }
+function mathIgual() { if(valActual !== "") { acumulado = getTotalPendiente(); valActual = ""; } lastMathOp = null; updateDisp(); }
+function sumar() { mathOp('+'); }
+function updateDisp() { 
+    let symbol = isResta() ? "- " : "+ ";
+    if(lastMathOp === '*') symbol = "x ";
+    else if(lastMathOp === '-') symbol = "- ";
+    else if(lastMathOp === '+') symbol = "+ ";
+
+    dispAct.innerText = valActual === "" ? "" : symbol + parseInt(valActual).toLocaleString('es-AR'); 
+    dispAcu.innerText = (acumulado===0 && valActual==="") ? "0" : acumulado.toLocaleString('es-AR'); 
+}
+function addN(n) { if(valActual.length < 8) { valActual+=n; updateDisp(); } } 
+function backspace() { valActual=valActual.slice(0,-1); updateDisp(); }
+function clearAll() { 
+    valActual=""; acumulado=0; operacionActual="venta_normal"; lastMathOp=null;
+    document.querySelectorAll('.btn-op').forEach(b => b.classList.remove('active')); 
+    updateDisp();
+}
+function setOp(op) { 
+    document.querySelectorAll('.btn-op').forEach(b => b.classList.remove('active')); 
+    if(operacionActual === op) { operacionActual = "venta_normal"; updateDisp(); return; } 
+    operacionActual=op; document.getElementById('op-'+op).classList.add('active'); updateDisp(); 
+}
+
+// LÓGICA CALCULADORA LIBRETA INDEPENDIENTE
+function getTotalPendienteLibreta() {
+    let v = parseInt(valActualLibreta) || 0;
+    if(lastMathOpLibreta === '+') return acumuladoLibreta + v;
+    if(lastMathOpLibreta === '-') return acumuladoLibreta - v;
+    if(lastMathOpLibreta === '*') return acumuladoLibreta === 0 ? v : acumuladoLibreta * v;
+    return acumuladoLibreta + v;
+}
+function mathOpLibreta(op) { if(valActualLibreta !== "") { acumuladoLibreta = getTotalPendienteLibreta(); valActualLibreta = ""; } lastMathOpLibreta = op; updateDispLibreta(); }
+function mathIgualLibreta() { if(valActualLibreta !== "") { acumuladoLibreta = getTotalPendienteLibreta(); valActualLibreta = ""; } lastMathOpLibreta = null; updateDispLibreta(); }
+function updateDispLibreta() {
+    let symbol = "+ ";
+    if(lastMathOpLibreta === '*') symbol = "x ";
+    else if(lastMathOpLibreta === '-') symbol = "- ";
+    else if(lastMathOpLibreta === '+') symbol = "+ ";
+
+    dispActLib.innerText = valActualLibreta === "" ? "" : symbol + parseInt(valActualLibreta).toLocaleString('es-AR'); 
+    dispAcuLib.innerText = (acumuladoLibreta===0 && valActualLibreta==="") ? "0" : acumuladoLibreta.toLocaleString('es-AR'); 
+}
+function addNLibreta(n) { if(valActualLibreta.length < 8) { valActualLibreta+=n; updateDispLibreta(); } }
+function backspaceLibreta() { valActualLibreta=valActualLibreta.slice(0,-1); updateDispLibreta(); }
+function clearAllLibreta() { valActualLibreta=""; acumuladoLibreta=0; lastMathOpLibreta=null; updateDispLibreta(); }
+
+// ------------------------------------------------------------------------------------------
+// 🚀 CARGA CON AISLAMIENTO DE LOCALES Y BUSTER DE CACHÉ 🚀
+// ------------------------------------------------------------------------------------------
+async function cargarBoveda() {
+    let p = encodeURIComponent(currentPin || '');
+    let n = encodeURIComponent(localName || '');
+    let timestamp = new Date().getTime(); 
+    
+    try {
+        let res = await fetch(`/api/panel-datos?pin=${p}&nombre=${n}&t=${timestamp}`, { headers: { 'Cache-Control': 'no-cache' }});
+        let data = await res.json();
+        if(data && data.success) {
+            currentTxsBoveda = data.transacciones || [];
+            renderizarBoveda();
+        }
+    } catch(e) { console.error("Error cargando ventas: ", e); }
+    
+    try {
+        let resCli = await fetch(`/api/clientes?pin=${p}&nombre=${n}&t=${timestamp}`, { headers: { 'Cache-Control': 'no-cache' }});
+        let dataCli = await resCli.json();
+        if(dataCli && dataCli.success) {
+            let clientes = dataCli.clientes || [];
+            let totalFiado = clientes.reduce((acc, c) => acc + parseFloat(c.deuda || 0), 0);
+            
+            document.getElementById('tot-fia').innerText = "$" + totalFiado.toLocaleString('es-AR');
+            
+            let htmlDeudores = "";
+            clientes.filter(c => parseFloat(c.deuda || 0) > 0).forEach(c => {
+                htmlDeudores += `<div style="background:rgba(0,0,0,0.4); padding:12px 15px; border-radius:8px; border:1px solid var(--primary-blue); margin-bottom:8px; display:flex; justify-content:space-between; align-items:center;">
+                    <div><b style="color:white; font-size:1.15rem;">${c.nombre}</b><br><span style="color:var(--text-gray); font-size:0.85rem;">📱 ${(c.whatsapp && c.whatsapp !== 'null') ? c.whatsapp : 'Sin número'}</span></div>
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <div style="color:var(--primary-blue); font-weight:900; font-size:1.3rem;">$${parseFloat(c.deuda).toLocaleString('es-AR')}</div>
+                        <button onclick="enviarRecordatorio('${c.nombre}', ${c.deuda}, '${c.whatsapp}')" style="background:var(--primary-blue); border:none; padding:8px 14px; border-radius:6px; font-weight:bold; color:white; cursor:pointer; font-size:0.85rem;">Cobrar</button>
+                    </div>
+                </div>`;
+            });
+            if(htmlDeudores === "") htmlDeudores = "<p style='color:var(--text-gray); text-align:center;'>No hay deudas en la calle.</p>";
+            document.getElementById('admin-deudores-list').innerHTML = htmlDeudores;
+        }
+    } catch(e) { 
+        console.error("Error cargando libreta: ", e);
+        document.getElementById('admin-deudores-list').innerHTML = "<p style='color:var(--text-gray); text-align:center;'>Sin conexión con Libreta.</p>";
+    }
+}
+
+function renderizarBoveda() {
+    let tEfe = 0, tTra = 0, tTar = 0;
+    let htmlList = "";
+    let chartLabels = [];
+    let chartData = [];
+    let txsForChart = [];
+    let acumuladoChart = 0;
+
+    for (let i = 0; i < currentTxsBoveda.length; i++) {
+        let tx = currentTxsBoveda[i];
+        let opLower = tx.tipo_operacion ? String(tx.tipo_operacion).toLowerCase() : "operación";
+        let metLower = tx.metodo_pago ? String(tx.metodo_pago).toLowerCase() : "efectivo";
+        let m = parseFloat(tx.monto_total) || 0;
+
+        if (opLower.includes('cierre_caja')) { break; }
+
+        let esResta = opLower.includes('proveedor') || opLower.includes('retiro');
+        let opPrefix = esResta ? "-" : "+";
+        let opColor = "var(--primary-blue)";
+
+        if(metLower !== 'sistema') {
+            if(!esResta) {
+                if(metLower === 'efectivo') tEfe += m;
+                else if(metLower === 'transferencia') tTra += m;
+                else if(metLower === 'tarjeta' || metLower === 'debito') tTar += m;
+            } else {
+                tEfe -= m;
+            }
+        }
+
+        let icon = '💰';
+        if(metLower === 'efectivo') icon = '💵';
+        if(metLower === 'transferencia') icon = '🏦';
+        if(metLower === 'tarjeta' || metLower === 'debito') icon = '💳';
+        if(metLower === 'sistema') { icon = '📝'; }
+
+        let fotoBtn = tx.foto_base64 ? `<button onclick="verFoto('${tx.id}')" style="background:var(--primary-blue); color:white; border:none; padding:4px 8px; border-radius:4px; font-size:0.7rem; cursor:pointer; margin-top:5px; font-weight:bold;">📸 Ver Comprobante</button>` : '';
+
+        htmlList += `<div class="tx-item" style="border: 1px solid var(--primary-blue);">
+            <div style="font-size:1.8rem;">${icon}</div>
+            <div style="text-align:left;">
+                <b style="color:white; text-transform:uppercase;">${tx.tipo_operacion || 'Operación'}</b><br>
+                <span style="color:var(--text-gray); font-size:0.75rem;">${new Date(tx.created_at).toLocaleString('es-AR')}</span><br>
+                ${fotoBtn}
+            </div>
+            <div style="color:${opColor}; font-size:1.2rem; font-weight:900;">${opPrefix}$${m.toLocaleString('es-AR')}</div>
+        </div>`;
+        
+        txsForChart.push(tx);
+    }
+
+    txsForChart.reverse().forEach(tx => {
+        let m = parseFloat(tx.monto_total) || 0;
+        let metLower = tx.metodo_pago ? String(tx.metodo_pago).toLowerCase() : "efectivo";
+        let opLower = tx.tipo_operacion ? String(tx.tipo_operacion).toLowerCase() : "operación";
+        
+        if(metLower !== 'sistema') {
+            let esResta = opLower.includes('proveedor') || opLower.includes('retiro');
+            acumuladoChart = esResta ? acumuladoChart - m : acumuladoChart + m;
+            chartLabels.push(new Date(tx.created_at).toLocaleTimeString('es-AR', {hour:'2-digit', minute:'2-digit'}));
+            chartData.push(acumuladoChart);
+        }
+    });
+
+    document.getElementById('tot-efe').innerText = "$" + tEfe.toLocaleString('es-AR');
+    document.getElementById('tot-tra').innerText = "$" + tTra.toLocaleString('es-AR');
+    document.getElementById('tot-tar').innerText = "$" + tTar.toLocaleString('es-AR');
+    document.getElementById('tx-list').innerHTML = htmlList || "<p style='color:var(--text-gray); text-align:center;'>No hay transacciones aún.</p>";
+
+    actualizarGrafico(chartLabels, chartData);
+}
+
+function actualizarGrafico(labels, data) {
+    let ctx = document.getElementById('wallStreetChart').getContext('2d');
+    if(wsChart) wsChart.destroy();
+    wsChart = new Chart(ctx, {
+        type: 'line',
+        data: {
+            labels: labels,
+            datasets: [{
+                label: 'Caja Real',
+                data: data,
+                borderColor: '#0ea5e9',
+                backgroundColor: 'rgba(14, 165, 233, 0.1)',
+                borderWidth: 2,
+                fill: true,
+                tension: 0.4,
+                pointRadius: 1,
+                pointBackgroundColor: '#0ea5e9'
+            }]
+        },
+        options: { responsive: true, maintainAspectRatio: false, plugins: { legend: { display: false } }, scales: { x: { display: false }, y: { ticks: { color: '#9ca3af' }, grid: { color: 'rgba(255,255,255,0.05)' } } } }
+    });
+}
+
+function verFoto(id) {
+    let tx = currentTxsBoveda.find(t => t.id == id);
+    if(tx && tx.foto_base64) {
+        document.getElementById('img-visor').src = tx.foto_base64;
+        document.getElementById('visor-foto').classList.remove('hidden');
+    }
+}
+
+function cerrarFoto() {
+    document.getElementById('visor-foto').classList.add('hidden');
+    document.getElementById('img-visor').src = "";
+}
+
+async function descargarPDF() {
+    showToast("⏳ Descargando datos desde la nube...", "var(--primary-blue)");
+    
+    await cargarBoveda(); 
+    
+    if(!currentTxsBoveda || currentTxsBoveda.length === 0) {
+        return showToast("❌ No hay datos en este turno", "#e11d48");
+    }
+    
+    ejecutarDescargaPlanilla(currentTxsBoveda, localName);
+    showToast("✅ PDF Generado Exitosamente", "#10b981");
+}
+
+function ejecutarDescargaPlanilla(datosReporte, nombreLocal) {
+    const { jsPDF } = window.jspdf; const doc = new jsPDF();
+    doc.setFontSize(18); doc.text(`Resumen de Turno - ${nombreLocal}`, 14, 20);
+    doc.setFontSize(10); doc.text(`Fecha Reporte: ${new Date().toLocaleString('es-AR')}`, 14, 28);
+    
+    let htmlFilas = [];
+    let stopFiltro = false;
+    
+    for(let i=0; i<datosReporte.length; i++) {
+        let tx = datosReporte[i];
+        if(tx.tipo_operacion && tx.tipo_operacion.toLowerCase().includes('cierre_caja') && i > 0) {
+            stopFiltro = true;
+        }
+        if(stopFiltro) break;
+        htmlFilas.push([
+            new Date(tx.created_at).toLocaleString('es-AR'),
+            String(tx.tipo_operacion).toUpperCase(),
+            String(tx.metodo_pago).toUpperCase(),
+            `$${parseFloat(tx.monto_total).toLocaleString('es-AR')}`
+        ]);
+    }
+    
+    doc.autoTable({ startY: 35, head: [['Fecha', 'Operación', 'Método', 'Monto']], body: htmlFilas, theme: 'grid', headStyles: { fillColor: [14, 165, 233] } });
+    doc.save(`Resumen_Turno_${nombreLocal}.pdf`);
+}
+
+function procesarLiquidacion(e) {
+    showToast("⏳ IA procesando liquidación...", "var(--primary-blue)");
+    setTimeout(() => { showToast("✅ Conciliación completada (Demo)", "#10b981"); }, 2000);
+}
+
+async function abrirLibreta() {
+    clearAllLibreta();
+    showView('view-libreta');
+}
+
+async function abrirBuscadorLibreta() {
+    montoLibretaActual = Math.abs(getTotalPendienteLibreta());
+    let cartelMonto = document.getElementById('monto-libreta-confirm');
+    if(montoLibretaActual > 0) { 
+        cartelMonto.innerText = "💰 Operación con: $" + montoLibretaActual.toLocaleString('es-AR'); 
+        cartelMonto.style.display = 'block'; 
+    } else { 
+        cartelMonto.style.display = 'none'; 
+    }
+    document.getElementById('buscar-cliente').value = ""; document.getElementById('nuevo-cliente-nombre').value = ""; document.getElementById('nuevo-cliente-wa').value = "";
+    document.getElementById('lista-clientes').innerHTML = "<div style='text-align:center;'>Cargando clientes de la nube...</div>";
+    
+    showView('view-clientes-list');
+    
+    try { 
+        let p = encodeURIComponent(currentPin || '');
+        let n = encodeURIComponent(localName || '');
+        let timestamp = new Date().getTime(); 
+        let res = await fetch(`/api/clientes?pin=${p}&nombre=${n}&t=${timestamp}`, { headers: { 'Cache-Control': 'no-cache' }}); 
+        let data = await res.json(); 
+        if(data.success) { clientesMemoria = data.clientes || []; filtrarClientes(); }
+    } catch(e) { showToast("❌ Sin conexión", "#e11d48"); }
+}
+
+function filtrarClientes() {
+    let q = document.getElementById('buscar-cliente').value.toLowerCase().trim();
+    let filtrados = clientesMemoria.filter(c => c.nombre.toLowerCase().includes(q));
+    renderListaClientes(filtrados);
+}
+
+function renderListaClientes(lista) {
+    let h = "";
+    lista.forEach(c => {
+        let botonesHTML = "";
+        if(montoLibretaActual > 0) {
+            botonesHTML = `
+                <div style="display:flex; flex-direction:column; gap:10px; margin-top:10px;">
+                    <button onclick="operarCliente('${c.id}', 'fiar')" style="background:var(--primary-blue); color:white; padding:12px; border:none; border-radius:6px; font-weight:bold; font-size:1rem; cursor:pointer;">🔴 FIAR $${montoLibretaActual.toLocaleString('es-AR')}</button>
+                    <div style="display:flex; gap:10px;">
+                        <button onclick="operarCliente('${c.id}', 'cobrar', 'efectivo')" style="background:var(--primary-blue); color:white; padding:12px; border:none; border-radius:6px; font-weight:bold; flex:1; font-size:1rem; cursor:pointer;">💵 COBRAR EFE</button>
+                        <button onclick="operarCliente('${c.id}', 'cobrar', 'transferencia')" style="background:var(--primary-blue); color:white; padding:12px; border:none; border-radius:6px; font-weight:bold; flex:1; font-size:1rem; cursor:pointer;">🏦 COBRAR TRF</button>
+                    </div>
+                </div>`;
+        } else {
+            botonesHTML = `
+                <div style="display:flex; gap:10px; margin-top:10px;">
+                    <button onclick="eliminarClienteLibreta('${c.id}', '${c.nombre}')" style="background:transparent; border:1px solid #555; color:white; padding:10px; border-radius:6px; cursor:pointer;">🗑️ Borrar Libreta</button>
+                    <button onclick="enviarRecordatorio('${c.nombre}', ${c.deuda}, '${c.whatsapp}')" style="background:var(--primary-blue); color:white; padding:12px; border:none; border-radius:6px; font-weight:bold; flex:1; font-size:1rem; cursor:pointer;">🟢 COBRAR (WhatsApp)</button>
+                </div>`;
+        }
+        let colorDeuda = c.deuda > 0 ? 'var(--primary-blue)' : 'var(--primary-blue)';
+        h += `<div style="background:var(--card-dark); padding:15px; border-radius:8px; border:1px solid var(--primary-blue); margin-bottom:12px;"><div style="display:flex; justify-content:space-between; align-items:center;"><b style="font-size:1.2rem; color:white;">${c.nombre}</b><span style="color:${colorDeuda}; font-weight:900; font-size:1.4rem;">$${parseFloat(c.deuda).toLocaleString('es-AR')}</span></div><div style="font-size:0.85rem; color:var(--text-gray); margin-top:5px;">📱 ${(c.whatsapp && c.whatsapp !== 'null' && c.whatsapp !== 'No especificado') ? c.whatsapp : 'Sin número'}</div>${botonesHTML}</div>`;
+    });
+    if(lista.length === 0) h = "<p style='text-align:center; color:var(--text-gray);'>No hay clientes registrados.</p>";
+    document.getElementById('lista-clientes').innerHTML = h;
+}
+
+async function crearCliente() {
+    let n = document.getElementById('nuevo-cliente-nombre').value.trim(); let wa = document.getElementById('nuevo-cliente-wa').value.trim();
+    if(n === '') return showToast("❌ Escribe el nombre del cliente", "#e11d48");
+    showToast("⏳ Guardando...", "var(--primary-blue)");
+    try {
+        let res = await fetch('/api/clientes', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pin: currentPin, nombre_local: localName, nombre: n, whatsapp: wa})}); let data = await res.json();
+        if(data.success) { clientesMemoria.unshift(data.cliente); document.getElementById('nuevo-cliente-nombre').value = ""; document.getElementById('nuevo-cliente-wa').value = ""; document.getElementById('buscar-cliente').value = ""; filtrarClientes(); showToast("✅ Cliente guardado", "var(--primary-blue)"); } else { showToast("❌ Error: " + data.error, "#e11d48"); }
+    } catch(e) { showToast("❌ Sin conexión", "#e11d48"); }
+}
+
+async function eliminarClienteLibreta(id, nombre) {
+    if(!confirm("¿Eliminar libreta de " + nombre + "?")) return;
+    try {
+        let res = await fetch('/api/clientes/eliminar', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pin: currentPin, nombre_local: localName, cliente_id: id})});
+        let data = await res.json();
+        if(data.success) { 
+            clientesMemoria = clientesMemoria.filter(c => c.id != id); 
+            filtrarClientes(); 
+            showToast("✅ Eliminado", "var(--primary-blue)"); 
+        }
+    } catch(e) { showToast("❌ Error al eliminar", "#e11d48"); }
+}
+
+async function operarCliente(id, accion, metodo = 'sistema') {
+    if(montoLibretaActual <= 0) return;
+    let desc = accion === 'fiar' ? `¿Fiar $${montoLibretaActual.toLocaleString('es-AR')} a este cliente?` : `¿Cobrar $${montoLibretaActual.toLocaleString('es-AR')} a este cliente por ${metodo.toUpperCase()}?`;
+    if(!confirm(desc)) return;
+    showToast("⏳ Procesando...", "var(--primary-blue)");
+    try {
+        let res = await fetch('/api/clientes/operar', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({pin: currentPin, nombre_local: localName, cliente_id: id, monto: montoLibretaActual, accion: accion, metodo: metodo})}); let data = await res.json();
+        if(data.success) { showToast("✅ Operación Exitosa", "var(--primary-blue)"); clearAllLibreta(); volverCaja(); } else { showToast("❌ Error al procesar", "#e11d48"); }
+    } catch(e) { showToast("❌ Sin conexión", "#e11d48"); }
+}
+
+function enviarRecordatorio(nombre, deuda, wa) {
+    if(!wa || wa === '' || wa === 'null' || wa === 'No especificado') return showToast("❌ No tiene WhatsApp", "#e11d48");
+    let numLimpio = wa.replace(/[^0-9]/g, ''); 
+    if (numLimpio.length === 10) numLimpio = '549' + numLimpio;
+    let msg = `Hola ${nombre}, te escribimos de ${localName}. Recordá tu saldo de $${parseFloat(deuda).toLocaleString('es-AR')}. ¡Te esperamos!`;
+    window.open('https://wa.me/' + numLimpio + '?text=' + encodeURIComponent(msg), '_blank');
+}
+
+// ⚡ REPORTE DE CIERRE Y WHATSAPP ARREGLADO
+async function cerrarTurno() {
+    if(!confirm("¿Confirmar cierre de turno y enviar reporte por WhatsApp al dueño?")) return;
+    
+    showToast("⏳ Calculando totales reales...", "var(--primary-blue)");
+
+    try {
+        let p = encodeURIComponent(currentPin || '');
+        let n = encodeURIComponent(localName || '');
+        let timestamp = new Date().getTime(); 
+        
+        let res = await fetch(`/api/panel-datos?pin=${p}&nombre=${n}&t=${timestamp}`, { headers: { 'Cache-Control': 'no-cache' }});
+        let data = await res.json();
+        
+        let resCli = await fetch(`/api/clientes?pin=${p}&nombre=${n}&t=${timestamp}`, { headers: { 'Cache-Control': 'no-cache' }});
+        let dataCli = await resCli.json();
+
+        let tEfe = 0, tTra = 0, tTar = 0, tFia = 0;
+
+        if(data && data.success) {
+            let txs = data.transacciones || [];
+            for (let i = 0; i < txs.length; i++) {
+                let tx = txs[i];
+                let opLower = tx.tipo_operacion ? String(tx.tipo_operacion).toLowerCase() : "";
+                let metLower = tx.metodo_pago ? String(tx.metodo_pago).toLowerCase() : "efectivo";
+                let m = parseFloat(tx.monto_total) || 0;
+
+                if (opLower.includes('cierre_caja')) break;
+
+                let esResta = opLower.includes('proveedor') || opLower.includes('retiro');
+                if(metLower !== 'sistema') {
+                    if(!esResta) {
+                        if(metLower === 'efectivo') tEfe += m;
+                        else if(metLower === 'transferencia') tTra += m;
+                        else if(metLower === 'tarjeta' || metLower === 'debito') tTar += m;
+                    } else {
+                        tEfe -= m;
+                    }
+                }
+            }
+        }
+
+        if(dataCli && dataCli.success) {
+            tFia = (dataCli.clientes || []).reduce((acc, c) => acc + parseFloat(c.deuda || 0), 0);
+        }
+
+        await fetch('/api/transaccion', {
+            method:'POST', 
+            headers:{'Content-Type':'application/json'}, 
+            body: JSON.stringify({monto:0, operacion:'cierre_caja', metodo:'sistema', local_pin:currentPin, nombre_local:localName})
+        });
+        
+        clearAll();
+        if(document.getElementById('tot-efe')) document.getElementById('tot-efe').innerText = "$0";
+        if(document.getElementById('tot-tra')) document.getElementById('tot-tra').innerText = "$0";
+        if(document.getElementById('tot-tar')) document.getElementById('tot-tar').innerText = "$0";
+        if(document.getElementById('tx-list')) document.getElementById('tx-list').innerHTML = "<p style='color:var(--text-gray); text-align:center;'>No hay transacciones aún.</p>";
+        
+        currentTxsBoveda = [];
+        
+        let msg = `*CIERRE DE TURNO - ${localName}* 🔐\n\n💵 Efectivo Físico a rendir: $${tEfe.toLocaleString('es-AR')}\n🏦 Transferencias: $${tTra.toLocaleString('es-AR')}\n💳 Débito/Tarjeta: $${tTar.toLocaleString('es-AR')}\n📒 Plata en la calle (Fiado): $${tFia.toLocaleString('es-AR')}\n\n_Reporte autogenerado por Vigilante IA_`;
+        
+        window.location.href = 'https://wa.me/?text=' + encodeURIComponent(msg);
+        
+    } catch(err) { 
+        showToast("❌ Error al cerrar turno", "#e11d48"); 
+    }
+}
+
+function abrirSheet() {
+    if(Math.abs(getTotalPendiente())===0) return showToast("❌ Ingrese monto", "#e11d48");
+    document.getElementById('sheet-overlay').classList.add('show'); document.getElementById('native-bottom-sheet').classList.add('show');
+}
+
+function cerrarSheet() { document.getElementById('sheet-overlay').classList.remove('show'); document.getElementById('native-bottom-sheet').classList.remove('show'); }
+function elegirCamara() { cerrarSheet(); document.getElementById('foto-input-camara').click(); }
+function elegirGaleria() { cerrarSheet(); document.getElementById('foto-input-galeria').click(); }
+
+function handleFoto(e) { const f = e.target.files[0]; if(!f) return; document.getElementById('radar-text').innerText = "🛡️ IA Auditando comprobante..."; radar.style.display='flex'; const r = new FileReader(); r.readAsDataURL(f); r.onload = ev => { const img = new Image(); img.src = ev.target.result; img.onload = () => { const c = document.createElement('canvas'); c.width=400; c.height=img.height*(400/img.width); c.getContext('2d').drawImage(img,0,0,c.width,c.height); cobrar('transferencia', c.toDataURL('image/jpeg',0.5)); } } }
+
+async function cobrar(met, fb=null) {
+    let total = getTotalPendiente(); if(total===0) return;
+    if(fb) { radar.style.display='flex'; await new Promise(r => setTimeout(r, 2200)); } else { showToast("⏳ Procesando...", "var(--primary-blue)"); }
+    try {
+        let res = await fetch('/api/transaccion', { method:'POST', headers:{'Content-Type':'application/json'}, body:JSON.stringify({monto:Math.abs(total), operacion:operacionActual, metodo:met, fotoBase64:fb, local_pin:currentPin, nombre_local:localName})});
+        let d = await res.json(); if(fb) radar.style.display='none';
+        if(d.success) { showToast("✅ OK", "var(--primary-blue)"); clearAll(); } else { showToast("❌ " + d.error, "#e11d48"); }
+    } catch(e){ if(fb) radar.style.display='none'; }
+    document.getElementById('foto-input-camara').value=""; document.getElementById('foto-input-galeria').value="";
+}
+
+// INICIALIZACIÓN LANDING CARRUSEL
+document.addEventListener('DOMContentLoaded', () => {
+    const slidesWrapper = document.getElementById('slides-wrapper');
+    if (slidesWrapper) {
+        let currentSlide = 0;
+        const dots = document.querySelectorAll('.dot');
+        function changeSlide(idx) {
+            currentSlide = idx;
+            slidesWrapper.style.transform = `translateX(-${idx * 33.333}%)`;
+            dots.forEach((d, i) => d.classList.toggle('active', i === idx));
+        }
+        setInterval(() => {
+            currentSlide = (currentSlide + 1) % 3;
+            changeSlide(currentSlide);
+        }, 6000);
+        dots.forEach((d, i) => d.addEventListener('click', () => changeSlide(i)));
+    }
+});
+</script>
+</body>
+</html>
