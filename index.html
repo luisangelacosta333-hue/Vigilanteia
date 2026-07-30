@@ -890,5 +890,32 @@ document.addEventListener('DOMContentLoaded',()=>{
     setInterval(()=>go((i+1)%3),6500);
     pts.forEach((p,k)=>p.addEventListener('click',()=>go(k)));
 });
+
+/* === CONEXIÓN REAL A OPENAI VÍA VERCEL === */
+async function consultarIA(mensaje) {
+    try {
+        document.getElementById('radarTxt').innerText = '🤖 IA Pensando...';
+        radar.style.display = 'flex';
+        
+        const respuesta = await fetch('/api/chat', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mensaje: mensaje })
+        });
+        
+        const data = await respuesta.json();
+        radar.style.display = 'none';
+        
+        if(data.choices && data.choices[0]) {
+            const textoIA = data.choices[0].message.content;
+            hablar(textoIA, true); // La IA te responde con voz
+            toast('IA respondió ✅', '#16a34a');
+            return textoIA;
+        }
+    } catch (error) {
+        radar.style.display = 'none';
+        toast('Error de conexión con la IA', '#dc2626');
+    }
+}
 </script>
 </body></html>
