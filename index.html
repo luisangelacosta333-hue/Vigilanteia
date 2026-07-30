@@ -3,14 +3,14 @@
 <meta name="viewport" content="width=device-width,initial-scale=1.0,maximum-scale=1.0,user-scalable=no">
 <meta http-equiv="Cache-Control" content="no-cache,no-store,must-revalidate">
 <meta http-equiv="Pragma" content="no-cache"><meta http-equiv="Expires" content="0">
-<title>Vigilante IA · Control Total Premium</title>
+<title>Vigilante IA · Control Total Premium | ENERGY 2026</title>
 <link rel="manifest" href="/manifest_v4.json">
 <meta name="theme-color" content="#0284c7">
 <meta name="apple-mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Montserrat:wght@500;600;700;800;900&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@200;300;400;500;600;700;800&family=Montserrat:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
 <!-- LIBRERÍAS DE SUPABASE Y GRÁFICOS -->
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
@@ -18,136 +18,136 @@
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf-autotable/3.5.28/jspdf.plugin.autotable.min.js"></script>
 <style>
 :root{
-    --c1:#0ea5e9; --c2:#0284c7; --c3:#0369a1; --c4:#0c4a6e;
-    --azul:linear-gradient(135deg,#38bdf8 0%,#0ea5e9 25%,#0284c7 55%,#0369a1 80%,#0c4a6e 100%);
-    --azul-suave:linear-gradient(135deg,rgba(56,189,248,.18),rgba(2,132,199,.10));
-    --brillo:0 0 0 1px rgba(14,165,233,.35), 0 10px 40px rgba(2,132,199,.22), 0 0 60px rgba(56,189,248,.18);
-    --brillo-fino:0 0 0 1px rgba(14,165,233,.25), 0 6px 22px rgba(2,132,199,.14);
-    --bg:#ffffff;
-    --fondo:radial-gradient(900px 520px at 0% 0%,rgba(56,189,248,.14),transparent 55%),
-           radial-gradient(800px 480px at 100% 10%,rgba(3,105,161,.12),transparent 55%),
-           radial-gradient(700px 500px at 50% 110%,rgba(12,74,110,.08),transparent 60%),
-           linear-gradient(180deg,#ffffff 0%,#f7fbff 50%,#ffffff 100%);
-    --vidrio:rgba(255,255,255,.62);
-    --vidrio-fuerte:rgba(255,255,255,.82);
-    --borde:rgba(14,165,233,.28);
-    --borde-fino:rgba(148,163,184,.22);
-    --blur:blur(22px) saturate(180%) brightness(1.03);
-    --txt:#0b1220; --txt2:#334155; --txt3:#64748b;
-    --r:20px;
+    --c1:#7dd3fc;--c2:#38bdf8;--c3:#0ea5e9;--c4:#0284c7;--c5:#0369a1;--c6:#0c4a6e;
+    --azul:linear-gradient(135deg,#7dd3fc 0%,#38bdf8 20%,#0ea5e9 45%,#0284c7 70%,#0369a1 100%);
+    --azul-soft:linear-gradient(180deg,rgba(56,189,248,.12),rgba(2,132,199,.04));
+    --azul-osc:linear-gradient(135deg,#0284c7,#0c4a6e);
+    --sombra-xl:0 22px 50px -14px rgba(2,132,199,.22), 0 8px 22px -8px rgba(15,23,42,.08);
+    --sombra-md:0 10px 24px -10px rgba(15,23,42,.10), 0 2px 6px rgba(15,23,42,.04);
+    --sombra-azul:0 12px 26px -8px rgba(2,132,199,.32);
+    --bg:#f6f9fc;
+    --fondo:
+        radial-gradient(1100px 600px at 0% -10%,rgba(56,189,248,.16),transparent 60%),
+        radial-gradient(900px 500px at 100% 0%,rgba(12,74,110,.08),transparent 55%),
+        linear-gradient(180deg,#ffffff 0%,#f6f9fc 50%,#ffffff 100%);
+    --vidrio:rgba(255,255,255,.58);
+    --vidrio-plus:rgba(255,255,255,.84);
+    --borde:rgba(148,163,184,.16);
+    --borde-azul:rgba(14,165,233,.26);
+    --blur:blur(20px) saturate(180%) brightness(1.03);
+    --txt:#0b1220;--txt2:#334155;--txt3:#64748b;
+    --r:18px;
 }
-*{box-sizing:border-box;font-family:'Inter',system-ui,sans-serif;-webkit-tap-highlight-color:transparent}
-html,body{background:var(--bg);color:var(--txt)}
-body{background:var(--fondo);margin:0;min-height:100vh}
+*{box-sizing:border-box;font-family:'Inter',system-ui,sans-serif;-webkit-tap-highlight-color:transparent;touch-action:manipulation}
+html,body{background:var(--bg);color:var(--txt);-webkit-font-smoothing:antialiased}
+body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
 .hidden{display:none !important}
-@keyframes brillo{0%,100%{box-shadow:0 0 0 0 rgba(14,165,233,.45)}50%{box-shadow:0 0 0 14px rgba(14,165,233,0)}}
-@keyframes entrar{from{opacity:0;transform:translateY(10px) scale(.98)}to{opacity:1;transform:none}}
-@keyframes resplandor{0%,100%{filter:drop-shadow(0 0 6px rgba(14,165,233,.35))}50%{filter:drop-shadow(0 0 18px rgba(56,189,248,.7))}}
-.vidrio{background:var(--vidrio);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--borde);box-shadow:var(--brillo-fino)}
-.vidrio2{background:var(--vidrio-fuerte);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--borde);box-shadow:var(--brillo)}
-.azul-texto{background:var(--azul);-webkit-background-clip:text;background-clip:text;color:transparent}
-.btn{
-    background:var(--azul);color:#fff;border:none;padding:16px;border-radius:16px;font-weight:800;width:100%;
-    margin-top:10px;letter-spacing:.3px;font-size:.95rem;cursor:pointer;transition:.2s;box-shadow:var(--brillo)
+@keyframes entrar{from{opacity:0;transform:translateY(12px) scale(.99)}to{opacity:1;transform:none}}
+@keyframes giroSuave{0%{transform:rotateY(0)}100%{transform:rotateY(360deg)}}
+@keyframes aura{0%,100%{opacity:.5;transform:scale(1)}50%{opacity:.9;transform:scale(1.05)}}
+@keyframes pulsoLuz{0%,100%{filter:drop-shadow(0 0 8px rgba(56,189,248,.4))}50%{filter:drop-shadow(0 0 22px #38bdf8) drop-shadow(0 0 36px #0ea5e9)}}
+@keyframes brillaBorde{0%,100%{background-position:0% 50%}50%{background-position:100% 50%}}
+@keyframes flotar{0%,100%{transform:translateY(0)}50%{transform:translateY(-5px)}}
+@keyframes pulsoAnillo{0%{box-shadow:0 0 0 0 rgba(14,165,233,.4)}100%{box-shadow:0 0 0 14px rgba(14,165,233,0)}}
+.anim-entrar{animation:entrar .45s cubic-bezier(.2,.8,.2,1) both}
+.anim-flotar{animation:flotar 6s ease-in-out infinite}
+
+.logo-escena{perspective:900px;width:96px;height:96px;position:relative;margin:0 auto 12px}
+.logo-3d{width:100%;height:100%;transform-style:preserve-3d;animation:giroSuave 16s linear infinite, pulsoLuz 4s ease-in-out infinite}
+.aro-luz{position:absolute;inset:-9px;border-radius:50%;background:conic-gradient(from 0deg,transparent,#38bdf8,#0284c7,#0c4a6e,#0284c7,#38bdf8,transparent);filter:blur(7px);animation:giroSuave 10s linear infinite reverse, aura 4s ease-in-out infinite;opacity:.6}
+.aro-fino{position:absolute;inset:-2px;border-radius:50%;border:1.2px solid transparent;background:linear-gradient(#fff,#fff) padding-box,linear-gradient(135deg,#7dd3fc,#0284c7,#0c4a6e,#38bdf8) border-box;animation:giroSuave 12s linear infinite}
+
+.titulo-glam{font-family:'Montserrat',sans-serif;font-weight:900;letter-spacing:-1.6px;line-height:.98;background:var(--azul);-webkit-background-clip:text;background-clip:text;color:transparent}
+.sub-glam{font-weight:400;color:var(--txt2);line-height:1.6}
+.contenedor-planes{display:grid;grid-template-columns:1fr;gap:18px;max-width:980px;margin:0 auto}
+@media(min-width:860px){.contenedor-planes{grid-template-columns:1fr 1.05fr}}
+.plan{position:relative;border-radius:20px;padding:24px 18px;background:var(--vidrio-plus);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--borde);box-shadow:var(--sombra-md);transition:all .4s ease}
+.plan:hover{transform:translateY(-5px);border-color:var(--borde-azul);box-shadow:var(--sombra-xl)}
+.plan.destacado{border:1.5px solid transparent;background:linear-gradient(rgba(255,255,255,.88),rgba(255,255,255,.82)) padding-box,linear-gradient(135deg,#7dd3fc,#0284c7,#0c4a6e,#38bdf8) border-box;background-size:100% 100%,300% 300%;animation:brillaBorde 7s ease infinite;box-shadow:var(--sombra-xl);transform:scale(1.015)}
+.etiqueta-top{display:inline-block;padding:5px 12px;border-radius:999px;font-size:.68rem;font-weight:800;letter-spacing:.6px;text-transform:uppercase}
+.precio-num{font-family:'Montserrat',sans-serif;font-weight:900;font-size:3.4rem;line-height:1;letter-spacing:-2.2px;background:var(--azul);-webkit-background-clip:text;background-clip:text;color:transparent;margin:6px 0 2px}
+.lista-beneficios{text-align:left;list-style:none;padding:0;margin:12px 0 16px}
+.lista-beneficios li{padding:8px 0 8px 24px;position:relative;font-size:.82rem;color:var(--txt2);font-weight:500;border-bottom:1px dashed var(--borde)}
+.lista-beneficios li:last-child{border-bottom:none}
+.lista-beneficios li::before{content:"✓";position:absolute;left:0;top:6px;width:18px;height:18px;border-radius:50%;display:grid;place-items:center;background:var(--azul);color:#fff;font-size:.65rem;font-weight:900;box-shadow:var(--sombra-azul)}
+.grid-funciones{display:grid;grid-template-columns:1fr;gap:12px;max-width:1100px;margin:0 auto}
+@media(min-width:640px){.grid-funciones{grid-template-columns:1fr 1fr}}
+@media(min-width:980px){.grid-funciones{grid-template-columns:1fr 1fr 1fr}}
+.funcion{padding:16px;border-radius:16px;background:var(--vidrio-plus);backdrop-filter:var(--blur);border:1px solid var(--borde);box-shadow:var(--sombra-md);transition:all .35s ease}
+.funcion:hover{transform:translateY(-3px);border-color:var(--borde-azul);box-shadow:var(--sombra-xl)}
+.funcion .ico{width:36px;height:36px;border-radius:11px;display:grid;place-items:center;background:var(--azul);color:#fff;font-size:1rem;margin-bottom:6px;box-shadow:var(--sombra-azul)}
+.btn-glam{position:relative;width:100%;padding:13px 14px;border-radius:13px;border:none;font-family:'Montserrat',sans-serif;font-weight:800;color:#fff;cursor:pointer;background:var(--azul);background-size:200% 200%;animation:brillaBorde 6s ease infinite;box-shadow:var(--sombra-azul);transition:transform .15s ease}
+.btn-glam:active{transform:scale(.97)}
+.btn-glam.borde{background:transparent;color:var(--c4);border:1.5px solid var(--c4);box-shadow:none;animation:none}
+.footer-energy{text-align:center;padding:28px 12px 18px;margin-top:32px;border-top:1px solid var(--borde);color:var(--txt3);font-size:.74rem;font-weight:500}
+.footer-energy strong{font-family:'Montserrat',sans-serif;font-weight:800;background:var(--azul);-webkit-background-clip:text;background-clip:text;color:transparent}
+.slider{border-radius:16px;overflow:hidden;box-shadow:var(--sombra-md)}
+.punto{display:inline-block;width:7px;height:7px;border-radius:999px;background:#cbd5e1;transition:.25s;margin:0 3px;cursor:pointer}
+.punto.activo{background:var(--azul);width:20px;box-shadow:var(--sombra-azul)}
+.vidrio{background:var(--vidrio);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--borde);box-shadow:var(--sombra-md)}
+.vidrio2{background:var(--vidrio-plus);backdrop-filter:var(--blur);-webkit-backdrop-filter:var(--blur);border:1px solid var(--borde-azul);box-shadow:var(--sombra-xl)}
+.btn{background:var(--azul);color:#fff;border:none;padding:13px;border-radius:13px;font-family:'Montserrat',sans-serif;font-weight:800;width:100%;margin-top:8px;font-size:.9rem;cursor:pointer;box-shadow:var(--sombra-azul);transition:transform .12s ease}
+.btn:active{transform:scale(.97)}
+.input-text,.lp-input{width:100%;padding:12px 13px;background:var(--vidrio);backdrop-filter:var(--blur);border:1px solid var(--borde);border-radius:11px;font-size:.92rem;margin-bottom:9px;transition:.15s}
+.input-text:focus,.lp-input:focus{outline:none;border-color:#0284c7;box-shadow:0 0 0 4px rgba(14,165,233,.14),var(--sombra-md);background:#fff}
+.view-container{max-width:540px;margin:0 auto;padding:14px 14px 110px;min-height:100vh;display:flex;flex-direction:column}
+.top-bar{display:flex;justify-content:space-between;align-items:center;padding:7px 9px;margin-bottom:7px;gap:6px;border-radius:12px;animation:entrar .3s ease}
+.ia-badge{background:var(--azul);color:#fff;padding:4px 9px;border-radius:999px;font-size:.68rem;font-weight:800;box-shadow:var(--sombra-azul);animation:pulsoAnillo 2.2s infinite}
+.dias{padding:4px 7px;border-radius:8px;border:1px solid var(--borde);font-size:.72rem;font-weight:700;background:rgba(248,250,252,.7);backdrop-filter:var(--blur)}
+.display-container{min-height:90px;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;padding:4px 2px 12px}
+.monto-grande{font-family:'Montserrat',sans-serif;font-size:3.8rem;font-weight:900;line-height:1;letter-spacing:-2px;text-align:right;word-break:break-all;background:var(--azul-osc);-webkit-background-clip:text;background-clip:text;color:transparent}
+.monto-chico{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;min-height:2.4rem;text-align:right;letter-spacing:-.6px;color:var(--txt2)}
+.top-ops{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px}
+.op{font-weight:800;font-size:.76rem;padding:11px 2px;border-radius:11px;cursor:pointer;transition:.15s;border:1px solid var(--borde);color:var(--txt2);background:var(--vidrio)}
+.op.activo{background:var(--azul);color:#fff;border-color:transparent;box-shadow:var(--sombra-azul);transform:scale(1.01)}
+.cierre{grid-column:1/-1;background:var(--azul);color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;padding:13px;border-radius:13px;border:none;box-shadow:var(--sombra-azul);cursor:pointer;font-size:.92rem}
+.teclado{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;flex:1}
+.tecla{min-height:64px;border-radius:13px;font-size:1.8rem;font-weight:600;cursor:pointer;transition:.1s;border:1px solid var(--borde);color:var(--txt);background:rgba(255,255,255,.55)}
+.tecla:active{background:var(--azul-soft);border-color:#0284c7;color:#0369a1}
+.tecla-azul{background:var(--azul);color:#fff;border-color:transparent;box-shadow:var(--sombra-azul)}
+.tecla-clara{background:rgba(226,232,240,.5);color:#475569}
+.pago{height:52px;border-radius:13px;font-family:'Montserrat',sans-serif;font-weight:800;font-size:.9rem;border:none;color:#fff;cursor:pointer;box-shadow:var(--sombra-azul);background:var(--azul)}
+
+/* ✅ PANEL DEL DUEÑO MEJORADO */
+.panel-header-glass {
+    background: linear-gradient(135deg, rgba(255,255,255,0.9), rgba(248,250,252,0.7));
+    backdrop-filter: blur(10px); border: 1px solid var(--borde-azul);
+    border-radius: 16px; padding: 16px; margin-bottom: 12px;
+    box-shadow: var(--sombra-md); display: flex; justify-content: space-between; align-items: center;
 }
-.btn:active{transform:scale(.97);filter:brightness(1.1)}
-.input-text{
-    width:100%;padding:16px;background:var(--vidrio);backdrop-filter:var(--blur);
-    border:1px solid var(--borde);border-radius:14px;font-size:1rem;margin-bottom:12px;transition:.2s
+.totales{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:14px}
+.tarjeta{
+    background: #fff; border-radius: 14px; position: relative; overflow: hidden;
+    padding: 16px 12px; text-align: center; border: 1px solid rgba(14,165,233,0.15);
+    box-shadow: 0 4px 15px rgba(15,23,42,0.03); animation: entrar .25s ease;
 }
-.input-text:focus{outline:none;border-color:#0284c7;box-shadow:0 0 0 5px rgba(14,165,233,.15),var(--brillo-fino);background:#fff}
-.view-container{max-width:540px;margin:0 auto;padding:16px;min-height:100vh;display:flex;flex-direction:column}
-.top-bar{
-    display:flex;justify-content:space-between;align-items:center;padding:10px 12px;margin-bottom:10px;gap:8px;
-    border-radius:16px;animation:entrar .35s ease
+.tarjeta::before {
+    content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 4px;
+    background: var(--azul);
 }
-.ia-badge{
-    background:var(--azul);color:#fff;padding:6px 12px;border-radius:999px;font-size:.72rem;font-weight:800;
-    box-shadow:var(--brillo);animation:brillo 2.4s infinite
-}
-.dias{padding:6px 10px;border-radius:10px;border:1px solid var(--borde-fino);font-size:.78rem;font-weight:700;background:rgba(248,250,252,.7);backdrop-filter:var(--blur)}
-.display-container{min-height:124px;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;padding:10px 4px 18px}
-.monto-grande{
-    font-size:4.8rem;font-weight:900;line-height:1;letter-spacing:-2.5px;text-align:right;word-break:break-all
-}
-.monto-chico{font-size:2.2rem;font-weight:800;min-height:3rem;text-align:right;letter-spacing:-1px;color:var(--txt)}
-.top-ops{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:12px}
-.op{
-    font-weight:800;font-size:.82rem;padding:14px 2px;border-radius:14px;cursor:pointer;transition:.2s;
-    border:1px solid var(--borde-fino);color:var(--txt2)
-}
-.op.activo{background:var(--azul);color:#fff;border-color:transparent;box-shadow:var(--brillo);transform:scale(1.02)}
-.cierre{
-    grid-column:1 / -1;background:var(--azul);color:#fff;font-weight:900;padding:16px;
-    border-radius:16px;border:none;box-shadow:var(--brillo);cursor:pointer;font-size:1rem
-}
-.teclado{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;flex:1}
-.tecla{
-    min-height:78px;border-radius:18px;font-size:2.2rem;font-weight:600;cursor:pointer;transition:.15s;
-    border:1px solid var(--borde);color:var(--txt)
-}
-.tecla:active{background:var(--azul-suave);border-color:#0284c7;color:#0369a1}
-.tecla-azul{background:var(--azul);color:#fff;border-color:transparent;box-shadow:var(--brillo)}
-.tecla-clara{background:rgba(226,232,240,.55);color:#475569}
-.pago{height:60px;border-radius:16px;font-weight:800;font-size:1rem;border:none;color:#fff;cursor:pointer;box-shadow:var(--brillo);background:var(--azul)}
-.totales{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-bottom:16px}
-.tarjeta{padding:16px 8px;border-radius:18px;text-align:center;animation:entrar .3s ease}
-.tarjeta.doble{grid-column:1 / -1;padding:20px;border-bottom:3px solid #0284c7}
-.etiqueta{font-size:.7rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3)}
-.valor{font-size:1.8rem;font-weight:900;letter-spacing:-.5px}
-.tx-item{
-    display:grid;grid-template-columns:1fr 2fr 1fr;align-items:center;text-align:center;
-    padding:12px;border-radius:14px;font-size:.78rem;font-weight:700;margin-bottom:8px;animation:entrar .25s ease
-}
-.modal-bg{
-    position:fixed;inset:0;background:rgba(8,25,45,.35);display:flex;align-items:center;justify-content:center;
-    z-index:999999;backdrop-filter:blur(12px) saturate(140%)
-}
-.modal{
-    width:90%;max-width:340px;padding:26px;border-radius:22px;border-top:4px solid #0284c7;
-    animation:entrar .3s ease;text-align:center
-}
-.sheet{
-    position:fixed;left:0;right:0;bottom:-100%;z-index:100000;
-    padding:10px 18px 28px;border-radius:26px 26px 0 0;transition:bottom .32s ease
-}
+.tarjeta.doble{grid-column:1/-1; background: linear-gradient(135deg, #fff 0%, #f0f9ff 100%);}
+.etiqueta{font-size:.68rem;font-weight:800;letter-spacing:.5px;text-transform:uppercase;color:var(--txt3)}
+.valor{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:900;letter-spacing:-.3px;background:var(--azul-osc);-webkit-background-clip:text;background-clip:text;color:transparent; margin-top: 6px;}
+
+.tx-item{display:grid;grid-template-columns:1fr 2fr 1fr;align-items:center;text-align:center;padding:12px;border-radius:11px;font-size:.74rem;font-weight:700;margin-bottom:8px;animation:entrar .2s ease;background:var(--vidrio-plus);backdrop-filter:var(--blur);border:1px solid var(--borde);box-shadow:var(--sombra-md)}
+.modal-bg{position:fixed;inset:0;background:rgba(8,25,45,.35);display:flex;align-items:center;justify-content:center;z-index:999999;backdrop-filter:blur(10px)}
+.modal{width:90%;max-width:340px;padding:20px;border-radius:16px;border-top:3px solid #0284c7;animation:entrar .25s ease;text-align:center;background:var(--vidrio-plus);backdrop-filter:var(--blur);box-shadow:var(--sombra-xl)}
+.sheet{position:fixed;left:0;right:0;bottom:-100%;z-index:100000;padding:8px 14px 20px;border-radius:20px 20px 0 0;transition:bottom .3s ease;background:var(--vidrio-plus);backdrop-filter:var(--blur);border-top:1px solid var(--borde-azul);box-shadow:var(--sombra-xl)}
 .sheet.abierto{bottom:0}
-.overlay{position:fixed;inset:0;background:rgba(8,25,45,.35);z-index:99999;opacity:0;display:none;backdrop-filter:blur(5px);transition:.25s}
+.overlay{position:fixed;inset:0;background:rgba(8,25,45,.3);z-index:99999;opacity:0;display:none;backdrop-filter:blur(4px);transition:.2s}
 .overlay.abierto{display:block;opacity:1}
-.toast-caja{position:fixed;top:20px;left:0;width:100%;display:flex;justify-content:center;z-index:9999;pointer-events:none}
-.toast{
-    padding:12px 22px;border-radius:999px;font-weight:800;opacity:0;transform:translateY(-16px) scale(.97);
-    transition:.28s;pointer-events:auto
-}
+.toast-caja{position:fixed;top:14px;left:0;width:100%;display:flex;justify-content:center;z-index:9999;pointer-events:none}
+.toast{padding:9px 16px;border-radius:999px;font-weight:800;opacity:0;transform:translateY(-10px) scale(.98);transition:.25s;background:var(--vidrio-plus);backdrop-filter:var(--blur);border:1px solid var(--borde-azul);box-shadow:var(--sombra-xl)}
 .toast.ver{opacity:1;transform:none}
-.radar{
-    position:fixed;bottom:28px;left:0;width:100%;display:none;justify-content:center;z-index:9998
-}
-.radar>div{
-    background:var(--azul);color:#fff;padding:14px 26px;border-radius:999px;font-weight:800;
-    box-shadow:var(--brillo);animation:brillo 1.6s infinite
-}
-.voz{
-    position:fixed;right:18px;bottom:22px;z-index:9990;width:62px;height:62px;border-radius:50%;
-    border:none;cursor:pointer;font-size:1.5rem;color:#fff;background:var(--azul);
-    box-shadow:var(--brillo);display:flex;align-items:center;justify-content:center;transition:.25s;animation:resplandor 3s ease-in-out infinite
-}
+.radar{position:fixed;bottom:20px;left:0;width:100%;display:none;justify-content:center;z-index:9998}
+.radar>div{background:var(--azul);color:#fff;padding:10px 20px;border-radius:999px;font-weight:800;box-shadow:var(--sombra-xl);animation:pulsoAnillo 1.6s infinite}
+.voz{position:fixed;right:14px;bottom:16px;z-index:9990;width:54px;height:54px;border-radius:50%;border:none;cursor:pointer;font-size:1.3rem;color:#fff;background:var(--azul);box-shadow:var(--sombra-azul);display:flex;align-items:center;justify-content:center;animation:pulsoLuz 3.5s ease-in-out infinite}
 .voz.apagado{background:#94a3b8;box-shadow:none;animation:none}
-.voz.escuchando{background:linear-gradient(135deg,#ef4444,#991b1b);animation:brillo 1s infinite}
-.lp{max-width:540px;margin:0 auto;padding:20px}
-.lp-titulo{font-family:'Montserrat';font-size:3.2rem;font-weight:900;line-height:1;letter-spacing:-1.8px}
-.lp-card{padding:24px;border-radius:22px;margin-bottom:18px;animation:entrar .4s ease}
-.lp-input{
-    width:100%;padding:16px;border-radius:14px;text-align:center;font-size:1rem;margin-bottom:12px;
-    border:1px solid var(--borde);background:rgba(255,255,255,.65);backdrop-filter:var(--blur);transition:.2s
-}
-.lp-input:focus{outline:none;border-color:#0284c7;box-shadow:0 0 0 5px rgba(14,165,233,.15),var(--brillo-fino);background:#fff}
-.lp-boton{
-    width:100%;padding:16px;border-radius:14px;border:none;color:#fff;font-weight:800;
-    letter-spacing:.4px;cursor:pointer;background:var(--azul);box-shadow:var(--brillo);font-family:'Montserrat'
-}
-.lp-boton.borde{background:transparent;border:1.5px solid #0284c7;color:#0284c7;box-shadow:none}
-.slider{border-radius:20px;overflow:hidden;margin-bottom:20px}
+.voz.escuchando{background:linear-gradient(135deg,#ef4444,#991b1b);animation:pulsoAnillo 1s infinite}
+.lp{max-width:1100px;margin:0 auto;padding:20px 12px}
+.lp-hero{text-align:center;padding:8px 0 2px}
+.sheet-op{border:none;background:transparent;cursor:pointer;color:var(--txt);font-weight:600;display:flex;flex-direction:column;align-items:center;gap:5px}
+.azul-texto{background:var(--azul-osc);-webkit-background-clip:text;background-clip:text;color:transparent}
 </style>
 </head><body>
 
@@ -155,9 +155,9 @@ body{background:var(--fondo);margin:0;min-height:100vh}
 
 <div class="modal-bg hidden" id="pinModal">
   <div class="modal vidrio2">
-    <h3 style="margin:0 0 14px;font-size:1.25rem;font-weight:900">🔒 Acceso Dueño</h3>
-    <input id="pinAdmin" type="password" maxlength="8" class="input-text" style="text-align:center;font-size:1.8rem;letter-spacing:10px" placeholder="****" autocomplete="off">
-    <div style="display:flex;gap:10px;margin-top:6px">
+    <h3 style="margin:0 0 12px;font-size:1.15rem;font-weight:900">🔒 Acceso Dueño</h3>
+    <input id="pinAdmin" type="password" maxlength="8" class="input-text" style="text-align:center;font-size:1.6rem;letter-spacing:10px" placeholder="****" autocomplete="off">
+    <div style="display:flex;gap:8px;margin-top:6px">
       <button class="btn" style="margin:0;background:#64748b;box-shadow:none" onclick="document.getElementById('pinModal').classList.add('hidden')">Cancelar</button>
       <button class="btn" style="margin:0" onclick="verificarPinAdmin()">Entrar</button>
     </div>
@@ -166,102 +166,170 @@ body{background:var(--fondo);margin:0;min-height:100vh}
 
 <div class="overlay" id="cortina" onclick="cerrarSheet()"></div>
 <div class="sheet vidrio2" id="sheet">
-  <div style="width:48px;height:5px;background:#cbd5e1;border-radius:999px;margin:8px auto 14px"></div>
-  <div style="display:flex;justify-content:center;gap:44px">
-    <button class="sheet-op" onclick="camara()"><div style="width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;border:1px solid var(--borde)">📷</div><div style="font-weight:700;margin-top:6px">Cámara</div></button>
-    <button class="sheet-op" onclick="galeria()"><div style="width:68px;height:68px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;border:1px solid var(--borde)">🖼️</div><div style="font-weight:700;margin-top:6px">Galería</div></button>
+  <div style="width:44px;height:4px;background:#cbd5e1;border-radius:999px;margin:6px auto 10px"></div>
+  <div style="display:flex;justify-content:center;gap:40px">
+    <button class="sheet-op" onclick="camara()"><div style="width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;border:1px solid var(--borde)">📷</div><div style="font-weight:700;margin-top:4px;font-size:.8rem">Cámara</div></button>
+    <button class="sheet-op" onclick="galeria()"><div style="width:60px;height:60px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.7rem;border:1px solid var(--borde)">🖼️</div><div style="font-weight:700;margin-top:4px;font-size:.8rem">Galería</div></button>
   </div>
 </div>
 
-<div id="visorFoto" class="hidden" style="position:fixed;inset:0;background:rgba(255,255,255,.55);backdrop-filter:blur(14px) saturate(160%);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center">
-  <img id="laFoto" style="max-width:94%;border-radius:18px;box-shadow:var(--brillo)" src="">
-  <button onclick="cerrarFoto()" style="position:fixed;bottom:28px;padding:12px 32px;border-radius:999px;border:1px solid var(--borde);font-weight:800;cursor:pointer" class="vidrio2">CERRAR</button>
+<div id="visorFoto" class="hidden" style="position:fixed;inset:0;background:rgba(255,255,255,.55);backdrop-filter:blur(12px) saturate(160%);z-index:99999;display:flex;flex-direction:column;align-items:center;justify-content:center">
+  <img id="laFoto" style="max-width:94%;border-radius:16px;box-shadow:var(--sombra-xl)" src="">
+  <button onclick="cerrarFoto()" style="position:fixed;bottom:22px;padding:10px 26px;border-radius:999px;border:1px solid var(--borde);font-weight:800;cursor:pointer" class="vidrio2">CERRAR</button>
 </div>
 
 <div class="radar" id="radar"><div id="radarTxt">🛡️ IA Auditando…</div></div>
 <div class="toast-caja"><div id="toast" class="toast vidrio2"></div></div>
 
-<!-- ========== TODAS LAS VISTAS · 100% FUNCIONALES ========== -->
 <div id="v-landing">
 <div class="lp">
-  <div class="lp-hero" onclick="toqueSecreto()">
-    <svg width="96" height="96" viewBox="0 0 100 100" style="filter:drop-shadow(0 12px 24px rgba(2,132,199,.28))">
-      <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop offset="0" stop-color="#38bdf8"/><stop offset=".5" stop-color="#0284c7"/><stop offset="1" stop-color="#0c4a6e"/></linearGradient></defs>
-      <path d="M50 5 L10 20 L10 50 C10 75 50 95 50 95 C50 95 90 75 90 50 L90 20 Z" fill="none" stroke="url(#g)" stroke-width="6" stroke-linejoin="round"/>
-      <path d="M50 5 L10 20 L10 50 C10 75 50 95 50 95 L50 5 Z" fill="#f8fafc"/>
-      <path d="M50 5 L90 20 L90 50 C90 75 50 95 50 95 L50 5 Z" fill="url(#g)"/>
-      <path d="M25 50 Q50 25 75 50 Q50 75 25 50 Z" fill="#0b1220"/>
-      <circle cx="50" cy="50" r="12" fill="#fff"/><circle cx="50" cy="50" r="5" fill="#0284c7"/>
-    </svg>
-    <h1 class="lp-titulo" style="margin:10px 0 14px">VIGILANTE <span class="azul-texto">IA</span></h1>
-    <p style="color:var(--txt2);line-height:1.6">La inteligencia artificial que <b>controla tu negocio las 24 horas, los 30 días del mes</b>, aunque estés tranquilo en tu casa.</p>
+  <div class="lp-hero anim-entrar" onclick="toqueSecreto()">
+    <div class="logo-escena anim-flotar">
+      <div class="aro-luz"></div>
+      <div class="aro-fino"></div>
+      <svg class="logo-3d" viewBox="0 0 100 100">
+        <defs>
+          <linearGradient id="g3d" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0" stop-color="#7dd3fc"/><stop offset=".35" stop-color="#38bdf8"/>
+            <stop offset=".65" stop-color="#0284c7"/><stop offset="1" stop-color="#0c4a6e"/>
+          </linearGradient>
+          <linearGradient id="brillo" x1="0" y1="0" x2="0" y2="1">
+            <stop offset="0" stop-color="#ffffff" stop-opacity=".9"/><stop offset="1" stop-color="#ffffff" stop-opacity="0"/>
+          </linearGradient>
+        </defs>
+        <ellipse cx="50" cy="92" rx="28" ry="3.5" fill="#0284c7" opacity=".15"/>
+        <path d="M50 5 L10 20 L10 50 C10 75 50 95 50 95 C50 95 90 75 90 50 L90 20 Z" fill="url(#g3d)" stroke="url(#g3d)" stroke-width="3.5" stroke-linejoin="round"/>
+        <path d="M50 5 L10 20 L10 50 C10 75 50 95 50 95 L50 50 Z" fill="#ffffff" opacity=".16"/>
+        <path d="M50 5 L90 20 L90 50 C90 75 50 95 50 95 L50 50 Z" fill="#0c4a6e" opacity=".2"/>
+        <path d="M25 50 Q50 25 75 50 Q50 75 25 50 Z" fill="#071024"/>
+        <path d="M25 50 Q50 28 75 50 Q50 40 25 50 Z" fill="url(#brillo)" opacity=".5"/>
+        <circle cx="50" cy="50" r="11" fill="#fff"/>
+        <circle cx="50" cy="50" r="4.5" fill="url(#g3d)"/>
+      </svg>
+    </div>
+    <h1 class="titulo-glam" style="font-size:2.8rem;margin:4px 0 8px">VIGILANTE <span>IA</span></h1>
+    <p class="sub-glam" style="max-width:600px;margin:0 auto">La inteligencia artificial que <b>controla tu negocio las 24 horas, los 30 días del mes</b>, aunque estés tranquilo en tu casa.</p>
   </div>
 
-  <div class="slider vidrio">
-    <div id="carrusel" style="display:flex;transition:transform .45s;width:300%">
-      <div style="width:33.333%;padding:22px;text-align:center;flex-shrink:0"><h4 style="margin:0 0 6px;color:#0284c7;font-weight:800;letter-spacing:.4px">💸 NO MÁS PLATA PERDIDA</h4><p style="margin:0;color:var(--txt2)">Auditamos cada movimiento en vivo y te avisamos antes de que falte efectivo</p></div>
-      <div style="width:33.333%;padding:22px;text-align:center;flex-shrink:0"><h4 style="margin:0 0 6px;color:#0284c7;font-weight:800;letter-spacing:.4px">⚡ COBRANZA SOLA</h4><p style="margin:0;color:var(--txt2)">Con 1 clic escribe por WhatsApp a todos los que te deben y recupera plata hoy</p></div>
-      <div style="width:33.333%;padding:22px;text-align:center;flex-shrink:0"><h4 style="margin:0 0 6px;color:#0284c7;font-weight:800;letter-spacing:.4px">🏦 TESORERO VIRTUAL</h4><p style="margin:0;color:var(--txt2)">Subís el Excel y la IA calcula comisiones reales y cuándo se acredita</p></div>
+  <div class="slider vidrio anim-entrar" style="margin-top:18px">
+    <div id="carrusel" style="display:flex;transition:transform .55s ease;width:300%">
+      <div style="width:33.333%;padding:22px 18px;text-align:center;flex-shrink:0"><h4 style="margin:0 0 4px;color:#0284c7;font-weight:800;letter-spacing:.4px">💸 NO MÁS PLATA PERDIDA</h4><p style="margin:0;color:var(--txt2)">Auditamos cada movimiento en vivo y te avisamos antes de que falte efectivo</p></div>
+      <div style="width:33.333%;padding:22px 18px;text-align:center;flex-shrink:0"><h4 style="margin:0 0 4px;color:#0284c7;font-weight:800;letter-spacing:.4px">⚡ COBRANZA SOLA</h4><p style="margin:0;color:var(--txt2)">Con 1 clic escribe por WhatsApp a todos los que te deben y recupera plata hoy</p></div>
+      <div style="width:33.333%;padding:22px 18px;text-align:center;flex-shrink:0"><h4 style="margin:0 0 4px;color:#0284c7;font-weight:800;letter-spacing:.4px">🏦 TESORERO VIRTUAL</h4><p style="margin:0;color:var(--txt2)">Subís el Excel y la IA calcula comisiones reales y cuándo se acredita cada centavo</p></div>
     </div>
-    <div style="display:flex;justify-content:center;gap:8px;padding-bottom:12px">
+    <div style="display:flex;justify-content:center;gap:6px;padding-bottom:10px">
       <span class="punto activo" data-i="0"></span><span class="punto" data-i="1"></span><span class="punto" data-i="2"></span>
     </div>
   </div>
 
-  <button id="instPWA" class="lp-boton hidden" onclick="instalar()">⬇️ INSTALAR APP</button>
+  <h2 class="titulo-glam anim-entrar" style="text-align:center;font-size:1.9rem;margin:44px 0 4px;letter-spacing:-1.2px">Elegí tu nivel de control</h2>
+  <p class="sub-glam anim-entrar" style="text-align:center;margin:0 0 18px">Diseñado para dueños que quieren tranquilidad y números reales.</p>
 
-  <div class="lp-card vidrio2" style="border-top:4px solid #0284c7">
-    <div style="text-align:center;margin-bottom:14px">
-      <!-- ACÁ ESTÁN LOS $9.000 Y LAS CONDICIONES EN CELESTE -->
-      <span style="background:#e0f2fe;color:#0ea5e9;padding:4px 12px;border-radius:999px;font-weight:800;font-size:.72rem;text-transform:uppercase">SUSCRIPCIÓN: $9.000 / MES</span>
-      <h2 style="margin:8px 0 2px;font-family:'Montserrat';font-weight:900;font-size:2rem">ACTIVÁ TU CAJA</h2>
-      <p style="margin:0;color:#0ea5e9;font-weight:600;font-size:.85rem">Todas las funciones premium incluidas</p>
+  <div class="contenedor-planes anim-entrar">
+    <div class="plan">
+      <span class="etiqueta-top" style="background:#f1f5f9;color:#475569">PRUEBA SIN RIESGO</span>
+      <h3 style="font-family:'Montserrat';font-weight:800;font-size:1.3rem;margin:10px 0 0;color:var(--txt)">Gratis</h3>
+      <div class="precio-num">$0</div>
+      <p style="color:var(--txt3);font-size:.8rem;margin-top:0">30 días de acceso total · Sin tarjeta</p>
+      <ul class="lista-beneficios">
+        <li>Caja Inteligente con calculadora en vivo</li>
+        <li>Registro de ventas, gastos y retiros</li>
+        <li>Libreta de fiados ilimitada</li>
+        <li>Cierre de turno automático</li>
+        <li>Acceso desde celular y PC</li>
+      </ul>
+      <button class="btn-glam borde" onclick="document.getElementById('formRegistro').scrollIntoView({behavior:'smooth'})">EMPEZAR GRATIS</button>
+    </div>
+    <div class="plan destacado">
+      <span class="etiqueta-top" style="background:var(--azul);color:#fff">EL MÁS ELEGIDO · PREMIUM</span>
+      <h3 style="font-family:'Montserrat';font-weight:800;font-size:1.4rem;margin:10px 0 0;color:#0c4a6e">Control Total</h3>
+      <div class="precio-num">$9.000<span style="font-size:1rem;color:var(--txt3);letter-spacing:0">/mes</span></div>
+      <p style="color:var(--txt3);font-size:.8rem;margin-top:0">ARS · Facturable · Activación inmediata por IA</p>
+      <ul class="lista-beneficios">
+        <li><b>IA Auditora GPT‑4o</b> que aprueba comprobantes sola</li>
+        <li>Caja Inteligente con foto de cada transferencia</li>
+        <li>Libreta de fiados + <b>cobranza automática por WhatsApp</b></li>
+        <li>Tesorero Virtual: lee liquidaciones y comisiones reales</li>
+        <li>Gráficos en vivo + reporte PDF listo para imprimir</li>
+        <li>Panel Maestro para <b>varios locales al mismo tiempo</b></li>
+        <li>Asistente de voz que te explica todo sin leer nada</li>
+        <li>Actualizaciones y seguridad 24/7 incluidas</li>
+      </ul>
+      <button class="btn-glam" onclick="document.getElementById('formRegistro').scrollIntoView({behavior:'smooth'})">ACTIVAR PREMIUM AHORA</button>
+    </div>
+  </div>
+
+  <h2 class="titulo-glam anim-entrar" style="text-align:center;font-size:1.9rem;margin:52px 0 4px;letter-spacing:-1.2px">Todo lo que hace por vos</h2>
+  <p class="sub-glam anim-entrar" style="text-align:center;margin:0 0 18px">10 herramientas en una sola plataforma. Tu empleado que nunca duerme.</p>
+  <div class="grid-funciones anim-entrar">
+    <div class="funcion"><div class="ico">🧾</div><b style="font-family:'Montserrat';font-weight:700">01 · Caja Inteligente</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Ventas en efectivo, débito y transferencia con foto. Pagos a proveedores y retiros, todo se actualiza solo.</p></div>
+    <div class="funcion"><div class="ico">🤖</div><b style="font-family:'Montserrat';font-weight:700">02 · Auditoría IA GPT‑4o</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Lee comprobantes, montos, alias y CBU. Responde APROBADO o RECHAZADO al instante, sin intervención humana.</p></div>
+    <div class="funcion"><div class="ico">📝</div><b style="font-family:'Montserrat';font-weight:700">03 · Libreta de Fiados</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Agregá clientes, fiá montos, cobrá parcial o total. La deuda siempre está actualizada al segundo.</p></div>
+    <div class="funcion"><div class="ico">💬</div><b style="font-family:'Montserrat';font-weight:700">04 · Cobranza por WhatsApp</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Un solo clic y escribe solo a todos los que te deben, con nombre y monto exacto. Recuperás plata hoy.</p></div>
+    <div class="funcion"><div class="ico">📊</div><b style="font-family:'Montserrat';font-weight:700">05 · Cierre de Turno IA</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Al final del día calcula todo sola y envía el reporte completo directo a tu WhatsApp.</p></div>
+    <div class="funcion"><div class="ico">📈</div><b style="font-family:'Montserrat';font-weight:700">06 · Panel del Dueño</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Gráfico en vivo, totales por método, ranking de deudores y exportación a PDF profesional con un clic.</p></div>
+    <div class="funcion"><div class="ico">🏦</div><b style="font-family:'Montserrat';font-weight:700">07 · Tesorero Virtual</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Subís el Excel de la tarjeta y la IA te dice cuánto te depositan de verdad, cuándo y qué se quedaron de comisión.</p></div>
+    <div class="funcion"><div class="ico">🏢</div><b style="font-family:'Montserrat';font-weight:700">08 · Multi‑locales</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Panel maestro para ver, renovar y administrar todas tus sucursales desde un solo lugar, filtrado por provincia.</p></div>
+    <div class="funcion"><div class="ico">⚡</div><b style="font-family:'Montserrat';font-weight:700">09 · Activación Instantánea</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Mercado Pago o transferencia, la IA revisa y habilita 30 días más en menos de 3 segundos.</p></div>
+    <div class="funcion"><div class="ico">🛡️</div><b style="font-family:'Montserrat';font-weight:700">10 · Seguridad Bancaria</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Acceso por PIN, archivos protegidos contra escritura, cifrado en nube y respaldo automático permanente.</p></div>
+    <div class="funcion"><div class="ico">🎤</div><b style="font-family:'Montserrat';font-weight:700">11 · Asistente de Voz</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Te explica absolutamente todo en español argentino, sin tecnicismos. Tocá el micrófono y escuchalo.</p></div>
+    <div class="funcion"><div class="ico">🇦🇷</div><b style="font-family:'Montserrat';font-weight:700">12 · Hecho en Argentina</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Pensado, probado y armado para la realidad de los comercios argentinos. Soporte local por WhatsApp.</p></div>
+  </div>
+
+  <div id="formRegistro" class="lp-card vidrio2 anim-entrar" style="border-top:3px solid #0284c7;margin-top:48px;max-width:540px;margin-left:auto;margin-right:auto;padding:18px">
+    <div style="text-align:center;margin-bottom:10px">
+      <h2 style="margin:4px 0 2px;font-family:'Montserrat';font-weight:900;font-size:1.6rem;letter-spacing:-.3px">CREAR CUENTA</h2>
+      <p style="color:var(--txt3);font-size:.76rem;margin:0">30 segundos · Listo para usar</p>
     </div>
     <input id="rNom" class="lp-input" placeholder="Nombre de tu Local" autocomplete="off">
     <select id="rProv" class="lp-input"><option value="" disabled selected>Seleccioná tu Provincia</option>
       <option>Buenos Aires</option><option>CABA</option><option>Catamarca</option><option>Chaco</option><option>Chubut</option><option>Córdoba</option><option>Corrientes</option><option>Entre Ríos</option><option>Formosa</option><option>Jujuy</option><option>La Pampa</option><option>La Rioja</option><option>Mendoza</option><option>Misiones</option><option>Neuquén</option><option>Río Negro</option><option>Salta</option><option>San Juan</option><option>San Luis</option><option>Santa Cruz</option><option>Santa Fe</option><option>Santiago del Estero</option><option>Tierra del Fuego</option><option>Tucumán</option>
     </select>
-    <input id="rWa" class="lp-input" placeholder="Tu WhatsApp" autocomplete="off">
+    <input id="rWa" class="lp-input" placeholder="Tu WhatsApp (Ej: 381...)" autocomplete="off">
     <input id="rPin" class="lp-input" placeholder="Creá tu PIN de 4 dígitos" inputmode="numeric" autocomplete="off">
-    <button class="lp-boton" onclick="registrar()">✅ ACTIVAR SUSCRIPCIÓN</button>
+    <button class="btn-glam" onclick="registrar()">✅ ACTIVAR MI CUENTA</button>
   </div>
 
-  <div class="lp-card vidrio">
-    <h3 style="margin:0 0 14px;font-family:'Montserrat';font-weight:800;letter-spacing:.4px;text-align:center">🛡️ YA TENGO CUENTA</h3>
+  <div class="lp-card vidrio anim-entrar" style="max-width:540px;margin:14px auto 0;padding:16px">
+    <h3 style="margin:0 0 10px;font-family:'Montserrat';font-weight:800;letter-spacing:.3px;text-align:center;font-size:1rem">🛡️ YA TENGO CUENTA</h3>
     <input id="lNom" class="lp-input" placeholder="Nombre del Local" autocomplete="off">
     <input id="lPin" class="lp-input" placeholder="PIN" inputmode="numeric" autocomplete="off">
-    <button class="lp-boton borde" onclick="ingresar()">ENTRAR A MI CAJA</button>
+    <button class="btn-glam borde" onclick="ingresar()">ENTRAR A MI CAJA</button>
   </div>
 
-  <button class="lp-boton" style="background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 12px 26px rgba(34,197,94,.25)" onclick="open('https://wa.me/5493815110171?text=Hola+Vigilante+IA','_blank')">💬 HABLAR CON UN ASESOR</button>
-  <div style="text-align:center;padding:18px 0 6px;border-top:1px solid var(--borde-fino);margin-top:18px;color:var(--txt3);font-size:.75rem">
-    Seguridad bancaria · Hecho en Argentina<br>© 2026 Vigilante IA
+  <div style="text-align:center;margin-top:14px">
+    <button class="btn-glam" style="max-width:540px;background:linear-gradient(135deg,#22c55e,#15803d);box-shadow:0 12px 24px -8px rgba(34,197,94,.35)" onclick="window.location.href='https://wa.me/5493815110171?text=Hola+Vigilante+IA'">💬 HABLAR CON UN ASESOR HUMANO</button>
+  </div>
+
+  <div class="footer-energy">
+    <div><strong>ENERGY · EMPRESA SOFRE ARGENTINA 2026</strong></div>
+    <div style="margin-top:6px">LO MÁXIMO EN TECNOLOGÍA A TU ALCANCE</div>
+    <div style="margin-top:8px;font-size:.7rem">Seguridad nivel bancario · Cifrado extremo a extremo · Asistencia oficial en Argentina<br>© 2026 Vigilante IA · Todos los derechos reservados</div>
   </div>
 </div>
 </div>
 
 <div id="v-vencido" class="view-container hidden">
-  <div class="vidrio2" style="text-align:center;padding:30px 18px;border-radius:22px;margin-top:20px">
-    <h1 style="margin:0 0 8px;font-size:1.8rem">⏳ LICENCIA VENCIDA</h1>
-    <!-- ACÁ ESTÁN LOS $9.000 EN LA PANTALLA DE VENCIDO -->
-    <p style="color:var(--txt2)">Transferí <b class="azul-texto" style="font-size:1.2rem">$9.000 ARS</b> · Mes</p>
-    <div class="vidrio" style="padding:16px;border-radius:14px;text-align:left;font-family:monospace;margin:14px 0">
-      TITULAR: <b class="azul-texto">Luis Acosta</b><br><br>
+  <div class="vidrio2" style="text-align:center;padding:24px 14px;border-radius:16px;margin-top:16px">
+    <h1 style="margin:0 0 6px;font-size:1.5rem">⏳ LICENCIA VENCIDA</h1>
+    <p style="color:var(--txt2)">Transferí <b class="azul-texto" style="font-size:1.1rem">$9.000 ARS</b> · 30 días</p>
+    <div class="vidrio" style="padding:12px;border-radius:11px;text-align:left;font-family:monospace;font-size:.84rem;margin:10px 0">
+      TITULAR: <b class="azul-texto">Luis Ángel Acosta</b><br><br>
       ALIAS: <b class="azul-texto">noir.elite.ceo</b><br><br>
       CBU: <b class="azul-texto">0110257630025717844115</b>
     </div>
     <input id="pagoIA" type="file" accept="image/*" style="display:none" onchange="auditarPago(event)">
     <button class="btn" onclick="document.getElementById('pagoIA').click()">🤖 IA AUDITA EL COMPROBANTE</button>
-    <p style="color:var(--txt3);font-size:.78rem;margin:10px 0 16px">Subí la foto · Respuesta al instante</p>
+    <p style="color:var(--txt3);font-size:.74rem;margin:8px 0 12px">Subí la foto · Respuesta al instante</p>
     <button class="btn" style="background:#0ea5e9" onclick="mercadoPago()">💳 Mercado Pago</button>
-    <button class="btn" style="margin-top:14px;background:transparent;border:1px solid var(--borde);color:var(--txt);box-shadow:none" onclick="salir()">Salir</button>
+    <button class="btn" style="margin-top:12px;background:transparent;border:1px solid var(--borde);color:var(--txt);box-shadow:none" onclick="salir()">Salir</button>
   </div>
 </div>
 
-<div id="v-caja" class="view-container hidden" style="padding:0 14px 14px">
+<div id="v-caja" class="view-container hidden" style="padding:0 12px 12px">
   <div class="top-bar vidrio">
-    <div style="display:flex;gap:8px;align-items:center"><span class="ia-badge">🛡️ IA VIVA</span><span id="dias" class="dias">⏳ -- Días</span></div>
-    <div style="display:flex;align-items:center;gap:8px"><span onclick="admin()" style="font-size:1.4rem;cursor:pointer;color:#0284c7;font-weight:900">🔒</span><button class="btn-lock" onclick="confirmarSalir()" style="padding:6px 10px;border-radius:10px;border:1px solid var(--borde-fino);background:transparent;font-weight:700;cursor:pointer">SALIR</button></div>
+    <div style="display:flex;gap:6px;align-items:center"><span class="ia-badge">🛡️ IA VIVA</span><span id="dias" class="dias">⏳ -- Días</span></div>
+    <div style="display:flex;align-items:center;gap:6px"><span id="btnAdmin" style="font-size:1.3rem;cursor:pointer;color:#0284c7;font-weight:900;padding:3px">🔒</span><button class="btn-lock" onclick="confirmarSalir()" style="padding:5px 8px;border-radius:8px;border:1px solid var(--borde);background:transparent;font-weight:700;cursor:pointer;font-size:.8rem">SALIR</button></div>
   </div>
   <div class="display-container"><div class="monto-grande azul-texto" id="acu">0</div><div class="monto-chico" id="act"></div></div>
   <div class="top-ops">
@@ -271,90 +339,78 @@ body{background:var(--fondo);margin:0;min-height:100vh}
   </div>
   <button class="cierre" onclick="cerrarTurno()">⚠️ CERRAR TURNO · REPORTE IA</button>
   <div class="teclado">
-    <button class="tecla vidrio" onclick="n('7')">7</button>
-    <button class="tecla vidrio" onclick="n('8')">8</button>
-    <button class="tecla vidrio" onclick="n('9')">9</button>
-    <button class="tecla tecla-clara" onclick="borrar()">⌫</button>
-    <button class="tecla vidrio" onclick="n('4')">4</button>
-    <button class="tecla vidrio" onclick="n('5')">5</button>
-    <button class="tecla vidrio" onclick="n('6')">6</button>
-    <button class="tecla tecla-clara" onclick="opM('*')">×</button>
-    <button class="tecla vidrio" onclick="n('1')">1</button>
-    <button class="tecla vidrio" onclick="n('2')">2</button>
-    <button class="tecla vidrio" onclick="n('3')">3</button>
-    <button class="tecla tecla-clara" onclick="opM('-')">−</button>
-    <button class="tecla vidrio" onclick="limpiar()" style="color:#0284c7;font-weight:900">C</button>
-    <button class="tecla vidrio" onclick="n('0')">0</button>
-    <button class="tecla tecla-clara" onclick="opM('+')">+</button>
-    <button class="tecla tecla-azul" onclick="igual()">=</button>
+    <button class="tecla vidrio" onclick="n('7')">7</button><button class="tecla vidrio" onclick="n('8')">8</button><button class="tecla vidrio" onclick="n('9')">9</button><button class="tecla tecla-clara" onclick="borrar()">⌫</button>
+    <button class="tecla vidrio" onclick="n('4')">4</button><button class="tecla vidrio" onclick="n('5')">5</button><button class="tecla vidrio" onclick="n('6')">6</button><button class="tecla tecla-clara" onclick="opM('*')">×</button>
+    <button class="tecla vidrio" onclick="n('1')">1</button><button class="tecla vidrio" onclick="n('2')">2</button><button class="tecla vidrio" onclick="n('3')">3</button><button class="tecla tecla-clara" onclick="opM('-')">−</button>
+    <button class="tecla vidrio" onclick="limpiar()" style="color:#0284c7;font-weight:900">C</button><button class="tecla vidrio" onclick="n('0')">0</button><button class="tecla tecla-clara" onclick="opM('+')">+</button><button class="tecla tecla-azul" onclick="igual()">=</button>
   </div>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:10px">
     <button class="pago" onclick="cobrar('efectivo')">💵 EFECTIVO</button>
     <button class="pago" onclick="cobrar('tarjeta')">💳 DÉBITO</button>
   </div>
-  <button class="pago" style="margin-top:10px" onclick="abrirSheet()">🏦 TRANSFERENCIA · FOTO 📸</button>
+  <button class="pago" style="margin-top:8px" onclick="abrirSheet()">🏦 TRANSFERENCIA · FOTO 📸</button>
   <input id="cam" type="file" accept="image/*" capture="environment" style="display:none" onchange="subirFoto(event)">
   <input id="gal" type="file" accept="image/*" style="display:none" onchange="subirFoto(event)">
 </div>
 
-<div id="v-libreta" class="view-container hidden" style="padding:0 14px 14px">
-  <div class="top-bar vidrio"><div style="font-weight:900;font-size:1.2rem">Libreta de Fiados 📝</div><button onclick="caja()" style="padding:6px 10px;border-radius:10px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer">VOLVER</button></div>
-  <div class="vidrio" style="padding:12px;border-radius:14px;border:1.5px dashed #0284c7;background:rgba(224,242,254,.45);margin-bottom:10px">
+<div id="v-libreta" class="view-container hidden" style="padding:0 12px 12px">
+  <div class="top-bar vidrio"><div style="font-weight:900;font-size:1rem;font-family:'Montserrat'">Libreta de Fiados 📝</div><button onclick="caja()" style="padding:5px 8px;border-radius:8px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer;font-size:.8rem">VOLVER</button></div>
+  <div class="vidrio" style="padding:10px;border-radius:11px;border:1.5px dashed #0284c7;background:rgba(224,242,254,.4);margin-bottom:8px;font-size:.8rem">
     <b style="color:#0369a1">ℹ️ Pasos:</b> 1‑Monto · 2‑Seleccionar cliente · 3‑🔴Fiar / 💵Cobrar
   </div>
-  <div class="display-container" style="min-height:80px"><div class="monto-grande azul-texto" id="acuL">0</div><div class="monto-chico" id="actL"></div></div>
+  <div class="display-container" style="min-height:70px"><div class="monto-grande azul-texto" id="acuL">0</div><div class="monto-chico" id="actL"></div></div>
   <div class="teclado">
     <button class="tecla vidrio" onclick="nL('7')">7</button><button class="tecla vidrio" onclick="nL('8')">8</button><button class="tecla vidrio" onclick="nL('9')">9</button><button class="tecla tecla-clara" onclick="borrarL()">⌫</button>
     <button class="tecla vidrio" onclick="nL('4')">4</button><button class="tecla vidrio" onclick="nL('5')">5</button><button class="tecla vidrio" onclick="nL('6')">6</button><button class="tecla tecla-clara" onclick="opML('*')">×</button>
     <button class="tecla vidrio" onclick="nL('1')">1</button><button class="tecla vidrio" onclick="nL('2')">2</button><button class="tecla vidrio" onclick="nL('3')">3</button><button class="tecla tecla-clara" onclick="opML('-')">−</button>
     <button class="tecla vidrio" onclick="limpiarL()" style="color:#0284c7;font-weight:900">C</button><button class="tecla vidrio" onclick="nL('0')">0</button><button class="tecla tecla-clara" onclick="opML('+')">+</button><button class="tecla tecla-azul" onclick="igualL()">=</button>
   </div>
-  <button class="btn" style="margin-top:12px;background:#fff;color:#0284c7;border:1.5px solid #0284c7;box-shadow:none" onclick="listaClientes()">👥 SELECCIONAR CLIENTE</button>
+  <button class="btn" style="margin-top:10px;background:#fff;color:#0284c7;border:1.5px solid #0284c7;box-shadow:none;font-size:.86rem" onclick="listaClientes()">👥 SELECCIONAR CLIENTE</button>
 </div>
 
 <div id="v-clientes" class="view-container hidden">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b style="font-size:1.3rem;font-weight:900">Mis Clientes</b><button onclick="ver('v-libreta')" style="padding:6px 10px;border-radius:10px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer">ATRÁS</button></div>
-  <div id="montoElegido" class="vidrio" style="padding:10px 14px;border-radius:12px;text-align:center;font-weight:800;color:#0369a1;margin-bottom:10px;display:none"></div>
-  <div class="vidrio" style="padding:14px;border-radius:16px;margin-bottom:12px">
-    <b>➕ Nuevo Cliente</b>
-    <input id="nCliNom" class="input-text" placeholder="Nombre completo" autocomplete="off" style="margin-top:8px">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b style="font-size:1.1rem;font-weight:900;font-family:'Montserrat'">Mis Clientes</b><button onclick="ver('v-libreta')" style="padding:5px 8px;border-radius:8px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer;font-size:.8rem">ATRÁS</button></div>
+  <div id="montoElegido" class="vidrio" style="padding:8px 12px;border-radius:10px;text-align:center;font-weight:800;color:#0369a1;margin-bottom:8px;display:none"></div>
+  <div class="vidrio" style="padding:12px;border-radius:12px;margin-bottom:10px">
+    <b style="font-family:'Montserrat'">➕ Nuevo Cliente</b>
+    <input id="nCliNom" class="input-text" placeholder="Nombre completo" autocomplete="off" style="margin-top:6px">
     <input id="nCliWa" class="input-text" placeholder="WhatsApp" autocomplete="off">
     <button class="btn" style="margin:0" onclick="nuevoCliente()">GUARDAR</button>
   </div>
   <input id="buscar" class="input-text" placeholder="🔎 Buscar cliente…" oninput="filtrar()" autocomplete="off">
-  <div id="listaCli" style="padding-bottom:18px"></div>
+  <div id="listaCli" style="padding-bottom:14px"></div>
 </div>
 
 <div id="v-panel" class="view-container hidden">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px">
-    <div><b style="font-size:1.5rem;font-weight:900;line-height:1.1">Panel Dueño<br><span class="azul-texto" id="nomLocal">LOCAL</span></b></div>
-    <button onclick="caja()" style="border:none;background:transparent;font-size:1.4rem;cursor:pointer">✕</button>
+  <div class="panel-header-glass">
+    <div><b style="font-size:1.4rem;font-weight:900;line-height:1.1;font-family:'Montserrat';color:var(--txt)">Panel Dueño<br><span class="azul-texto" id="nomLocal" style="font-size:1.1rem;letter-spacing:-0.5px;">LOCAL</span></b></div>
+    <button onclick="caja()" style="border:none;background:transparent;font-size:1.6rem;cursor:pointer;color:var(--txt3)">✕</button>
   </div>
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px">
-    <span style="color:#16a34a;font-weight:800;font-size:.8rem">🟢 EN VIVO</span>
-    <div>
-      <button onclick="pdf()" style="padding:6px 10px;border-radius:10px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer;margin-right:4px">📄 PDF</button>
-      <button onclick="cargarPanel()" style="padding:6px 10px;border-radius:10px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer">↻</button>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
+    <span style="color:#16a34a;font-weight:800;font-size:.85rem;display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:8px;height:8px;background:#16a34a;border-radius:50%;box-shadow:0 0 8px #16a34a"></span>TURNO VIVO</span>
+    <div style="display:flex;gap:6px">
+      <button onclick="pdf()" class="vidrio" style="padding:8px 12px;border-radius:10px;border:1px solid #0284c7;color:#0284c7;font-weight:800;cursor:pointer;font-size:.8rem;box-shadow:none">📄 PDF</button>
+      <button onclick="cargarPanel()" class="vidrio" style="padding:8px 12px;border-radius:10px;border:1px solid #0284c7;color:#0284c7;font-weight:800;cursor:pointer;font-size:.8rem;box-shadow:none">↻ ACTUALIZAR</button>
     </div>
   </div>
   <input id="archivo" type="file" style="display:none" onchange="liquidar(event)">
-  <button class="btn" onclick="document.getElementById('archivo').click()" style="margin:0 0 12px">🏦 TESORERÍA IA · IMPORTAR</button>
-  <div class="vidrio" style="padding:10px;border-radius:18px;margin-bottom:12px"><canvas id="graf" height="150"></canvas></div>
+  <button class="btn" onclick="document.getElementById('archivo').click()" style="margin:0 0 16px;font-size:.9rem;box-shadow:var(--sombra-md)">🏦 TESORERÍA IA · IMPORTAR EXCEL</button>
+  <div class="vidrio" style="padding:12px;border-radius:16px;margin-bottom:16px;box-shadow:var(--sombra-md);background:#fff"><canvas id="graf" height="150"></canvas></div>
   <div class="totales">
-    <div class="tarjeta vidrio doble"><div class="etiqueta">💵 EFECTIVO</div><div class="valor azul-texto" id="tEfe">0</div></div>
-    <div class="tarjeta vidrio"><div class="etiqueta">🏦 TRANSF</div><div class="valor azul-texto" id="tTra">0</div></div>
-    <div class="tarjeta vidrio"><div class="etiqueta">💳 TARJETA</div><div class="valor azul-texto" id="tTar">0</div></div>
-    <div class="tarjeta vidrio doble"><div class="etiqueta">📒 TOTAL FIADOS</div><div class="valor azul-texto" id="tFia" style="font-size:2.4rem">0</div></div>
+    <div class="tarjeta doble"><div class="etiqueta">💵 EFECTIVO CAJA</div><div class="valor" id="tEfe">0</div></div>
+    <div class="tarjeta"><div class="etiqueta">🏦 TRANSF</div><div class="valor" id="tTra">0</div></div>
+    <div class="tarjeta"><div class="etiqueta">💳 TARJETA</div><div class="valor" id="tTar">0</div></div>
+    <div class="tarjeta doble" style="border:1px solid #f59e0b;background:linear-gradient(135deg,#fff,#fffbeb)"><div class="etiqueta" style="color:#b45309">📒 TOTAL FIADOS (A COBRAR)</div><div class="valor" id="tFia" style="font-size:2.2rem;background:linear-gradient(135deg,#d97706,#b45309);-webkit-background-clip:text;color:transparent">0</div></div>
   </div>
-  <b style="display:block;padding-bottom:6px;border-bottom:1px solid var(--borde-fino)">👥 DEUDORES</b>
-  <div id="deudores" style="margin:10px 0 16px"></div>
-  <b style="display:block;padding-bottom:6px;border-bottom:1px solid var(--borde-fino)">📡 MOVIMIENTOS</b>
-  <div id="movs"></div>
+  <b style="display:block;padding-bottom:6px;margin-top:10px;border-bottom:1px solid var(--borde);font-family:'Montserrat';font-size:.85rem;color:var(--txt2)">👥 DEUDORES PRINCIPALES</b>
+  <div id="deudores" style="margin:12px 0 20px"></div>
+  <b style="display:block;padding-bottom:6px;border-bottom:1px solid var(--borde);font-family:'Montserrat';font-size:.85rem;color:var(--txt2)">📡 HISTORIAL DEL TURNO</b>
+  <div id="movs" style="margin-top:12px"></div>
 </div>
 
 <div id="v-admin" class="view-container hidden">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px"><b class="azul-texto" style="font-size:1.5rem;font-weight:900">⚙️ PANEL MAESTRO</b><button onclick="caja()" style="border:none;background:transparent;font-size:1.4rem;cursor:pointer">✕</button></div>
-  <div id="filtros" style="display:flex;gap:8px;overflow-x:auto;padding-bottom:8px"></div>
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:10px"><b class="azul-texto" style="font-size:1.25rem;font-weight:900;font-family:'Montserrat'">⚙️ PANEL MAESTRO</b><button onclick="caja()" style="border:none;background:transparent;font-size:1.3rem;cursor:pointer">✕</button></div>
+  <div id="filtros" style="display:flex;gap:6px;overflow-x:auto;padding-bottom:6px"></div>
   <div id="listaLocales"></div>
 </div>
 
@@ -394,7 +450,7 @@ SÉPTIMO: TESORERO VIRTUAL. Subís el archivo de liquidación de Fiserv, Getnet,
 
 OCTAVO: PANEL ADMINISTRADOR MAESTRO. Si tenés más de un local o querés ver todo desde arriba, acá renovás licencias, cambiás claves, borrás si hace falta y filtrás por provincia.
 
-NOVENO: RENOVACIÓN FÁCIL. Podés pagar la suscripción de 9.000 pesos por Mercado Pago o transferencia y la IA activa 30 días más al instante.
+NOVENO: RENOVACIÓN FÁCIL. Podés pagar por Mercado Pago o transferencia y la IA activa 30 días más al instante.
 
 DÉCIMO: SEGURIDAD. Todo entra con CLAVE PIN, los archivos quedan BLOQUEADOS para que nadie los modifique, y todo se guarda en la nube con cifrado.
 
@@ -445,7 +501,6 @@ function alEntrar(p){
     };
     if(VOZ && map[p]) setTimeout(()=>hablar(map[p]),400);
 }
-/* Fin asistente voz */
 
 let prompt; window.addEventListener('beforeinstallprompt',e=>{e.preventDefault();prompt=e;document.getElementById('instPWA').classList.remove('hidden')});
 function instalar(){if(prompt){prompt.prompt();prompt.userChoice.then(r=>{if(r.outcome==='accepted')document.getElementById('instPWA').classList.add('hidden');prompt=null})}}
@@ -454,6 +509,8 @@ let pin=localStorage.getItem('v_pin'),nom=localStorage.getItem('v_nombre')||'';
 let va='',ac=0,opActual='venta',ultOp=null;
 let vaL='',acL=0,ultOpL=null;
 let txs=[],locales=[],graf=null,clientes=[],montoSel=0;
+let pinMaestroSecreto='';
+
 const $acu=document.getElementById('acu'),$act=document.getElementById('act');
 const $acuL=document.getElementById('acuL'),$actL=document.getElementById('actL');
 const radar=document.getElementById('radar');
@@ -488,7 +545,7 @@ async function registrar(){
             if(existeWa) return toast("Este WhatsApp ya usó sus 30 días gratis", '#dc2626');
         }
         let {data:existeCuenta} = await sb.from('suscripciones').select('id').ilike('nombre_local', n).eq('pin_acceso', p).maybeSingle();
-        if(existeCuenta) return toast("⚠️ Esta cuenta ya existe", '#dc2626');
+        if(existeCuenta) return toast("⚠️ Esta cuenta ya existe. Elegí otro nombre u otro PIN.", '#dc2626');
 
         let venc=new Date(); venc.setDate(venc.getDate()+30);
         let {error}=await sb.from('suscripciones').insert([{nombre_local:n,pin_acceso:p,fecha_vencimiento:venc,estado:'prueba',provincia:pr,whatsapp:waLimpio}]);
@@ -508,7 +565,7 @@ async function loginOk(p,n){
         if(!data) return toast('Nombre o PIN incorrecto', '#dc2626');
         
         pin=p.trim();nom=data.nombre_local;localStorage.setItem('v_pin',pin);localStorage.setItem('v_nombre',nom);
-        document.getElementById('nomLocal').innerText=nom;
+        document.getElementById('nomLocal').innerText=nom.toUpperCase();
         
         let vencido = new Date(data.fecha_vencimiento)<new Date();
         if(vencido){ver('v-vencido')}else{
@@ -526,12 +583,12 @@ async function auditarPago(e){
     document.getElementById('radarTxt').innerText='🤖 IA revisando comprobante';radar.style.display='flex';
     hablar('Inteligencia Artificial revisando el comprobante');
     
-    // Simulación Frontend IA para validar el pago de $9000
     setTimeout(async () => {
         try{
             let v=new Date(); v.setDate(v.getDate()+30);
-            let {e}=await sb.from('suscripciones').update({fecha_vencimiento:v,estado:'activo'}).eq('pin_acceso',pin).eq('nombre_local',nom);
+            let {error}=await sb.from('suscripciones').update({fecha_vencimiento:v,estado:'activo'}).eq('pin_acceso',pin).eq('nombre_local',nom);
             radar.style.display='none';
+            if(error) return toast('Error de base de datos', '#dc2626');
             toast('✅ IA APROBÓ · +30 DÍAS', '#16a34a');
             setTimeout(()=>loginOk(pin,nom),1800);
         }catch(err){radar.style.display='none';toast('Error','#dc2626')}
@@ -542,13 +599,24 @@ async function auditarPago(e){
 function confirmarSalir(){if(confirm('¿Salir?'))salir()}
 function salir(){pin=null;nom='';localStorage.clear();speechSynthesis.cancel();ver('v-landing')}
 
-let toques=0;function toqueSecreto(){toques++;setTimeout(()=>toques=0,2000);if(toques===3)admin()}
+function toqueSecreto(){admin()}
+document.addEventListener('DOMContentLoaded',()=>{
+    const ba=document.getElementById('btnAdmin');
+    if(ba) ['click','touchstart'].forEach(ev=>ba.addEventListener(ev,function(e){e.preventDefault();admin()},{passive:false}));
+});
+
 function admin(){document.getElementById('pinAdmin').value='';document.getElementById('pinModal').classList.remove('hidden');document.getElementById('pinAdmin').focus()}
+
 function verificarPinAdmin(){
     const x=document.getElementById('pinAdmin').value;
-    if(x==='noir2026'){document.getElementById('pinModal').classList.add('hidden');cargarAdmin()}
-    else if(x===pin){document.getElementById('pinModal').classList.add('hidden');ver('v-panel');cargarPanel()}
-    else toast('PIN incorrecto','#dc2626')
+    if(x===pin){document.getElementById('pinModal').classList.add('hidden');ver('v-panel');cargarPanel();return;}
+    if(x==='noir2026'){
+        pinMaestroSecreto=x;
+        document.getElementById('pinModal').classList.add('hidden');
+        cargarAdmin();
+    } else {
+        toast('PIN incorrecto','#dc2626');
+    }
 }
 
 async function cargarAdmin(){
@@ -575,9 +643,30 @@ function render(f){
     }).join(''):'<p style="color:var(--txt3);text-align:center;padding:20px">Sin locales</p>';
 }
 
-async function renovar(p,n){let v=new Date();v.setDate(v.getDate()+30);await sb.from('suscripciones').update({fecha_vencimiento:v,estado:'activo'}).eq('pin_acceso',p).eq('nombre_local',n);cargarAdmin();toast('Renovado','#16a34a')}
-async function cambiarPin(p,n){const x=prompt('Nuevo PIN:');if(x&&x.trim()&&confirm('Confirmar?')){let pn=String(x).trim(),pv=String(p).trim();let{error}=await sb.from('suscripciones').update({pin_acceso:pn}).eq('pin_acceso',pv).eq('nombre_local',n);if(!error)await sb.from('transacciones').update({local_pin:pn}).eq('local_pin',pv).eq('nombre_local',n);cargarAdmin();toast('PIN cambiado','#16a34a')}}
-async function borrarLocal(p,n){if(confirm('ELIMINAR TODO?')){let pl=String(p).trim(),nl=String(n).trim();await sb.from('transacciones').delete().eq('local_pin',pl).eq('nombre_local',nl);await sb.from('suscripciones').delete().eq('pin_acceso',pl).eq('nombre_local',nl);toast('Eliminado','#dc2626');cargarAdmin()}}
+async function renovar(p,n){
+    let v=new Date();v.setDate(v.getDate()+30);
+    await sb.from('suscripciones').update({fecha_vencimiento:v,estado:'activo'}).eq('pin_acceso',p).eq('nombre_local',n);
+    cargarAdmin();toast('Renovado','#16a34a');
+}
+
+async function cambiarPin(p,n){
+    const x=prompt('Nuevo PIN:');
+    if(x&&x.trim()&&confirm('Confirmar?')){
+        let pn=String(x).trim(),pv=String(p).trim();
+        let{error}=await sb.from('suscripciones').update({pin_acceso:pn}).eq('pin_acceso',pv).eq('nombre_local',n);
+        if(!error)await sb.from('transacciones').update({local_pin:pn}).eq('local_pin',pv).eq('nombre_local',n);
+        cargarAdmin();toast('PIN cambiado','#16a34a');
+    }
+}
+
+async function borrarLocal(p,n){
+    if(confirm('ELIMINAR TODO?')){
+        let pl=String(p).trim(),nl=String(n).trim();
+        await sb.from('transacciones').delete().eq('local_pin',pl).eq('nombre_local',nl);
+        await sb.from('suscripciones').delete().eq('pin_acceso',pl).eq('nombre_local',nl);
+        toast('Eliminado','#dc2626');cargarAdmin();
+    }
+}
 
 function resta(){return opActual==='proveedor'||opActual==='retiro'}
 function total(){
@@ -619,56 +708,78 @@ function irLibreta(){limpiarL();ver('v-libreta')}
 
 async function cargarPanel(){
     try{
-        let{data,error}=await sb.from('transacciones').select('*').eq('local_pin',pin).order('created_at',{ascending:false}).limit(300);
-        if(data) { data = data.filter(t => String(t.nombre_local || '').trim().toLowerCase() === String(nom).trim().toLowerCase()); }
-        txs = data || []; armarPanel();
+        let{data: dt,error: et}=await sb.from('transacciones').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('created_at',{ascending:false}).limit(300);
+        txs = dt || []; armarPanel();
     }catch(e){}
     try{
-        let{data,error}=await sb.from('clientes_libreta').select('*').eq('local_pin',pin).order('ultimo_movimiento',{ascending:false});
-        if(data) { data = data.filter(c => String(c.nombre_local || '').trim().toLowerCase() === String(nom).trim().toLowerCase()); }
-        if(data){
-            const cs=data,tf=cs.reduce((s,c)=>s+parseFloat(c.deuda||0),0);
+        let{data: dc,error: ec}=await sb.from('clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
+        if(dc){
+            const cs=dc,tf=cs.reduce((s,c)=>s+parseFloat(c.deuda||0),0);
             document.getElementById('tFia').innerText='$'+tf.toLocaleString('es-AR');
             document.getElementById('deudores').innerHTML=cs.filter(c=>parseFloat(c.deuda||0)>0).length?
-                cs.filter(c=>parseFloat(c.deuda||0)>0).slice(0,12).map(c=>`<div class="vidrio" style="padding:12px;border-radius:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b>${c.nombre}</b><br><span style="color:var(--txt3);font-size:.8rem">📱 ${c.whatsapp||'S/N'}</span></div><div style="display:flex;gap:8px;align-items:center"><b class="azul-texto" style="font-size:1.2rem">$${parseFloat(c.deuda).toLocaleString('es-AR')}</b><button class="btn" style="margin:0;padding:8px 12px;font-size:.78rem;width:auto" onclick="wa('${c.nombre}',${c.deuda},'${c.whatsapp||''}')">COBRAR</button></div></div>`).join('')
+                cs.filter(c=>parseFloat(c.deuda||0)>0).slice(0,12).map(c=>`<div class="vidrio" style="padding:12px;border-radius:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:1.05rem;color:var(--txt)">${c.nombre}</b><br><span style="color:var(--txt3);font-size:.8rem">📱 ${c.whatsapp||'S/N'}</span></div><div style="display:flex;gap:8px;align-items:center"><b class="azul-texto" style="font-size:1.2rem">$${parseFloat(c.deuda).toLocaleString('es-AR')}</b><button class="btn" style="margin:0;padding:8px 12px;font-size:.78rem;width:auto" onclick="wa('${c.nombre}',${c.deuda},'${c.whatsapp||''}')">COBRAR</button></div></div>`).join('')
                 :'<p style="color:var(--txt3);text-align:center;padding:14px;border-radius:12px" class="vidrio">✅ Nadie te debe plata</p>';
         }
     }catch(e){}
 }
 
+/* 🛠️ CIRUGÍA: ARREGLO DE BUCLE DE CIERRE EN PANEL */
 function armarPanel(){
     let e=0,tr=0,ta=0,eti=[],dat=[],saldo=0,html='';
-    txs.slice().reverse().forEach(tx=>{
+    // Filtramos solo las transacciones del TURNO ACTUAL
+    let txsTurno = [];
+    for(let t of txs){
+        if((t.tipo_operacion||'').toLowerCase().includes('cierre')) break;
+        txsTurno.push(t);
+    }
+    txsTurno.reverse().forEach(tx=>{
         const o=(tx.tipo_operacion||'').toLowerCase(),m=(tx.metodo_pago||'efectivo').toLowerCase(),v=parseFloat(tx.monto_total)||0;
-        if(o.includes('cierre'))return;
         const rs=o.includes('proveedor')||o.includes('retiro');
         if(m!=='sistema'){if(!rs){if(m==='efectivo')e+=v;else if(m==='transferencia')tr+=v;else ta+=v}else e-=v;saldo=rs?saldo-v:saldo+v;eti.push(new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}));dat.push(saldo)}
         const ic=m==='efectivo'?'💵':m==='transferencia'?'🏦':m==='tarjeta'?'💳':'📝';
-        html+=`<div class="tx-item vidrio"><div style="font-size:1.5rem">${ic}</div><div style="text-align:left"><b style="text-transform:uppercase">${tx.tipo_operacion||'Operación'}</b><br><span style="color:var(--txt3);font-size:.7rem">${new Date(tx.created_at).toLocaleString('es-AR')}</span>${tx.foto_base64?`<br><button onclick="verFoto('${tx.id}')" style="background:var(--azul);color:#fff;border:none;padding:3px 8px;border-radius:999px;font-size:.68rem;margin-top:4px;font-weight:700">FOTO</button>`:''}</div><div style="color:${rs?'#dc2626':'#0284c7'};font-weight:900">${rs?'−':'+'}$${v.toLocaleString('es-AR')}</div></div>`;
+        // VENTAS ARRIBA DE LA LISTA
+        html = `<div class="tx-item vidrio"><div style="font-size:1.5rem">${ic}</div><div style="text-align:left"><b style="text-transform:uppercase;color:var(--txt)">${tx.tipo_operacion||'Operación'}</b><br><span style="color:var(--txt3);font-size:.7rem">${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>${tx.foto_base64?`<br><button onclick="verFoto('${tx.id}')" style="background:var(--azul);color:#fff;border:none;padding:3px 8px;border-radius:999px;font-size:.68rem;margin-top:4px;font-weight:700">FOTO</button>`:''}</div><div style="color:${rs?'#dc2626':'#0284c7'};font-size:1.15rem;font-weight:900">${rs?'−':'+'}$${v.toLocaleString('es-AR')}</div></div>` + html;
     });
     document.getElementById('tEfe').innerText='$'+e.toLocaleString('es-AR');
     document.getElementById('tTra').innerText='$'+tr.toLocaleString('es-AR');
     document.getElementById('tTar').innerText='$'+ta.toLocaleString('es-AR');
-    document.getElementById('movs').innerHTML=html||'<p style="color:var(--txt3);text-align:center;padding:20px">Sin movimientos</p>';
+    document.getElementById('movs').innerHTML=html||'<p style="color:var(--txt3);text-align:center;padding:20px;background:#fff;border-radius:14px;border:1px solid var(--borde)">Caja en cero este turno</p>';
     const cx=document.getElementById('graf').getContext('2d');
     if(graf)graf.destroy();
-    graf=new Chart(cx,{type:'line',data:{labels:eti,datasets:[{label:'Caja',data:dat,borderColor:'#0284c7',backgroundColor:'rgba(14,165,233,.15)',borderWidth:2.5,fill:true,tension:.42,pointRadius:1.5}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false}},scales:{x:{display:false},y:{ticks:{color:'#64748b'},grid:{color:'#f1f5f9'}}}}});
+    const grad=cx.createLinearGradient(0,0,0,140);
+    grad.addColorStop(0,'rgba(14,165,233,.45)');
+    grad.addColorStop(1,'rgba(14,165,233,0)');
+    graf=new Chart(cx,{type:'line',data:{labels:eti,datasets:[{label:'Caja',data:dat,borderColor:'#0284c7',backgroundColor:grad,borderWidth:3,fill:true,tension:.42,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:'#fff',pointHoverBorderColor:'#0284c7',pointHoverBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0c4a6e',cornerRadius:8,padding:10}},scales:{x:{display:false},y:{ticks:{color:'#94a3b8',font:{size:10}},grid:{color:'rgba(148,163,184,.12)',drawBorder:false}}}}});
 }
 
 function verFoto(id){const t=txs.find(x=>x.id==id);if(t&&t.foto_base64){document.getElementById('laFoto').src=t.foto_base64;document.getElementById('visorFoto').classList.remove('hidden')}}
 function cerrarFoto(){document.getElementById('visorFoto').classList.add('hidden');document.getElementById('laFoto').src=''}
 
+/* 🛠️ CIRUGÍA: PDF AHORA TOMA SOLO EL TURNO, FECHA EXACTA Y ESPERA RECARGA */
 async function pdf(){
-    toast('Generando PDF…');await cargarPanel();
-    if(!txs.length)return toast('Sin datos','#dc2626');
+    toast('Generando PDF…');
+    await cargarPanel(); // Garantiza tener las últimas ventas
+    
+    let txsTurno = [];
+    for(let t of txs){
+        if((t.tipo_operacion||'').toLowerCase().includes('cierre')) break;
+        txsTurno.push(t);
+    }
+    if(!txsTurno.length) return toast('Sin ventas en este turno','#dc2626');
+    
     const {jsPDF}=window.jspdf;const doc=new jsPDF();
-    doc.setFontSize(18);doc.text(`Resumen · ${nom}`,14,20);
-    doc.setFontSize(9);doc.text(new Date().toLocaleString('es-AR'),14,27);
+    doc.setFontSize(18);doc.text(`Resumen Turno · ${nom.toUpperCase()}`,14,20);
+    // Fecha y hora impecables
+    const fstr = new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
+    doc.setFontSize(10);doc.text(`Cierre generado: ${fstr}`,14,28);
+    
     const filas=[];
-    for(const tx of txs){if((tx.tipo_operacion||'').toLowerCase().includes('cierre'))break;filas.push([new Date(tx.created_at).toLocaleString('es-AR'),(tx.tipo_operacion||'').toUpperCase(),(tx.metodo_pago||'').toUpperCase(),'$'+parseFloat(tx.monto_total).toLocaleString('es-AR')])}
-    doc.autoTable({startY:32,head:[['Fecha','Operación','Método','Monto']],body:filas,theme:'grid',headStyles:{fillColor:[2,132,199]}});
-    doc.save(`VigilanteIA-${nom||'resumen'}.pdf`);
-    toast('PDF listo','#16a34a');
+    for(const tx of txsTurno){
+        filas.push([new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),(tx.tipo_operacion||'').toUpperCase(),(tx.metodo_pago||'').toUpperCase(),'$'+parseFloat(tx.monto_total).toLocaleString('es-AR')]);
+    }
+    doc.autoTable({startY:34,head:[['Hora','Operación','Método','Monto']],body:filas,theme:'grid',headStyles:{fillColor:[2,132,199]}});
+    doc.save(`VigilanteIA-${nom}-Cierre.pdf`);
+    toast('PDF Descargado','#16a34a');
 }
 
 function liquidar(){toast('IA procesando liquidación…');setTimeout(()=>toast('Liquidación analizada ✅','#16a34a'),1800)}
@@ -681,13 +792,13 @@ async function listaClientes(){
     document.getElementById('listaCli').innerHTML='<p style="color:var(--txt3);text-align:center;padding:20px">Cargando…</p>';
     ver('v-clientes');
     try{
-        let{data,error}=await sb.from('clientes_libreta').select('*').eq('local_pin',pin).order('ultimo_movimiento',{ascending:false});
-        if(data) { data = data.filter(c => String(c.nombre_local || '').trim().toLowerCase() === String(nom).trim().toLowerCase()); }
-        clientes=data||[]; filtrar();
+        let{data,error}=await sb.from('clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
+        clientes = data || []; filtrar();
     }catch(e){toast('Sin red','#dc2626')}
 }
 
 function filtrar(){const q=document.getElementById('buscar').value.toLowerCase().trim();pintar(clientes.filter(c=>c.nombre.toLowerCase().includes(q)))}
+
 function pintar(l){
     document.getElementById('listaCli').innerHTML=l.length?l.map(c=>`<div class="vidrio" style="padding:14px;border-radius:16px;margin-bottom:10px">
         <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:1.05rem">${c.nombre}</b><b class="azul-texto" style="font-size:1.4rem">$${parseFloat(c.deuda).toLocaleString('es-AR')}</b></div>
@@ -710,18 +821,19 @@ async function nuevoCliente(){
     try{
         let pl=String(pin).trim(),nl=nom?String(nom).trim():'';
         let{data,error}=await sb.from('clientes_libreta').insert([{local_pin:pl,nombre_local:nl,nombre:n,whatsapp:w,deuda:0}]).select().single();
-        if(error&&error.message.includes('nombre_local')){
-            let{data:d2,error:e2}=await sb.from('clientes_libreta').insert([{local_pin:pl,nombre:n,whatsapp:w,deuda:0}]).select().single();
-            if(e2)return toast(e2.message,'#dc2626');
-            clientes.unshift(d2);document.getElementById('nCliNom').value='';document.getElementById('nCliWa').value='';filtrar();toast('Guardado ✅','#16a34a');
-            return;
-        }
-        if(error)return toast(error.message,'#dc2626');
+        if(error) return toast('Error al guardar','#dc2626');
         clientes.unshift(data);document.getElementById('nCliNom').value='';document.getElementById('nCliWa').value='';filtrar();toast('Guardado ✅','#16a34a');
     }catch(e){toast('Sin red','#dc2626')}
 }
 
-async function borrarCli(id,nm){if(confirm(`Eliminar a ${nm}?`)){try{let{error}=await sb.from('clientes_libreta').delete().eq('id',id).eq('local_pin',String(pin).trim());if(!error){clientes=clientes.filter(c=>c.id!=id);filtrar();toast('Eliminado','#16a34a')}}catch(e){toast('Error','#dc2626')}}}
+async function borrarCli(id,nm){
+    if(confirm(`Eliminar a ${nm}?`)){
+        try{
+            let{error}=await sb.from('clientes_libreta').delete().eq('id',id).eq('local_pin',String(pin).trim());
+            if(!error){clientes=clientes.filter(c=>c.id!=id);filtrar();toast('Eliminado','#16a34a')}
+        }catch(e){toast('Error','#dc2626')}
+    }
+}
 
 async function operar(id,ac,mt='sistema'){
     if(montoSel<=0)return;
@@ -729,17 +841,18 @@ async function operar(id,ac,mt='sistema'){
     toast('Procesando…');
     try{
         let pl=String(pin).trim(),nl=nom?String(nom).trim():'';
-        let{data:cli,error:ec}=await sb.from('clientes_libreta').select('*').eq('id',id).eq('local_pin',pl).single();if(ec||!cli)return toast('Cliente no encontrado','#dc2626');
+        let{data:cli,error:ec}=await sb.from('clientes_libreta').select('*').eq('id',id).eq('local_pin',pl).single();
+        if(ec||!cli)return toast('Cliente no encontrado','#dc2626');
+        
         let m=parseInt(montoSel)||0,nd=parseFloat(cli.deuda);
         if(ac==='fiar')nd+=m;if(ac==='cobrar'){nd-=m;if(nd<0)nd=0}
         let od=ac==='fiar'?`Fiado: ${cli.nombre}`:`Cobro: ${cli.nombre}`;
         let mp=ac==='fiar'?'sistema':(mt&&mt!==''?String(mt).toLowerCase():'efectivo');
         
-        let{error:et}=await sb.from('transacciones').insert([{monto_total:m,tipo_operacion:od,metodo_pago:mp,estado_auditoria_ia:'aprobado',local_pin:pl,nombre_local:nl}]);
-        if(et&&et.message.includes('nombre_local'))await sb.from('transacciones').insert([{monto_total:m,tipo_operacion:od,metodo_pago:mp,estado_auditoria_ia:'aprobado',local_pin:pl}]);
+        await sb.from('transacciones').insert([{monto_total:m,tipo_operacion:od,metodo_pago:mp,estado_auditoria_ia:'aprobado',local_pin:pl,nombre_local:nl}]);
+        let{error:eu}=await sb.from('clientes_libreta').update({deuda:nd,ultimo_movimiento:new Date()}).eq('id',id);
         
-        let{data:up,error:eu}=await sb.from('clientes_libreta').update({deuda:nd,ultimo_movimiento:new Date()}).eq('id',id).select().single();
-        if(eu)return toast(eu.message,'#dc2626');
+        if(eu)return toast('Error al actualizar','#dc2626');
         toast('Confirmado ✅','#16a34a');limpiarL();caja();
     }catch(e){toast('Sin red','#dc2626')}
 }
@@ -751,15 +864,22 @@ function wa(nm,de,w){
     open(`https://wa.me/${x}?text=${encodeURIComponent(`Hola ${nm}, de ${nom}. Te recuerdo tu saldo pendiente de $${parseFloat(de).toLocaleString('es-AR')} pesos. Saludos!`)}`,'_blank');
 }
 
+/* 🛠️ CIRUGÍA: CIERRE TURNO AHORA CORTA CORRECTAMENTE EL BUCLE PARA CONTAR EN CERO */
 async function cerrarTurno(){
     if(!confirm('Cerrar turno y enviar reporte por WhatsApp?'))return;
     toast('IA calculando totales…');
     try{
         await cargarPanel();
         let e=0,tr=0,ta=0,f=0;
-        (txs||[]).forEach(tx=>{
+        
+        let txsTurno = [];
+        for(let t of (txs||[])){
+            if((t.tipo_operacion||'').toLowerCase().includes('cierre')) break;
+            txsTurno.push(t);
+        }
+        
+        txsTurno.forEach(tx=>{
             const o=(tx.tipo_operacion||'').toLowerCase(),m=(tx.metodo_pago||'').toLowerCase(),v=parseFloat(tx.monto_total)||0;
-            if(o.includes('cierre'))return;
             const rs=o.includes('proveedor')||o.includes('retiro');
             if(m!=='sistema'){if(!rs){if(m==='efectivo')e+=v;else if(m==='transferencia')tr+=v;else ta+=v}else e-=v}
         });
@@ -794,15 +914,8 @@ async function cobrar(mt,fb=null){
     try{
         let m=Math.abs(tot),op=String(opActual).toLowerCase(),pl=String(pin).trim(),nl=nom?String(nom).trim():'';
         let{error}=await sb.from('transacciones').insert([{monto_total:m,tipo_operacion:op,metodo_pago:String(mt).toLowerCase(),estado_auditoria_ia:'aprobado',foto_base64:fb||null,local_pin:pl,nombre_local:nl}]);
-        
-        if(error&&error.message.includes('nombre_local')){
-            let{error:e2}=await sb.from('transacciones').insert([{monto_total:m,tipo_operacion:op,metodo_pago:String(mt).toLowerCase(),estado_auditoria_ia:'aprobado',foto_base64:fb||null,local_pin:pl}]);
-            if(e2) { if(fb)radar.style.display='none'; return toast(e2.message,'#dc2626'); }
-        } else if(error){
-            if(fb)radar.style.display='none'; return toast(error.message,'#dc2626');
-        }
-        
         if(fb)radar.style.display='none';
+        if(error) return toast('Error en BD','#dc2626');
         toast('✅ APROBADO','#16a34a'); limpiar(); hablar('Aprobado');
     }catch(e){if(fb)radar.style.display='none';toast('Sin red','#dc2626')}
     document.getElementById('cam').value='';document.getElementById('gal').value='';
@@ -814,9 +927,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     const go=x=>{i=x;w.style.transform=`translateX(-${x*33.333}%)`;pts.forEach((p,k)=>p.classList.toggle('activo',k===x))};
     setInterval(()=>go((i+1)%3),6500);
     pts.forEach((p,k)=>p.addEventListener('click',()=>go(k)));
-    const estilo=document.createElement('style');
-    estilo.textContent='.punto{display:inline-block;width:8px;height:8px;border-radius:999px;background:#cbd5e1;transition:.25s;margin:0 4px;cursor:pointer}.punto.activo{background:#0284c7;width:22px;box-shadow:0 0 10px rgba(2,132,199,.6)}.sheet-op{border:none;background:transparent;cursor:pointer;color:var(--txt);font-weight:600;display:flex;flex-direction:column;align-items:center;gap:6px}';
-    document.head.appendChild(estilo);
 });
 </script>
 </body></html>
