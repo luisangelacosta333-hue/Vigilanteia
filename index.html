@@ -212,9 +212,10 @@ body{background:var(--fondo);margin:0;min-height:100vh}
 
   <div class="lp-card vidrio2" style="border-top:4px solid #0284c7">
     <div style="text-align:center;margin-bottom:14px">
-      <span style="background:#e0f2fe;color:#0369a1;padding:4px 12px;border-radius:999px;font-weight:800;font-size:.72rem;text-transform:uppercase">30 DÍAS GRATIS</span>
-      <h2 style="margin:8px 0 2px;font-family:'Montserrat';font-weight:900;font-size:2rem">PRUEBA SIN COMPROMISO</h2>
-      <p style="margin:0;color:var(--txt3);font-size:.85rem">Todo incluido · Sin tarjeta</p>
+      <!-- ACÁ ESTÁN LOS $9.000 Y LAS CONDICIONES EN CELESTE -->
+      <span style="background:#e0f2fe;color:#0ea5e9;padding:4px 12px;border-radius:999px;font-weight:800;font-size:.72rem;text-transform:uppercase">SUSCRIPCIÓN: $9.000 / MES</span>
+      <h2 style="margin:8px 0 2px;font-family:'Montserrat';font-weight:900;font-size:2rem">ACTIVÁ TU CAJA</h2>
+      <p style="margin:0;color:#0ea5e9;font-weight:600;font-size:.85rem">Todas las funciones premium incluidas</p>
     </div>
     <input id="rNom" class="lp-input" placeholder="Nombre de tu Local" autocomplete="off">
     <select id="rProv" class="lp-input"><option value="" disabled selected>Seleccioná tu Provincia</option>
@@ -222,7 +223,7 @@ body{background:var(--fondo);margin:0;min-height:100vh}
     </select>
     <input id="rWa" class="lp-input" placeholder="Tu WhatsApp" autocomplete="off">
     <input id="rPin" class="lp-input" placeholder="Creá tu PIN de 4 dígitos" inputmode="numeric" autocomplete="off">
-    <button class="lp-boton" onclick="registrar()">✅ ACTIVAR 30 DÍAS</button>
+    <button class="lp-boton" onclick="registrar()">✅ ACTIVAR SUSCRIPCIÓN</button>
   </div>
 
   <div class="lp-card vidrio">
@@ -242,7 +243,8 @@ body{background:var(--fondo);margin:0;min-height:100vh}
 <div id="v-vencido" class="view-container hidden">
   <div class="vidrio2" style="text-align:center;padding:30px 18px;border-radius:22px;margin-top:20px">
     <h1 style="margin:0 0 8px;font-size:1.8rem">⏳ LICENCIA VENCIDA</h1>
-    <p style="color:var(--txt2)">Transferí <b class="azul-texto" style="font-size:1.2rem">$19.000 ARS</b> · 30 días</p>
+    <!-- ACÁ ESTÁN LOS $9.000 EN LA PANTALLA DE VENCIDO -->
+    <p style="color:var(--txt2)">Transferí <b class="azul-texto" style="font-size:1.2rem">$9.000 ARS</b> · Mes</p>
     <div class="vidrio" style="padding:16px;border-radius:14px;text-align:left;font-family:monospace;margin:14px 0">
       TITULAR: <b class="azul-texto">Luis Acosta</b><br><br>
       ALIAS: <b class="azul-texto">noir.elite.ceo</b><br><br>
@@ -392,7 +394,7 @@ SÉPTIMO: TESORERO VIRTUAL. Subís el archivo de liquidación de Fiserv, Getnet,
 
 OCTAVO: PANEL ADMINISTRADOR MAESTRO. Si tenés más de un local o querés ver todo desde arriba, acá renovás licencias, cambiás claves, borrás si hace falta y filtrás por provincia.
 
-NOVENO: RENOVACIÓN FÁCIL. Podés pagar por Mercado Pago o transferencia y la IA activa 30 días más al instante.
+NOVENO: RENOVACIÓN FÁCIL. Podés pagar la suscripción de 9.000 pesos por Mercado Pago o transferencia y la IA activa 30 días más al instante.
 
 DÉCIMO: SEGURIDAD. Todo entra con CLAVE PIN, los archivos quedan BLOQUEADOS para que nadie los modifique, y todo se guarda en la nube con cifrado.
 
@@ -435,7 +437,7 @@ function alEntrar(p){
     const map = {
         'v-landing':'Bienvenido a Vigilante I A. Tocá el micrófono abajo a la derecha y te explico todas las funciones que tenemos para controlar tu negocio las 24 horas los 30 días del mes.',
         'v-caja':'Caja principal. Usá la calculadora inteligente que suma y resta en vivo, y cobrá en efectivo, tarjeta o transferencia con foto.',
-        'v-vencido':'Tu licencia expiró. Transferí 19 mil pesos al alias noir punto elite punto c e o y la inteligencia artificial lo aprueba al instante.',
+        'v-vencido':'Tu licencia expiró. Transferí 9 mil pesos al alias noir punto elite punto c e o y la inteligencia artificial lo aprueba al instante.',
         'v-libreta':'Libreta de fiados. Cargá monto, elegí cliente, fiar o cobrar, todo queda guardado.',
         'v-clientes':'Lista de clientes. Buscá, agregá nuevos y cobrales por WhatsApp.',
         'v-panel':'Panel del dueño. Gráfico en vivo, totales por método, deudores y reporte en P D F.',
@@ -524,7 +526,7 @@ async function auditarPago(e){
     document.getElementById('radarTxt').innerText='🤖 IA revisando comprobante';radar.style.display='flex';
     hablar('Inteligencia Artificial revisando el comprobante');
     
-    // Simulación Frontend IA para validar el pago
+    // Simulación Frontend IA para validar el pago de $9000
     setTimeout(async () => {
         try{
             let v=new Date(); v.setDate(v.getDate()+30);
