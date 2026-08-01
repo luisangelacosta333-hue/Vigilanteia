@@ -692,6 +692,7 @@ async function cargarPanel(){
     try{
         let{data: dc,error: ec}=await sb.from('clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
         if(dc){
+            clientes = dc; // 🛠️ FIX QUIRÚRGICO 1: Guardamos la data globalmente para que el cierre de turno la pueda leer
             const cs=dc,tf=cs.reduce((s,c)=>s+parseFloat(c.deuda||0),0);
             document.getElementById('tFia').innerText='$'+tf.toLocaleString('es-AR');
             document.getElementById('deudores').innerHTML=cs.filter(c=>parseFloat(c.deuda||0)>0).length?
@@ -752,24 +753,22 @@ async function pdf(){
     toast('Generando PDF…');
     await cargarPanel(); 
     
-    let txsTurno = [];
-    for(let t of txs){
-        if((t.tipo_operacion||'').toLowerCase().includes('cierre')) break;
-        txsTurno.push(t);
-    }
-    if(!txsTurno.length) return toast('Sin ventas en este turno','#dc2626');
+    // 🛠️ FIX QUIRÚRGICO 2: Verificamos TODAS las transacciones, no solo las del turno
+    if(!txs.length) return toast('Sin ventas registradas','#dc2626');
     
     const {jsPDF}=window.jspdf;const doc=new jsPDF();
-    doc.setFontSize(18);doc.text(`Resumen Turno · ${nom.toUpperCase()}`,14,20);
+    doc.setFontSize(18);doc.text(`Historial de Ventas · ${nom.toUpperCase()}`,14,20);
     const fstr = new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
-    doc.setFontSize(10);doc.text(`Cierre generado: ${fstr}`,14,28);
+    doc.setFontSize(10);doc.text(`Reporte generado: ${fstr}`,14,28);
     
     const filas=[];
-    for(const tx of txsTurno){
-        filas.push([new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}),(tx.tipo_operacion||'').toUpperCase(),(tx.metodo_pago||'').toUpperCase(),'$'+parseFloat(tx.monto_total).toLocaleString('es-AR')]);
+    // Ahora recorre 'txs' (todas) en lugar de 'txsTurno'
+    for(const tx of txs){
+        // Cambiamos toLocaleTimeString a toLocaleString para que también muestre el día y mes
+        filas.push([new Date(tx.created_at).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}),(tx.tipo_operacion||'').toUpperCase(),(tx.metodo_pago||'').toUpperCase(),'$'+parseFloat(tx.monto_total).toLocaleString('es-AR')]);
     }
-    doc.autoTable({startY:34,head:[['Hora','Operación','Método','Monto']],body:filas,theme:'grid',headStyles:{fillColor:[2,132,199]}});
-    doc.save(`VigilanteIA-${nom}-Cierre.pdf`);
+    doc.autoTable({startY:34,head:[['Fecha y Hora','Operación','Método','Monto']],body:filas,theme:'grid',headStyles:{fillColor:[2,132,199]}});
+    doc.save(`VigilanteIA-${nom}-TodasLasVentas.pdf`);
     toast('PDF Descargado','#16a34a');
 }
 
@@ -984,4 +983,3 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 </body></html>
-
