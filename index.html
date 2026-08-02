@@ -100,8 +100,8 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
 .display-container{min-height:90px;display:flex;flex-direction:column;align-items:flex-end;justify-content:flex-end;padding:4px 2px 12px}
 .monto-grande{font-family:'Montserrat',sans-serif;font-size:3.8rem;font-weight:900;line-height:1;letter-spacing:-2px;text-align:right;word-break:break-all;background:var(--azul-osc);-webkit-background-clip:text;background-clip:text;color:transparent}
 .monto-chico{font-family:'Montserrat',sans-serif;font-size:1.8rem;font-weight:800;min-height:2.4rem;text-align:right;letter-spacing:-.6px;color:var(--txt2)}
-.top-ops{display:grid;grid-template-columns:repeat(3,1fr);gap:7px;margin-bottom:8px}
-.op{font-weight:800;font-size:.76rem;padding:11px 2px;border-radius:11px;cursor:pointer;transition:.15s;border:1px solid var(--borde);color:var(--txt2);background:var(--vidrio)}
+.top-ops{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;margin-bottom:8px}
+.op{font-weight:800;font-size:.70rem;padding:11px 2px;border-radius:11px;cursor:pointer;transition:.15s;border:1px solid var(--borde);color:var(--txt2);background:var(--vidrio)}
 .op.activo{background:var(--azul);color:#fff;border-color:transparent;box-shadow:var(--sombra-azul);transform:scale(1.01)}
 .cierre{grid-column:1/-1;background:var(--azul);color:#fff;font-family:'Montserrat',sans-serif;font-weight:900;padding:13px;border-radius:13px;border:none;box-shadow:var(--sombra-azul);cursor:pointer;font-size:.92rem}
 .teclado{display:grid;grid-template-columns:repeat(4,1fr);gap:7px;flex:1}
@@ -165,6 +165,20 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
       <button class="btn" style="margin:0;background:#64748b;box-shadow:none" onclick="document.getElementById('pinModal').classList.add('hidden'); document.getElementById('pinAdmin').value=''">Cancelar</button>
       <button class="btn" style="margin:0" onclick="verificarPinAdmin()">Entrar</button>
     </div>
+  </div>
+</div>
+
+<!-- MODAL MIS VENTAS (EMPLEADO) -->
+<div class="modal-bg hidden" id="misVentasModal">
+  <div class="modal vidrio2" style="max-height: 85vh; display: flex; flex-direction: column; padding: 18px 15px;">
+    <div style="display:flex; justify-content:space-between; align-items:center; margin-bottom: 12px;">
+      <h3 style="margin:0; font-size:1.15rem; font-weight:900">🧾 Mis Ventas</h3>
+      <button onclick="document.getElementById('misVentasModal').classList.add('hidden')" style="background:transparent; border:none; font-size:1.4rem; cursor:pointer; color:var(--txt3)">✕</button>
+    </div>
+    <div id="listaMisVentas" style="flex:1; overflow-y:auto; text-align:left; padding-right:4px;">
+      <!-- Las ventas se inyectan acá -->
+    </div>
+    <button class="btn" style="margin-top:12px; background:#64748b; box-shadow:none;" onclick="document.getElementById('misVentasModal').classList.add('hidden')">CERRAR</button>
   </div>
 </div>
 
@@ -340,18 +354,21 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
   <div class="top-bar vidrio">
     <div style="display:flex;gap:6px;align-items:center"><span class="ia-badge">🛡️ IA VIVA</span><span id="dias" class="dias">⏳ -- Días</span></div>
     <div style="display:flex;align-items:center;gap:6px">
-      <!-- BOTÓN GPS -->
       <button id="btn-gps" onclick="toggleGps()" style="padding:5px 8px;border-radius:8px;border:1px solid var(--borde);background:transparent;font-weight:700;cursor:pointer;font-size:.8rem;color:var(--txt)">📍 OFF</button>
       <span id="btnAdmin" style="font-size:1.3rem;cursor:pointer;color:#0284c7;font-weight:900;padding:3px">🔒</span>
       <button class="btn-lock" onclick="confirmarSalir()" style="padding:5px 8px;border-radius:8px;border:1px solid var(--borde);background:transparent;font-weight:700;cursor:pointer;font-size:.8rem;color:var(--txt)">SALIR</button>
     </div>
   </div>
   <div class="display-container"><div class="monto-grande azul-texto" id="acu">0</div><div class="monto-chico" id="act"></div></div>
+  
+  <!-- BISTURÍ: 4 BOTONES INCLUYENDO "VENTAS" -->
   <div class="top-ops">
-    <button class="op vidrio" id="op-prov" onclick="modo('proveedor')">Proveedor</button>
-    <button class="op vidrio" onclick="irLibreta()">Clientes 📝</button>
+    <button class="op vidrio" id="op-prov" onclick="modo('proveedor')">Prov.</button>
+    <button class="op vidrio" onclick="irLibreta()">Fiados 📝</button>
     <button class="op vidrio" id="op-ret" onclick="modo('retiro')">Retiro</button>
+    <button class="op vidrio" onclick="verMisVentas()" style="color:#0284c7; border-color:#0284c7;">Ventas 🧾</button>
   </div>
+  
   <button class="cierre" onclick="cerrarTurno()">⚠️ CERRAR TURNO · REPORTE IA</button>
   <div class="teclado">
     <button class="tecla vidrio" onclick="n('7')">7</button><button class="tecla vidrio" onclick="n('8')">8</button><button class="tecla vidrio" onclick="n('9')">9</button><button class="tecla tecla-clara" onclick="borrar()">⌫</button>
@@ -422,7 +439,6 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
   <b style="display:block;padding-bottom:6px;margin-top:10px;border-bottom:1px solid var(--borde);font-family:'Montserrat';font-size:.85rem;color:var(--txt2)">👥 DEUDORES PRINCIPALES</b>
   <div id="deudores" style="margin:12px 0 20px"></div>
   
-  <!-- MAPA GPS INCORPORADO AQUÍ -->
   <b style="display:block;padding-bottom:6px;margin-top:10px;border-bottom:1px solid var(--borde);font-family:'Montserrat';font-size:.85rem;color:var(--txt2)">📍 RASTREO GPS EN VIVO</b>
   <div id="adm-gps" class="vidrio" style="padding:15px; border-radius:14px; text-align:center; margin:12px 0 20px; background:#fff;">
       <p style="color:var(--txt3); font-size:0.85rem; padding: 20px 0;">El empleado debe encender el GPS (Botón 📍 arriba).</p>
@@ -433,9 +449,6 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
 </div>
 
 <script>
-/* =========================================================
-   CONEXIÓN DIRECTA A SUPABASE
-   ========================================================= */
 const supabaseUrl = 'https://drpjcmznauposqlhaveo.supabase.co';
 const supabaseKey = 'sb_publishable_xo7-uUQqtWvEWoLGqqlrsg_rxdroLx4';
 const sb = supabase.createClient(supabaseUrl, supabaseKey);
@@ -500,7 +513,6 @@ function alEntrar(p){
     if(VOZ && map[p]) setTimeout(()=>hablar(map[p]),400);
 }
 
-// BISTURÍ: VARIABLES GLOBALES Y ESPEJO
 let gpsActive = false;
 let gpsInterval = null;
 let last_gps = null;
@@ -523,7 +535,6 @@ function ver(id){
     window.scrollTo(0,0);
     alEntrar(id);
     
-    // BISTURÍ: MOTOR ESPEJO EN VIVO (ACTUALIZA SOLO CADA 5 SEGUNDOS)
     if(id === 'v-panel') {
         if(!window.panelInterval) window.panelInterval = setInterval(cargarPanel, 5000);
     } else {
@@ -542,9 +553,8 @@ function toast(m,c){
 
 async function mercadoPago(){toast('Abriendo Mercado Pago');location.href='https://mpago.la/1Wi2UXN'}
 
-// BISTURÍ: PLAN ANTIPÍCARO Y DOBLE PIN EN REGISTRO
 async function registrar(){
-    const n=document.getElementById('rNom').value.trim().toUpperCase(); // Forzamos mayúsculas
+    const n=document.getElementById('rNom').value.trim().toUpperCase(); 
     const p=document.getElementById('rPin').value.trim();
     const ap=document.getElementById('rAdminPin').value.trim();
     const pr=document.getElementById('rProv').value;
@@ -555,13 +565,11 @@ async function registrar(){
     try{
         let waLimpio=w?String(w).trim():'No especificado';
         
-        // ANTIPÍCARO: Chequeo estricto de número repetido
         if(waLimpio!=='No especificado' && !waLimpio.includes('*')){
             let {data:existeWa} = await sb.from('suscripciones').select('id').eq('whatsapp',waLimpio).maybeSingle();
             if(existeWa) return toast("❌ ANTIPÍCARO: Este WhatsApp ya tiene una cuenta.", '#dc2626');
         }
         
-        // ANTIPÍCARO: Chequeo estricto de nombre repetido
         let {data:existeCuenta} = await sb.from('suscripciones').select('id').eq('nombre_local', n).maybeSingle();
         if(existeCuenta) return toast("❌ Ese Nombre de Local ya existe. Elegí otro.", '#dc2626');
 
@@ -575,7 +583,6 @@ async function registrar(){
     }catch(e){toast('Sin red','#dc2626')}
 }
 
-// BISTURÍ: LOGIN FORZANDO MAYÚSCULAS
 async function ingresar(){
     const p=document.getElementById('lPin').value;
     const n=document.getElementById('lNom').value.trim().toUpperCase();
@@ -637,7 +644,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     },{passive:false}));
 });
 
-// BISTURÍ: VALIDACIÓN EXACTA DEL PIN DEL DUEÑO
 function verificarPinAdmin(){
     const x=document.getElementById('pinAdmin').value;
     if(x === adminPin){
@@ -688,7 +694,6 @@ function borrarL(){vaL=vaL.slice(0,-1);actualizarL()}
 function limpiarL(){vaL='';acL=0;ultOpL=null;actualizarL()}
 function irLibreta(){limpiarL();ver('v-libreta')}
 
-// BISTURÍ: GPS SE SUBE A LA NUBE PARA EL ESPEJO
 function toggleGps(force = false) { 
     let btn = document.getElementById('btn-gps'); 
     let turningOn = force ? true : !gpsActive;
@@ -702,13 +707,8 @@ function toggleGps(force = false) {
             const enviarPosicion = (p) => {
                 btn.innerHTML = '📍 ON'; 
                 last_gps = { lat: p.coords.latitude, lon: p.coords.longitude, time: new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}) };
-                
-                // Enviar silenciosamente a Supabase
                 sb.from('suscripciones').update({ app_data: { last_gps: last_gps } }).eq('nombre_local', nom).then();
-
-                if(!document.getElementById('v-panel').classList.contains('hidden')) {
-                    armarPanel(); 
-                }
+                if(!document.getElementById('v-panel').classList.contains('hidden')) { armarPanel(); }
             };
 
             navigator.geolocation.getCurrentPosition(enviarPosicion, err => { 
@@ -731,7 +731,53 @@ function toggleGps(force = false) {
     } 
 }
 
-// BISTURÍ: CARGA PANEL INTELIGENTE Y LIVIANA
+// BISTURÍ: CÓDIGO PARA VER "MIS VENTAS" (EL EMPLEADO)
+async function verMisVentas() {
+    document.getElementById('misVentasModal').classList.remove('hidden');
+    document.getElementById('listaMisVentas').innerHTML = '<p style="text-align:center; color:var(--txt3); padding:20px;">Cargando ventas en vivo...</p>';
+    
+    try {
+        let {data, error} = await sb.from('transacciones').select('*').eq('local_pin', pin).ilike('nombre_local', nom).order('created_at', {ascending: false}).limit(200);
+        if (error) throw error;
+        
+        let html = '';
+        let txsTurno = [];
+        for(let t of (data || [])){
+            if((t.tipo_operacion||'').toLowerCase().includes('cierre')) break;
+            txsTurno.push(t);
+        }
+        
+        if (txsTurno.length === 0) {
+            html = '<p style="text-align:center; color:var(--txt3); padding:20px;">Caja en cero este turno.</p>';
+        } else {
+            txsTurno.forEach(tx => {
+                const o = (tx.tipo_operacion || '').toLowerCase();
+                const m = (tx.metodo_pago || 'efectivo').toLowerCase();
+                const v = parseFloat(tx.monto_total) || 0;
+                const rs = o.includes('proveedor') || o.includes('retiro');
+                const ic = m === 'efectivo' ? '💵' : m === 'transferencia' ? '🏦' : m === 'tarjeta' ? '💳' : '📝';
+                const colorMonto = rs ? '#dc2626' : '#0284c7';
+                const signo = rs ? '−' : '+';
+                
+                html += `
+                <div class="vidrio" style="padding:10px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--borde);">
+                    <div style="display:flex; gap:10px; align-items:center;">
+                        <div style="font-size:1.4rem;">${ic}</div>
+                        <div>
+                            <b style="font-size:0.80rem; text-transform:uppercase; color:var(--txt);">${tx.tipo_operacion || 'Operación'}</b><br>
+                            <span style="font-size:0.65rem; color:var(--txt3);">${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>
+                        </div>
+                    </div>
+                    <div style="font-weight:900; color:${colorMonto}; font-size:1.05rem;">${signo}$${v.toLocaleString('es-AR')}</div>
+                </div>`;
+            });
+        }
+        document.getElementById('listaMisVentas').innerHTML = html;
+    } catch (e) {
+        document.getElementById('listaMisVentas').innerHTML = '<p style="text-align:center; color:#dc2626; padding:20px;">Error al cargar ventas.</p>';
+    }
+}
+
 async function cargarPanel(){
     try{
         let{data: dt,error: et}=await sb.from('transacciones').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('created_at',{ascending:false}).limit(300);
@@ -741,7 +787,7 @@ async function cargarPanel(){
         let nGps = (ds && ds.app_data && ds.app_data.last_gps) ? ds.app_data.last_gps : last_gps;
         
         let cStr = JSON.stringify(dt) + JSON.stringify(dc) + JSON.stringify(nGps);
-        if(cStr === lastPanelDataStr) return; // Si no hay nada nuevo, no flashea la pantalla
+        if(cStr === lastPanelDataStr) return; 
         lastPanelDataStr = cStr;
         
         txs = dt || [];
@@ -971,7 +1017,6 @@ document.addEventListener('DOMContentLoaded',()=>{
     pts.forEach((p,k)=>p.addEventListener('click',()=>go(k)));
 });
 
-/* === CONEXIÓN REAL A OPENAI VÍA VERCEL === */
 async function consultarIA(mensaje) {
     try {
         document.getElementById('radarTxt').innerText = '🤖 IA Pensando...';
@@ -998,7 +1043,6 @@ async function consultarIA(mensaje) {
     }
 }
 
-// --- LÓGICA DEL BOTÓN DE INSTALACIÓN PWA ---
 let eventoInstalacion;
 const btnInstalar = document.getElementById('btn-instalar-app');
 
@@ -1024,7 +1068,6 @@ window.addEventListener('appinstalled', () => {
     if (btnInstalar) btnInstalar.style.display = 'none';
 });
 
-// --- REGISTRO DEL SERVICE WORKER ---
 if ('serviceWorker' in navigator) {
     window.addEventListener('load', () => {
         navigator.serviceWorker.register('sw.js').then(reg => {
