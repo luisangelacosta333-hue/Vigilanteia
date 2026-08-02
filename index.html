@@ -159,9 +159,10 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
 <div class="modal-bg hidden" id="pinModal">
   <div class="modal vidrio2">
     <h3 style="margin:0 0 12px;font-size:1.15rem;font-weight:900">🔒 Acceso Dueño</h3>
-    <input id="pinAdmin" type="password" maxlength="8" class="input-text" style="text-align:center;font-size:1.6rem;letter-spacing:10px" placeholder="****" autocomplete="off">
+    <!-- MASK PARA OCULTAR EL PIN DEL DUEÑO -->
+    <input id="pinAdmin" type="password" maxlength="4" inputmode="numeric" class="input-text" style="text-align:center;font-size:1.6rem;letter-spacing:10px" placeholder="****" autocomplete="off">
     <div style="display:flex;gap:8px;margin-top:6px">
-      <button class="btn" style="margin:0;background:#64748b;box-shadow:none" onclick="document.getElementById('pinModal').classList.add('hidden')">Cancelar</button>
+      <button class="btn" style="margin:0;background:#64748b;box-shadow:none" onclick="document.getElementById('pinModal').classList.add('hidden'); document.getElementById('pinAdmin').value=''">Cancelar</button>
       <button class="btn" style="margin:0" onclick="verificarPinAdmin()">Entrar</button>
     </div>
   </div>
@@ -214,7 +215,6 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
     <p class="sub-glam" style="max-width:600px;margin:0 auto">La inteligencia artificial que <b>controla tu negocio las 24 horas, los 30 días del mes</b>, aunque estés tranquilo en tu casa.</p>
   </div>
   
-  <!-- BOTÓN DE INSTALACIÓN PWA -->
   <div style="text-align: center; margin-top: 15px;">
     <button id="btn-instalar-app" class="btn-glam anim-entrar" style="display: none; background: linear-gradient(135deg, #10b981, #059669); margin-bottom: 5px; box-shadow: 0 10px 25px rgba(16, 185, 129, 0.4); max-width: 540px;">
         📲 INSTALAR APP EN EL CELULAR
@@ -266,6 +266,7 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
       <button class="btn-glam" onclick="document.getElementById('formRegistro').scrollIntoView({behavior:'smooth'})">ACTIVAR PREMIUM AHORA</button>
     </div>
   </div>
+  
   <h2 class="titulo-glam anim-entrar" style="text-align:center;font-size:1.9rem;margin:52px 0 4px;letter-spacing:-1.2px">Todo lo que hace por vos</h2>
   <p class="sub-glam anim-entrar" style="text-align:center;margin:0 0 18px">10 herramientas en una sola plataforma. Tu empleado que nunca duerme.</p>
   <div class="grid-funciones anim-entrar">
@@ -282,23 +283,29 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
     <div class="funcion"><div class="ico">🎤</div><b style="font-family:'Montserrat';font-weight:700">11 · Asistente de Voz</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Te explica absolutamente todo en español argentino, sin tecnicismos. Tocá el micrófono y escuchalo.</p></div>
     <div class="funcion"><div class="ico">🇦🇷</div><b style="font-family:'Montserrat';font-weight:700">12 · Hecho en Argentina</b><p style="color:var(--txt2);font-size:.82rem;margin:4px 0 0;line-height:1.5">Pensado, probado y armado para la realidad de los comercios argentinos. Soporte local por WhatsApp.</p></div>
   </div>
+  
   <div id="formRegistro" class="lp-card vidrio2 anim-entrar" style="border-top:3px solid #0284c7;margin-top:48px;max-width:540px;margin-left:auto;margin-right:auto;padding:18px">
     <div style="text-align:center;margin-bottom:10px">
       <h2 style="margin:4px 0 2px;font-family:'Montserrat';font-weight:900;font-size:1.6rem;letter-spacing:-.3px">CREAR CUENTA</h2>
       <p style="color:var(--txt3);font-size:.76rem;margin:0">30 segundos · Listo para usar</p>
     </div>
-    <input id="rNom" class="lp-input" placeholder="Nombre de tu Local" autocomplete="off">
+    <!-- BISTURÍ: VALIDACIONES EN REGISTRO -->
+    <input id="rNom" class="lp-input" placeholder="Nombre de tu Local" autocomplete="off" style="text-transform: uppercase;">
     <select id="rProv" class="lp-input"><option value="" disabled selected>Seleccioná tu Provincia</option>
       <option>Buenos Aires</option><option>CABA</option><option>Catamarca</option><option>Chaco</option><option>Chubut</option><option>Córdoba</option><option>Corrientes</option><option>Entre Ríos</option><option>Formosa</option><option>Jujuy</option><option>La Pampa</option><option>La Rioja</option><option>Mendoza</option><option>Misiones</option><option>Neuquén</option><option>Río Negro</option><option>Salta</option><option>San Juan</option><option>San Luis</option><option>Santa Cruz</option><option>Santa Fe</option><option>Santiago del Estero</option><option>Tierra del Fuego</option><option>Tucumán</option>
     </select>
     <input id="rWa" class="lp-input" placeholder="Tu WhatsApp (Ej: 381...)" autocomplete="off">
-    <input id="rPin" class="lp-input" placeholder="Creá tu PIN de 4 dígitos" inputmode="numeric" autocomplete="off">
+    <!-- DOBLE PIN INCORPORADO -->
+    <input id="rPin" class="lp-input" type="password" placeholder="Creá tu PIN de Empleado (4 dígitos)" maxlength="4" inputmode="numeric" autocomplete="off" style="margin-bottom: 8px;">
+    <input id="rAdminPin" class="lp-input" type="password" placeholder="Creá tu PIN de Dueño (Secreto)" maxlength="4" inputmode="numeric" autocomplete="off" style="margin-bottom: 18px; border-color: #0ea5e9;">
+    
     <button class="btn-glam" onclick="registrar()">✅ ACTIVAR MI CUENTA</button>
   </div>
+  
   <div class="lp-card vidrio anim-entrar" style="max-width:540px;margin:14px auto 0;padding:16px">
     <h3 style="margin:0 0 10px;font-family:'Montserrat';font-weight:800;letter-spacing:.3px;text-align:center;font-size:1rem">🛡️ YA TENGO CUENTA</h3>
-    <input id="lNom" class="lp-input" placeholder="Nombre del Local" autocomplete="off">
-    <input id="lPin" class="lp-input" placeholder="PIN" inputmode="numeric" autocomplete="off">
+    <input id="lNom" class="lp-input" placeholder="Nombre del Local" autocomplete="off" style="text-transform: uppercase;">
+    <input id="lPin" class="lp-input" type="password" placeholder="PIN de Empleado" maxlength="4" inputmode="numeric" autocomplete="off">
     <button class="btn-glam borde" onclick="ingresar()">ENTRAR A MI CAJA</button>
   </div>
   <div style="text-align:center;margin-top:14px">
@@ -333,7 +340,7 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
   <div class="top-bar vidrio">
     <div style="display:flex;gap:6px;align-items:center"><span class="ia-badge">🛡️ IA VIVA</span><span id="dias" class="dias">⏳ -- Días</span></div>
     <div style="display:flex;align-items:center;gap:6px">
-      <!-- BOTÓN GPS AGREGADO -->
+      <!-- BOTÓN GPS -->
       <button id="btn-gps" onclick="toggleGps()" style="padding:5px 8px;border-radius:8px;border:1px solid var(--borde);background:transparent;font-weight:700;cursor:pointer;font-size:.8rem;color:var(--txt)">📍 OFF</button>
       <span id="btnAdmin" style="font-size:1.3rem;cursor:pointer;color:#0284c7;font-weight:900;padding:3px">🔒</span>
       <button class="btn-lock" onclick="confirmarSalir()" style="padding:5px 8px;border-radius:8px;border:1px solid var(--borde);background:transparent;font-weight:700;cursor:pointer;font-size:.8rem;color:var(--txt)">SALIR</button>
@@ -360,6 +367,7 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
   <input id="cam" type="file" accept="image/*" capture="environment" style="display:none" onchange="subirFoto(event)">
   <input id="gal" type="file" accept="image/*" style="display:none" onchange="subirFoto(event)">
 </div>
+
 <div id="v-libreta" class="view-container hidden" style="padding:0 12px 12px">
   <div class="top-bar vidrio"><div style="font-weight:900;font-size:1rem;font-family:'Montserrat'">Libreta de Fiados 📝</div><button onclick="caja()" style="padding:5px 8px;border-radius:8px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer;font-size:.8rem">VOLVER</button></div>
   <div class="vidrio" style="padding:10px;border-radius:11px;border:1.5px dashed #0284c7;background:rgba(224,242,254,.4);margin-bottom:8px;font-size:.8rem">
@@ -374,6 +382,7 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
   </div>
   <button class="btn" style="margin-top:10px;background:#fff;color:#0284c7;border:1.5px solid #0284c7;box-shadow:none;font-size:.86rem" onclick="listaClientes()">👥 SELECCIONAR CLIENTE</button>
 </div>
+
 <div id="v-clientes" class="view-container hidden">
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b style="font-size:1.1rem;font-weight:900;font-family:'Montserrat'">Mis Clientes</b><button onclick="ver('v-libreta')" style="padding:5px 8px;border-radius:8px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer;font-size:.8rem">ATRÁS</button></div>
   <div id="montoElegido" class="vidrio" style="padding:8px 12px;border-radius:10px;text-align:center;font-weight:800;color:#0369a1;margin-bottom:8px;display:none"></div>
@@ -386,13 +395,14 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
   <input id="buscar" class="input-text" placeholder="🔎 Buscar cliente…" oninput="filtrar()" autocomplete="off">
   <div id="listaCli" style="padding-bottom:14px"></div>
 </div>
+
 <div id="v-panel" class="view-container hidden">
   <div class="panel-header-glass">
     <div><b style="font-size:1.4rem;font-weight:900;line-height:1.1;font-family:'Montserrat';color:var(--txt)">Panel Dueño<br><span class="azul-texto" id="nomLocal" style="font-size:1.1rem;letter-spacing:-0.5px;">LOCAL</span></b></div>
     <button onclick="caja()" style="border:none;background:transparent;font-size:1.6rem;cursor:pointer;color:var(--txt3)">✕</button>
   </div>
   <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;padding:0 4px">
-    <span style="color:#16a34a;font-weight:800;font-size:.85rem;display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:8px;height:8px;background:#16a34a;border-radius:50%;box-shadow:0 0 8px #16a34a"></span>TURNO VIVO</span>
+    <span style="color:#16a34a;font-weight:800;font-size:.85rem;display:flex;align-items:center;gap:6px"><span style="display:inline-block;width:8px;height:8px;background:#16a34a;border-radius:50%;box-shadow:0 0 8px #16a34a"></span>TURNO EN VIVO</span>
     <div style="display:flex;gap:6px">
       <button onclick="pdf()" class="vidrio" style="padding:8px 12px;border-radius:10px;border:1px solid #0284c7;color:#0284c7;font-weight:800;cursor:pointer;font-size:.8rem;box-shadow:none">📄 PDF</button>
       <button onclick="cargarPanel()" class="vidrio" style="padding:8px 12px;border-radius:10px;border:1px solid #0284c7;color:#0284c7;font-weight:800;cursor:pointer;font-size:.8rem;box-shadow:none">↻ ACTUALIZAR</button>
@@ -424,7 +434,7 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
 
 <script>
 /* =========================================================
-   CONEXIÓN DIRECTA A SUPABASE (SIN BACKEND)
+   CONEXIÓN DIRECTA A SUPABASE
    ========================================================= */
 const supabaseUrl = 'https://drpjcmznauposqlhaveo.supabase.co';
 const supabaseKey = 'sb_publishable_xo7-uUQqtWvEWoLGqqlrsg_rxdroLx4';
@@ -490,18 +500,21 @@ function alEntrar(p){
     if(VOZ && map[p]) setTimeout(()=>hablar(map[p]),400);
 }
 
-// --- VARIABLES GPS ---
+// BISTURÍ: VARIABLES GLOBALES Y ESPEJO
 let gpsActive = false;
 let gpsInterval = null;
 let last_gps = null;
+window.panelInterval = null;
+let lastPanelDataStr = "";
 
-let pin=localStorage.getItem('v_pin'),nom=localStorage.getItem('v_nombre')||'';
+let pin=localStorage.getItem('v_pin'), nom=localStorage.getItem('v_nombre')||'', adminPin=localStorage.getItem('v_admin_pin')||'0000';
 let va='',ac=0,opActual='venta',ultOp=null;
 let vaL='',acL=0,ultOpL=null;
 let txs=[],graf=null,clientes=[],montoSel=0;
 const $acu=document.getElementById('acu'),$act=document.getElementById('act');
 const $acuL=document.getElementById('acuL'),$actL=document.getElementById('actL');
 const radar=document.getElementById('radar');
+
 if(pin&&nom) loginOk(pin,nom);
 
 function ver(id){
@@ -509,7 +522,15 @@ function ver(id){
     document.getElementById(id).classList.remove('hidden');
     window.scrollTo(0,0);
     alEntrar(id);
+    
+    // BISTURÍ: MOTOR ESPEJO EN VIVO (ACTUALIZA SOLO CADA 5 SEGUNDOS)
+    if(id === 'v-panel') {
+        if(!window.panelInterval) window.panelInterval = setInterval(cargarPanel, 5000);
+    } else {
+        if(window.panelInterval) { clearInterval(window.panelInterval); window.panelInterval = null; }
+    }
 }
+
 function caja(){ver('v-caja');actualizar()}
 function toast(m,c){
     const t=document.getElementById('toast');t.innerText=m;
@@ -521,37 +542,57 @@ function toast(m,c){
 
 async function mercadoPago(){toast('Abriendo Mercado Pago');location.href='https://mpago.la/1Wi2UXN'}
 
+// BISTURÍ: PLAN ANTIPÍCARO Y DOBLE PIN EN REGISTRO
 async function registrar(){
-    const n=document.getElementById('rNom').value.trim(),p=document.getElementById('rPin').value.trim(),pr=document.getElementById('rProv').value,w=document.getElementById('rWa').value.trim();
-    if(!n||!p||!pr||!w) return toast('Completá todo','#dc2626');
+    const n=document.getElementById('rNom').value.trim().toUpperCase(); // Forzamos mayúsculas
+    const p=document.getElementById('rPin').value.trim();
+    const ap=document.getElementById('rAdminPin').value.trim();
+    const pr=document.getElementById('rProv').value;
+    const w=document.getElementById('rWa').value.trim();
+    
+    if(!n||!p||!ap||!pr||!w) return toast('Completá todos los datos y PINs','#dc2626');
     toast('Creando cuenta…');
     try{
         let waLimpio=w?String(w).trim():'No especificado';
+        
+        // ANTIPÍCARO: Chequeo estricto de número repetido
         if(waLimpio!=='No especificado' && !waLimpio.includes('*')){
-            let {data:existeWa}=await sb.from('suscripciones').select('id').eq('whatsapp',waLimpio).maybeSingle();
-            if(existeWa) return toast("Este WhatsApp ya usó sus 30 días gratis", '#dc2626');
+            let {data:existeWa} = await sb.from('suscripciones').select('id').eq('whatsapp',waLimpio).maybeSingle();
+            if(existeWa) return toast("❌ ANTIPÍCARO: Este WhatsApp ya tiene una cuenta.", '#dc2626');
         }
-        let {data:existeCuenta} = await sb.from('suscripciones').select('id').ilike('nombre_local', n).eq('pin_acceso', p).maybeSingle();
-        if(existeCuenta) return toast("⚠️ Esta cuenta ya existe", '#dc2626');
+        
+        // ANTIPÍCARO: Chequeo estricto de nombre repetido
+        let {data:existeCuenta} = await sb.from('suscripciones').select('id').eq('nombre_local', n).maybeSingle();
+        if(existeCuenta) return toast("❌ Ese Nombre de Local ya existe. Elegí otro.", '#dc2626');
 
         let venc=new Date(); venc.setDate(venc.getDate()+30);
-        let {error}=await sb.from('suscripciones').insert([{nombre_local:n,pin_acceso:p,fecha_vencimiento:venc,estado:'prueba',provincia:pr,whatsapp:waLimpio}]);
+        let {error}=await sb.from('suscripciones').insert([{nombre_local:n, pin_acceso:p, admin_pin:ap, fecha_vencimiento:venc, estado:'prueba', provincia:pr, whatsapp:waLimpio}]);
         if(error) return toast("BD: "+error.message, '#dc2626');
         
-        pin=p;nom=n;localStorage.setItem('v_pin',p);localStorage.setItem('v_nombre',n);loginOk(p,n);
+        pin=p; nom=n; adminPin=ap;
+        localStorage.setItem('v_pin',p); localStorage.setItem('v_nombre',n); localStorage.setItem('v_admin_pin',ap);
+        loginOk(p,n);
     }catch(e){toast('Sin red','#dc2626')}
 }
 
-async function ingresar(){const p=document.getElementById('lPin').value,n=document.getElementById('lNom').value;if(!p||!n)return toast('Datos incompletos','#dc2626');loginOk(p,n)}
+// BISTURÍ: LOGIN FORZANDO MAYÚSCULAS
+async function ingresar(){
+    const p=document.getElementById('lPin').value;
+    const n=document.getElementById('lNom').value.trim().toUpperCase();
+    if(!p||!n)return toast('Datos incompletos','#dc2626');
+    loginOk(p,n);
+}
 
 async function loginOk(p,n){
     toast('Verificando…');
+    n = n.toUpperCase();
     try{
-        let {data,error}=await sb.from('suscripciones').select('*').ilike('nombre_local',n).eq('pin_acceso',p).maybeSingle();
+        let {data,error}=await sb.from('suscripciones').select('*').eq('nombre_local',n).eq('pin_acceso',p).maybeSingle();
         if(error) return toast("BD: "+error.message, '#dc2626');
-        if(!data) return toast('Nombre o PIN incorrecto', '#dc2626');
+        if(!data) return toast('❌ PIN Empleado o Local incorrecto', '#dc2626');
         
-        pin=p.trim();nom=data.nombre_local;localStorage.setItem('v_pin',pin);localStorage.setItem('v_nombre',nom);
+        pin=p.trim(); nom=data.nombre_local; adminPin=data.admin_pin||'0000';
+        localStorage.setItem('v_pin',pin); localStorage.setItem('v_nombre',nom); localStorage.setItem('v_admin_pin',adminPin);
         document.getElementById('nomLocal').innerText=nom.toUpperCase();
         
         let vencido = new Date(data.fecha_vencimiento)<new Date();
@@ -584,7 +625,7 @@ async function auditarPago(e){
 }
 
 function confirmarSalir(){if(confirm('¿Salir?'))salir()}
-function salir(){pin=null;nom='';localStorage.clear();speechSynthesis.cancel();ver('v-landing')}
+function salir(){pin=null;nom='';adminPin='0000';localStorage.clear();speechSynthesis.cancel();ver('v-landing')}
 
 document.addEventListener('DOMContentLoaded',()=>{
     const ba=document.getElementById('btnAdmin');
@@ -596,15 +637,17 @@ document.addEventListener('DOMContentLoaded',()=>{
     },{passive:false}));
 });
 
+// BISTURÍ: VALIDACIÓN EXACTA DEL PIN DEL DUEÑO
 function verificarPinAdmin(){
     const x=document.getElementById('pinAdmin').value;
-    if(x===pin){
+    if(x === adminPin){
         document.getElementById('pinModal').classList.add('hidden');
+        document.getElementById('pinAdmin').value='';
         ver('v-panel');
         cargarPanel();
         return;
     }
-    toast('PIN incorrecto','#dc2626');
+    toast('❌ PIN Secreto incorrecto','#dc2626');
 }
 
 function resta(){return opActual==='proveedor'||opActual==='retiro'}
@@ -645,7 +688,7 @@ function borrarL(){vaL=vaL.slice(0,-1);actualizarL()}
 function limpiarL(){vaL='';acL=0;ultOpL=null;actualizarL()}
 function irLibreta(){limpiarL();ver('v-libreta')}
 
-// --- FUNCIÓN GPS ---
+// BISTURÍ: GPS SE SUBE A LA NUBE PARA EL ESPEJO
 function toggleGps(force = false) { 
     let btn = document.getElementById('btn-gps'); 
     let turningOn = force ? true : !gpsActive;
@@ -659,8 +702,12 @@ function toggleGps(force = false) {
             const enviarPosicion = (p) => {
                 btn.innerHTML = '📍 ON'; 
                 last_gps = { lat: p.coords.latitude, lon: p.coords.longitude, time: new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}) };
+                
+                // Enviar silenciosamente a Supabase
+                sb.from('suscripciones').update({ app_data: { last_gps: last_gps } }).eq('nombre_local', nom).then();
+
                 if(!document.getElementById('v-panel').classList.contains('hidden')) {
-                    armarPanel(); // Solo repinta si el panel está abierto
+                    armarPanel(); 
                 }
             };
 
@@ -684,21 +731,31 @@ function toggleGps(force = false) {
     } 
 }
 
+// BISTURÍ: CARGA PANEL INTELIGENTE Y LIVIANA
 async function cargarPanel(){
     try{
         let{data: dt,error: et}=await sb.from('transacciones').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('created_at',{ascending:false}).limit(300);
-        txs = dt || []; armarPanel();
-    }catch(e){}
-    try{
         let{data: dc,error: ec}=await sb.from('clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
+        let{data: ds}=await sb.from('suscripciones').select('app_data').eq('nombre_local',nom).eq('pin_acceso',pin).single();
+        
+        let nGps = (ds && ds.app_data && ds.app_data.last_gps) ? ds.app_data.last_gps : last_gps;
+        
+        let cStr = JSON.stringify(dt) + JSON.stringify(dc) + JSON.stringify(nGps);
+        if(cStr === lastPanelDataStr) return; // Si no hay nada nuevo, no flashea la pantalla
+        lastPanelDataStr = cStr;
+        
+        txs = dt || [];
+        last_gps = nGps;
+        
         if(dc){
-            clientes = dc; // 🛠️ FIX QUIRÚRGICO 1: Guardamos la data globalmente para que el cierre de turno la pueda leer
+            clientes = dc; 
             const cs=dc,tf=cs.reduce((s,c)=>s+parseFloat(c.deuda||0),0);
             document.getElementById('tFia').innerText='$'+tf.toLocaleString('es-AR');
             document.getElementById('deudores').innerHTML=cs.filter(c=>parseFloat(c.deuda||0)>0).length?
                 cs.filter(c=>parseFloat(c.deuda||0)>0).slice(0,12).map(c=>`<div class="vidrio" style="padding:12px;border-radius:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:1.05rem;color:var(--txt)">${c.nombre}</b><br><span style="color:var(--txt3);font-size:.8rem">📱 ${c.whatsapp||'S/N'}</span></div><div style="display:flex;gap:8px;align-items:center"><b class="azul-texto" style="font-size:1.2rem">$${parseFloat(c.deuda).toLocaleString('es-AR')}</b><button class="btn" style="margin:0;padding:8px 12px;font-size:.78rem;width:auto" onclick="wa('${c.nombre}',${c.deuda},'${c.whatsapp||''}')">COBRAR</button></div></div>`).join('')
                 :'<p style="color:var(--txt3);text-align:center;padding:14px;border-radius:12px" class="vidrio">✅ Nadie te debe plata</p>';
         }
+        armarPanel();
     }catch(e){}
 }
 
@@ -721,7 +778,6 @@ function armarPanel(){
     document.getElementById('tTar').innerText='$'+ta.toLocaleString('es-AR');
     document.getElementById('movs').innerHTML=html||'<p style="color:var(--txt3);text-align:center;padding:20px;background:#fff;border-radius:14px;border:1px solid var(--borde)">Caja en cero este turno</p>';
     
-    // --- INCORPORACIÓN DEL MAPA GPS AL PANEL ---
     let admGps = document.getElementById('adm-gps');
     if (admGps) {
         if (last_gps && last_gps.lat) {
@@ -753,7 +809,6 @@ async function pdf(){
     toast('Generando PDF…');
     await cargarPanel(); 
     
-    // 🛠️ FIX QUIRÚRGICO 2: Verificamos TODAS las transacciones, no solo las del turno
     if(!txs.length) return toast('Sin ventas registradas','#dc2626');
     
     const {jsPDF}=window.jspdf;const doc=new jsPDF();
@@ -762,9 +817,7 @@ async function pdf(){
     doc.setFontSize(10);doc.text(`Reporte generado: ${fstr}`,14,28);
     
     const filas=[];
-    // Ahora recorre 'txs' (todas) en lugar de 'txsTurno'
     for(const tx of txs){
-        // Cambiamos toLocaleTimeString a toLocaleString para que también muestre el día y mes
         filas.push([new Date(tx.created_at).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}),(tx.tipo_operacion||'').toUpperCase(),(tx.metodo_pago||'').toUpperCase(),'$'+parseFloat(tx.monto_total).toLocaleString('es-AR')]);
     }
     doc.autoTable({startY:34,head:[['Fecha y Hora','Operación','Método','Monto']],body:filas,theme:'grid',headStyles:{fillColor:[2,132,199]}});
@@ -873,7 +926,7 @@ async function cerrarTurno(){
             if(m!=='sistema'){if(!rs){if(m==='efectivo')e+=v;else if(m==='transferencia')tr+=v;else ta+=v}else e-=v}
         });
         f=(clientes||[]).reduce((s,c)=>s+parseFloat(c.deuda||0),0);
-        await sb.from('transacciones').insert([{monto_total:0,operacion:'cierre_caja',metodo:'sistema',local_pin:pin,nombre_local:nom}]);
+        await sb.from('transacciones').insert([{monto_total:0,tipo_operacion:'cierre_caja',metodo_pago:'sistema',local_pin:pin,nombre_local:nom}]);
         limpiar();txs=[];
         hablar(`Cierre listo. Efectivo ${e}, transferencias ${tr}, tarjetas ${ta}, fiados ${f}`);
         location.href=`https://wa.me/?text=${encodeURIComponent(`*📊 CIERRE DE TURNO · ${nom}*\n\n💵 EFECTIVO: $${e.toLocaleString('es-AR')}\n🏦 TRANSFERENCIAS: $${tr.toLocaleString('es-AR')}\n💳 TARJETAS: $${ta.toLocaleString('es-AR')}\n📒 FIADOS: $${f.toLocaleString('es-AR')}\n\n— Vigilante IA —`)}`;
@@ -983,3 +1036,4 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 </body></html>
+
