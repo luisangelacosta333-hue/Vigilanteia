@@ -1,24 +1,70 @@
-{
-  "name": "Vigilante IA",
-  "short_name": "Vigilante",
-  "description": "Control Total Premium",
-  "start_url": "./",
-  "display": "standalone",
-  "background_color": "#f6f9fc",
-  "theme_color": "#0284c7",
-  "icons": [
-    {
-      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiMwMjg0YzciLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxODAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmaWxsPSIjZmZmIiBmb250LXdlaWdodD0iYm9sZCI+VklBPC90ZXh0Pjwvc3ZnPg==",
-      "sizes": "192x192",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
-    },
-    {
-      "src": "data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCA1MTIgNTEyIiB3aWR0aD0iNTEyIiBoZWlnaHQ9IjUxMiI+PHJlY3Qgd2lkdGg9IjUxMiIgaGVpZ2h0PSI1MTIiIGZpbGw9IiMwMjg0YzciLz48dGV4dCB4PSI1MCUiIHk9IjUwJSIgZG9taW5hbnQtYmFzZWxpbmU9Im1pZGRsZSIgdGV4dC1hbmNob3I9Im1pZGRsZSIgZm9udC1zaXplPSIxODAiIGZvbnQtZmFtaWx5PSJzYW5zLXNlcmlmIiBmaWxsPSIjZmZmIiBmb250LXdlaWdodD0iYm9sZCI+VklBPC90ZXh0Pjwvc3ZnPg==",
-      "sizes": "512x512",
-      "type": "image/svg+xml",
-      "purpose": "any maskable"
+import { createClient } from '@supabase/supabase-js';
+
+export default async function handler(req, res) {
+    if (req.method !== 'POST') {
+        return res.status(405).json({ error: 'Método no permitido' });
     }
-  ]
+
+    try {
+        // 1. Verificamos que Vercel esté leyendo las llaves ocultas
+        const url = process.env.SUPABASE_URL;
+        const key = process.env.SUPABASE_SERVICE_KEY;
+
+        if (!url || !key) {
+            return res.status(500).json({ 
+                success: false, 
+                mensaje: "❌ Vercel no está leyendo las llaves. Dale a 'Redeploy' en Vercel." 
+            });
+        }
+
+        // 2. Conectamos usando la llave maestra
+        const supabase = createClient(url, key);
+
+        const { n, p, ap, pr, waLimpio, venc } = req.body;
+
+        // 3. Verificamos si el WhatsApp ya existe
+        if (waLimpio !== 'No especificado' && !waLimpio.includes('*')) {
+            const { data: existeWa } = await supabase
+                .from('vigilante_suscripciones')
+                .select('id')
+                .eq('whatsapp', waLimpio)
+                .maybeSingle();
+            
+            if (existeWa) {
+                return res.status(400).json({ success: false, mensaje: "❌ ANTIPÍCARO: Este WhatsApp ya tiene una cuenta." });
+            }
+        }
+
+        // 4. Verificamos si el Local ya existe
+        const { data: existeCuenta } = await supabase
+            .from('vigilante_suscripciones')
+            .select('id')
+            .eq('nombre_local', n)
+            .maybeSingle();
+
+        if (existeCuenta) {
+            return res.status(400).json({ success: false, mensaje: "❌ Ese Nombre de Local ya existe. Elegí otro." });
+        }
+
+        // 5. Guardamos la nueva cuenta (esto se salta el candado RLS)
+        const { error } = await supabase
+            .from('vigilante_suscripciones')
+            .insert([{ 
+                nombre_local: n, 
+                pin_acceso: p, 
+                admin_pin: ap, 
+                fecha_vencimiento: venc, 
+                estado: 'prueba', 
+                provincia: pr, 
+                whatsapp: waLimpio 
+            }]);
+
+        if (error) throw error;
+
+        return res.status(200).json({ success: true });
+
+    } catch (error) {
+        return res.status(500).json({ success: false, mensaje: "Error de Servidor: " + error.message });
+    }
 }
 
