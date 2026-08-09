@@ -303,13 +303,11 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
       <h2 style="margin:4px 0 2px;font-family:'Montserrat';font-weight:900;font-size:1.6rem;letter-spacing:-.3px">CREAR CUENTA</h2>
       <p style="color:var(--txt3);font-size:.76rem;margin:0">30 segundos · Listo para usar</p>
     </div>
-    <!-- BISTURÍ: VALIDACIONES EN REGISTRO -->
     <input id="rNom" class="lp-input" placeholder="Nombre de tu Local" autocomplete="off" style="text-transform: uppercase;">
     <select id="rProv" class="lp-input"><option value="" disabled selected>Seleccioná tu Provincia</option>
       <option>Buenos Aires</option><option>CABA</option><option>Catamarca</option><option>Chaco</option><option>Chubut</option><option>Córdoba</option><option>Corrientes</option><option>Entre Ríos</option><option>Formosa</option><option>Jujuy</option><option>La Pampa</option><option>La Rioja</option><option>Mendoza</option><option>Misiones</option><option>Neuquén</option><option>Río Negro</option><option>Salta</option><option>San Juan</option><option>San Luis</option><option>Santa Cruz</option><option>Santa Fe</option><option>Santiago del Estero</option><option>Tierra del Fuego</option><option>Tucumán</option>
     </select>
     <input id="rWa" class="lp-input" placeholder="Tu WhatsApp (Ej: 381...)" autocomplete="off">
-    <!-- DOBLE PIN INCORPORADO -->
     <input id="rPin" class="lp-input" type="password" placeholder="Creá tu PIN de Empleado (4 dígitos)" maxlength="4" inputmode="numeric" autocomplete="off" style="margin-bottom: 8px;">
     <input id="rAdminPin" class="lp-input" type="password" placeholder="Creá tu PIN de Dueño (Secreto)" maxlength="4" inputmode="numeric" autocomplete="off" style="margin-bottom: 18px; border-color: #0ea5e9;">
     
@@ -731,7 +729,6 @@ function toggleGps(force = false) {
     } 
 }
 
-// BISTURÍ: CÓDIGO PARA VER "MIS VENTAS" (EL EMPLEADO)
 async function verMisVentas() {
     document.getElementById('misVentasModal').classList.remove('hidden');
     document.getElementById('listaMisVentas').innerHTML = '<p style="text-align:center; color:var(--txt3); padding:20px;">Cargando ventas en vivo...</p>';
@@ -817,7 +814,9 @@ function armarPanel(){
         const rs=o.includes('proveedor')||o.includes('retiro');
         if(m!=='sistema'){if(!rs){if(m==='efectivo')e+=v;else if(m==='transferencia')tr+=v;else ta+=v}else e-=v;saldo=rs?saldo-v:saldo+v;eti.push(new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}));dat.push(saldo)}
         const ic=m==='efectivo'?'💵':m==='transferencia'?'🏦':m==='tarjeta'?'💳':'📝';
-        html = `<div class="tx-item vidrio"><div style="font-size:1.5rem">${ic}</div><div style="text-align:left"><b style="text-transform:uppercase;color:var(--txt)">${tx.tipo_operacion||'Operación'}</b><br><span style="color:var(--txt3);font-size:.7rem">${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>${tx.foto_base64?`<br><button onclick="verFoto('${tx.id}')" style="background:var(--azul);color:#fff;border:none;padding:3px 8px;border-radius:999px;font-size:.68rem;margin-top:4px;font-weight:700">FOTO</button>`:''}</div><div style="color:${rs?'#dc2626':'#0284c7'};font-size:1.15rem;font-weight:900">${rs?'−':'+'}$${v.toLocaleString('es-AR')}</div></div>` + html;
+        
+        // BISTURÍ: CÓDIGO CORREGIDO PARA MOSTRAR LA FOTO DESDE LA URL
+        html = `<div class="tx-item vidrio"><div style="font-size:1.5rem">${ic}</div><div style="text-align:left"><b style="text-transform:uppercase;color:var(--txt)">${tx.tipo_operacion||'Operación'}</b><br><span style="color:var(--txt3);font-size:.7rem">${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>${tx.foto_url?`<br><button onclick="verFoto('${tx.id}')" style="background:var(--azul);color:#fff;border:none;padding:3px 8px;border-radius:999px;font-size:.68rem;margin-top:4px;font-weight:700">FOTO</button>`:''}</div><div style="color:${rs?'#dc2626':'#0284c7'};font-size:1.15rem;font-weight:900">${rs?'−':'+'}$${v.toLocaleString('es-AR')}</div></div>` + html;
     });
     document.getElementById('tEfe').innerText='$'+e.toLocaleString('es-AR');
     document.getElementById('tTra').innerText='$'+tr.toLocaleString('es-AR');
@@ -848,7 +847,13 @@ function armarPanel(){
     graf=new Chart(cx,{type:'line',data:{labels:eti,datasets:[{label:'Caja',data:dat,borderColor:'#0284c7',backgroundColor:grad,borderWidth:3,fill:true,tension:.42,pointRadius:0,pointHoverRadius:5,pointHoverBackgroundColor:'#fff',pointHoverBorderColor:'#0284c7',pointHoverBorderWidth:2}]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{backgroundColor:'#0c4a6e',cornerRadius:8,padding:10}},scales:{x:{display:false},y:{ticks:{color:'#94a3b8',font:{size:10}},grid:{color:'rgba(148,163,184,.12)',drawBorder:false}}}}});
 }
 
-function verFoto(id){const t=txs.find(x=>x.id==id);if(t&&t.foto_base64){document.getElementById('laFoto').src=t.foto_base64;document.getElementById('visorFoto').classList.remove('hidden')}}
+function verFoto(id){
+    const t=txs.find(x=>x.id==id);
+    if(t&&t.foto_url){
+        document.getElementById('laFoto').src=t.foto_url;
+        document.getElementById('visorFoto').classList.remove('hidden')
+    }
+}
 function cerrarFoto(){document.getElementById('visorFoto').classList.add('hidden');document.getElementById('laFoto').src=''}
 
 async function pdf(){
@@ -983,6 +988,26 @@ function abrirSheet(){if(Math.abs(total())===0)return toast('Ingresá monto','#d
 function cerrarSheet(){document.getElementById('cortina').classList.remove('abierto');document.getElementById('sheet').classList.remove('abierto')}
 function camara(){cerrarSheet();document.getElementById('cam').click()}
 function galeria(){cerrarSheet();document.getElementById('gal').click()}
+
+// BISTURÍ: SUBIDA DIRECTA A STORAGE (BALDE)
+async function uploadFotoToSupabase(base64Str, localPin) {
+    try {
+        const base64Data = base64Str.split(',')[1];
+        const byteCharacters = atob(base64Data);
+        const byteNumbers = new Array(byteCharacters.length);
+        for (let i = 0; i < byteCharacters.length; i++) byteNumbers[i] = byteCharacters.charCodeAt(i);
+        const byteArray = new Uint8Array(byteNumbers);
+        const blob = new Blob([byteArray], {type: 'image/jpeg'});
+        
+        const fileName = `${localPin.replace(/\s+/g, '')}/FOTO-${Date.now()}-${Math.floor(Math.random()*1000)}.jpg`;
+        const { data, error } = await sb.storage.from('vigilante_comprobantes').upload(fileName, blob);
+        
+        if (error) return base64Str; // Si el balde falla, guarda el base64 como plan b
+        const { data: publicUrlData } = sb.storage.from('vigilante_comprobantes').getPublicUrl(fileName);
+        return publicUrlData.publicUrl; 
+    } catch(e) { return base64Str; }
+}
+
 function subirFoto(e){
     const f=e.target.files[0];if(!f)return;
     document.getElementById('radarTxt').innerText='🛡️ IA revisando comprobante';radar.style.display='flex';
@@ -996,12 +1021,20 @@ function subirFoto(e){
     }
 }
 
+// BISTURÍ: COBRAR GUARDA EL LINK DEL BALDE (foto_url)
 async function cobrar(mt,fb=null){
     const tot=total();if(tot===0)return;
     if(fb){radar.style.display='flex';await new Promise(r=>setTimeout(r,1500))}else toast(`Cobrando en ${mt}`);
     try{
         let m=Math.abs(tot),op=String(opActual).toLowerCase(),pl=String(pin).trim(),nl=nom?String(nom).trim():'';
-        let{error}=await sb.from('vigilante_transacciones').insert([{monto_total:m,tipo_operacion:op,metodo_pago:String(mt).toLowerCase(),estado_auditoria_ia:'aprobado',foto_base64:fb||null,local_pin:pl,nombre_local:nl}]);
+        
+        let finalFotoUrl = null;
+        if(fb) {
+           finalFotoUrl = await uploadFotoToSupabase(fb, pl);
+        }
+
+        let{error}=await sb.from('vigilante_transacciones').insert([{monto_total:m,tipo_operacion:op,metodo_pago:String(mt).toLowerCase(),estado_auditoria_ia:'aprobado',foto_url:finalFotoUrl,local_pin:pl,nombre_local:nl}]);
+        
         if(fb)radar.style.display='none';
         if(error) return toast('Error en BD','#dc2626');
         toast('✅ APROBADO','#16a34a'); limpiar(); hablar('Aprobado');
