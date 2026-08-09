@@ -1,20 +1,24 @@
 import { createClient } from '@supabase/supabase-js';
 
-// Conecta usando las variables ocultas de Vercel (la llave maestra)
-const supabase = createClient(
-    process.env.SUPABASE_URL,
-    process.env.SUPABASE_SERVICE_KEY
-);
-
 export default async function handler(req, res) {
     if (req.method !== 'POST') {
         return res.status(405).json({ error: 'Método no permitido' });
     }
 
     try {
+        const url = process.env.SUPABASE_URL;
+        const key = process.env.SUPABASE_SERVICE_KEY;
+
+        if (!url || !key) {
+            return res.status(500).json({ 
+                success: false, 
+                mensaje: "❌ Vercel no está leyendo las llaves. Dale a 'Redeploy' en Vercel." 
+            });
+        }
+
+        const supabase = createClient(url, key);
         const { n, p, ap, pr, waLimpio, venc } = req.body;
 
-        // 1. Verificamos si el WhatsApp ya existe
         if (waLimpio !== 'No especificado' && !waLimpio.includes('*')) {
             const { data: existeWa } = await supabase
                 .from('vigilante_suscripciones')
@@ -27,7 +31,6 @@ export default async function handler(req, res) {
             }
         }
 
-        // 2. Verificamos si el Local ya existe
         const { data: existeCuenta } = await supabase
             .from('vigilante_suscripciones')
             .select('id')
@@ -38,7 +41,6 @@ export default async function handler(req, res) {
             return res.status(400).json({ success: false, mensaje: "❌ Ese Nombre de Local ya existe. Elegí otro." });
         }
 
-        // 3. Guardamos la nueva cuenta usando la llave maestra (salta el RLS)
         const { error } = await supabase
             .from('vigilante_suscripciones')
             .insert([{ 
@@ -56,7 +58,7 @@ export default async function handler(req, res) {
         return res.status(200).json({ success: true });
 
     } catch (error) {
-        return res.status(500).json({ success: false, mensaje: error.message });
+        return res.status(500).json({ success: false, mensaje: "Error de Servidor: " + error.message });
     }
 }
 
