@@ -560,7 +560,7 @@ async function registrar(){
     if(!n||!p||!ap||!pr||!w) return toast('Completá todos los datos y PINs','#dc2626');
     toast('Creando cuenta…');
     try{
-        let waLimpio=w?String(w).trim().replace(/\\s+/g, ''):'No especificado';
+        let waLimpio=w?String(w).trim().replace(/\s+/g, ''):'No especificado';
         
         if(waLimpio!=='No especificado' && !waLimpio.includes('*')){
             let {data:existeWa} = await sb.from('vigilante_suscripciones').select('id').eq('whatsapp',waLimpio).maybeSingle();
@@ -571,7 +571,7 @@ async function registrar(){
         if(existeCuenta) return toast("❌ Ese Nombre de Local ya existe. Elegí otro.", '#dc2626');
 
         // 🥷 MAGIA NINJA: Registro oficial en Supabase Auth
-        const correoTrucho = \`\${waLimpio}@vigilante.com\`;
+        const correoTrucho = `${waLimpio}@vigilante.com`;
         const passwordSegura = p + "IA";
         const { data: authData, error: authError } = await sb.auth.signUp({
             email: correoTrucho,
@@ -609,7 +609,7 @@ async function loginOk(p,n){
         
         // 🥷 MAGIA NINJA (LOGIN): Abrimos la sesión Auth usando el WhatsApp de la BD
         if (data.whatsapp && data.whatsapp !== 'No especificado') {
-            const correoTrucho = \`\${data.whatsapp}@vigilante.com\`;
+            const correoTrucho = `${data.whatsapp}@vigilante.com`;
             const passwordSegura = p + "IA";
             const { error: signInError } = await sb.auth.signInWithPassword({
                 email: correoTrucho,
@@ -627,7 +627,7 @@ async function loginOk(p,n){
             ver('v-caja');limpiar();
             const v=new Date(data.fecha_vencimiento);v.setHours(0,0,0,0);const h=new Date();h.setHours(0,0,0,0);
             const df=Math.round((v-h)/86400000),b=document.getElementById('dias');
-            if(df<=0){b.innerText='⚠️ VENCIDO';b.style.color='#dc2626'}else{b.innerText=\`⏳ \${df} DÍAS\`;b.style.color='#16a34a';hablar(\`Te quedan \${df} días de licencia\`)}
+            if(df<=0){b.innerText='⚠️ VENCIDO';b.style.color='#dc2626'}else{b.innerText=`⏳ ${df} DÍAS`;b.style.color='#16a34a';hablar(`Te quedan ${df} días de licencia`)}
             cargarPanel();
         }
     }catch(e){toast('Sin red','#dc2626')}
@@ -778,17 +778,17 @@ async function verMisVentas() {
                 const colorMonto = rs ? '#dc2626' : '#0284c7';
                 const signo = rs ? '−' : '+';
                 
-                html += \`
+                html += `
                 <div class="vidrio" style="padding:10px; border-radius:12px; margin-bottom:8px; display:flex; justify-content:space-between; align-items:center; border: 1px solid var(--borde);">
                     <div style="display:flex; gap:10px; align-items:center;">
-                        <div style="font-size:1.4rem;">\${ic}</div>
+                        <div style="font-size:1.4rem;">${ic}</div>
                         <div>
-                            <b style="font-size:0.80rem; text-transform:uppercase; color:var(--txt);">\${tx.tipo_operacion || 'Operación'}</b><br>
-                            <span style="font-size:0.65rem; color:var(--txt3);">\${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>
+                            <b style="font-size:0.80rem; text-transform:uppercase; color:var(--txt);">${tx.tipo_operacion || 'Operación'}</b><br>
+                            <span style="font-size:0.65rem; color:var(--txt3);">${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>
                         </div>
                     </div>
-                    <div style="font-weight:900; color:\${colorMonto}; font-size:1.05rem;">\${signo}$\${v.toLocaleString('es-AR')}</div>
-                </div>\`;
+                    <div style="font-weight:900; color:${colorMonto}; font-size:1.05rem;">${signo}$${v.toLocaleString('es-AR')}</div>
+                </div>`;
             });
         }
         document.getElementById('listaMisVentas').innerHTML = html;
@@ -817,7 +817,7 @@ async function cargarPanel(){
             const cs=dc,tf=cs.reduce((s,c)=>s+parseFloat(c.deuda||0),0);
             document.getElementById('tFia').innerText='$'+tf.toLocaleString('es-AR');
             document.getElementById('deudores').innerHTML=cs.filter(c=>parseFloat(c.deuda||0)>0).length?
-                cs.filter(c=>parseFloat(c.deuda||0)>0).slice(0,12).map(c=>\`<div class="vidrio" style="padding:12px;border-radius:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:1.05rem;color:var(--txt)">\${c.nombre}</b><br><span style="color:var(--txt3);font-size:.8rem">📱 \${c.whatsapp||'S/N'}</span></div><div style="display:flex;gap:8px;align-items:center"><b class="azul-texto" style="font-size:1.2rem">$\${parseFloat(c.deuda).toLocaleString('es-AR')}</b><button class="btn" style="margin:0;padding:8px 12px;font-size:.78rem;width:auto" onclick="wa('\${c.nombre}',\${c.deuda},'\${c.whatsapp||''}')">COBRAR</button></div></div>\`).join('')
+                cs.filter(c=>parseFloat(c.deuda||0)>0).slice(0,12).map(c=>`<div class="vidrio" style="padding:12px;border-radius:14px;margin-bottom:8px;display:flex;justify-content:space-between;align-items:center"><div><b style="font-size:1.05rem;color:var(--txt)">${c.nombre}</b><br><span style="color:var(--txt3);font-size:.8rem">📱 ${c.whatsapp||'S/N'}</span></div><div style="display:flex;gap:8px;align-items:center"><b class="azul-texto" style="font-size:1.2rem">$${parseFloat(c.deuda).toLocaleString('es-AR')}</b><button class="btn" style="margin:0;padding:8px 12px;font-size:.78rem;width:auto" onclick="wa('${c.nombre}',${c.deuda},'${c.whatsapp||''}')">COBRAR</button></div></div>`).join('')
                 :'<p style="color:var(--txt3);text-align:center;padding:14px;border-radius:12px" class="vidrio">✅ Nadie te debe plata</p>';
         }
         armarPanel();
@@ -838,7 +838,7 @@ function armarPanel(){
         const ic=m==='efectivo'?'💵':m==='transferencia'?'🏦':m==='tarjeta'?'💳':'📝';
         
         // BISTURÍ: CÓDIGO CORREGIDO PARA MOSTRAR LA FOTO DESDE LA URL
-        html = \`<div class="tx-item vidrio"><div style="font-size:1.5rem">\${ic}</div><div style="text-align:left"><b style="text-transform:uppercase;color:var(--txt)">\${tx.tipo_operacion||'Operación'}</b><br><span style="color:var(--txt3);font-size:.7rem">\${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>\${tx.foto_url?\`<br><button onclick="verFoto('\${tx.id}')" style="background:var(--azul);color:#fff;border:none;padding:3px 8px;border-radius:999px;font-size:.68rem;margin-top:4px;font-weight:700">FOTO</button>\`:''}</div><div style="color:\${rs?'#dc2626':'#0284c7'};font-size:1.15rem;font-weight:900">\${rs?'−':'+'}$\${v.toLocaleString('es-AR')}</div></div>\` + html;
+        html = `<div class="tx-item vidrio"><div style="font-size:1.5rem">${ic}</div><div style="text-align:left"><b style="text-transform:uppercase;color:var(--txt)">${tx.tipo_operacion||'Operación'}</b><br><span style="color:var(--txt3);font-size:.7rem">${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>${tx.foto_url?`<br><button onclick="verFoto('${tx.id}')" style="background:var(--azul);color:#fff;border:none;padding:3px 8px;border-radius:999px;font-size:.68rem;margin-top:4px;font-weight:700">FOTO</button>`:''}</div><div style="color:${rs?'#dc2626':'#0284c7'};font-size:1.15rem;font-weight:900">${rs?'−':'+'}$${v.toLocaleString('es-AR')}</div></div>` + html;
     });
     document.getElementById('tEfe').innerText='$'+e.toLocaleString('es-AR');
     document.getElementById('tTra').innerText='$'+tr.toLocaleString('es-AR');
@@ -849,13 +849,13 @@ function armarPanel(){
     if (admGps) {
         if (last_gps && last_gps.lat) {
             let lat = last_gps.lat, lon = last_gps.lon, time = last_gps.time;
-            admGps.innerHTML = \`
+            admGps.innerHTML = `
                 <div style="text-align: left; margin-bottom: 8px;">
-                    <span style="background: rgba(16, 185, 129, 0.1); color: #16a34a; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800;">⏱️ Actualizado: \${time}</span>
+                    <span style="background: rgba(16, 185, 129, 0.1); color: #16a34a; padding: 4px 10px; border-radius: 8px; font-size: 0.75rem; font-weight: 800;">⏱️ Actualizado: ${time}</span>
                 </div>
-                <iframe width="100%" height="220" style="border:0; border-radius:12px; box-shadow: var(--sombra-md);" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=\${lat},\${lon}&z=16&output=embed"></iframe>
-                <button onclick="window.open('https://www.google.com/maps?q=\${lat},\${lon}', '_blank')" style="width: 100%; margin-top: 10px; background: #f8fafc; border: 1px solid var(--borde); color: var(--txt); padding: 10px; border-radius: 10px; font-weight: 800; font-size: 0.85rem; cursor: pointer;">🗺️ ABRIR EN GOOGLE MAPS</button>
-            \`;
+                <iframe width="100%" height="220" style="border:0; border-radius:12px; box-shadow: var(--sombra-md);" loading="lazy" allowfullscreen src="https://maps.google.com/maps?q=${lat},${lon}&z=16&output=embed"></iframe>
+                <button onclick="window.open('https://www.google.com/maps?q=${lat},${lon}', '_blank')" style="width: 100%; margin-top: 10px; background: #f8fafc; border: 1px solid var(--borde); color: var(--txt); padding: 10px; border-radius: 10px; font-weight: 800; font-size: 0.85rem; cursor: pointer;">🗺️ ABRIR EN GOOGLE MAPS</button>
+            `;
         } else {
             admGps.innerHTML = '<p style="color:var(--txt3); font-size:0.85rem; padding: 20px 0;">El empleado debe encender el GPS (Botón 📍 arriba).</p>';
         }
@@ -885,16 +885,16 @@ async function pdf(){
     if(!txs.length) return toast('Sin ventas registradas','#dc2626');
     
     const {jsPDF}=window.jspdf;const doc=new jsPDF();
-    doc.setFontSize(18);doc.text(\`Historial de Ventas · \${nom.toUpperCase()}\`,14,20);
+    doc.setFontSize(18);doc.text(`Historial de Ventas · ${nom.toUpperCase()}`,14,20);
     const fstr = new Date().toLocaleString('es-AR', { dateStyle: 'short', timeStyle: 'short' });
-    doc.setFontSize(10);doc.text(\`Reporte generado: \${fstr}\`,14,28);
+    doc.setFontSize(10);doc.text(`Reporte generado: ${fstr}`,14,28);
     
     const filas=[];
     for(const tx of txs){
-        filas.push([new Date(tx.created_at).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}),(tx.tipo_operacion||'').toUpperCase(),(tx.metodo_pago||'').toUpperCase(),'$\'+parseFloat(tx.monto_total).toLocaleString('es-AR')]);
+        filas.push([new Date(tx.created_at).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}),(tx.tipo_operacion||'').toUpperCase(),(tx.metodo_pago||'').toUpperCase(),'$'+parseFloat(tx.monto_total).toLocaleString('es-AR')]);
     }
     doc.autoTable({startY:34,head:[['Fecha y Hora','Operación','Método','Monto']],body:filas,theme:'grid',headStyles:{fillColor:[2,132,199]}});
-    doc.save(\`VigilanteIA-\${nom}-TodasLasVentas.pdf\`);
+    doc.save(`VigilanteIA-${nom}-TodasLasVentas.pdf`);
     toast('PDF Descargado','#16a34a');
 }
 
@@ -903,7 +903,7 @@ function liquidar(){toast('IA procesando liquidación…');setTimeout(()=>toast(
 async function listaClientes(){
     montoSel=Math.abs(totalL());
     const m=document.getElementById('montoElegido');
-    if(montoSel>0){m.innerText=\`💰 MONTO: $\${montoSel.toLocaleString('es-AR')}\`;m.style.display='block';hablar(\`Monto cargado \${montoSel} pesos\`)}else m.style.display='none';
+    if(montoSel>0){m.innerText=`💰 MONTO: $${montoSel.toLocaleString('es-AR')}`;m.style.display='block';hablar(`Monto cargado ${montoSel} pesos`)}else m.style.display='none';
     document.getElementById('buscar').value='';document.getElementById('nCliNom').value='';document.getElementById('nCliWa').value='';
     document.getElementById('listaCli').innerHTML='<p style="color:var(--txt3);text-align:center;padding:20px">Cargando…</p>';
     ver('v-clientes');
@@ -916,18 +916,18 @@ async function listaClientes(){
 function filtrar(){const q=document.getElementById('buscar').value.toLowerCase().trim();pintar(clientes.filter(c=>c.nombre.toLowerCase().includes(q)))}
 
 function pintar(l){
-    document.getElementById('listaCli').innerHTML=l.length?l.map(c=>\`<div class="vidrio" style="padding:14px;border-radius:16px;margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:1.05rem">\${c.nombre}</b><b class="azul-texto" style="font-size:1.4rem">$\${parseFloat(c.deuda).toLocaleString('es-AR')}</b></div>
-        <div style="color:var(--txt3);font-size:.8rem;margin-top:4px">📱 \${c.whatsapp||'Sin número'}</div>
-        \${montoSel>0?\`<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-            <button class="btn" style="margin:0;padding:12px" onclick="operar('\${c.id}','fiar')">🔴 FIAR $\${montoSel.toLocaleString('es-AR')}</button>
+    document.getElementById('listaCli').innerHTML=l.length?l.map(c=>`<div class="vidrio" style="padding:14px;border-radius:16px;margin-bottom:10px">
+        <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:1.05rem">${c.nombre}</b><b class="azul-texto" style="font-size:1.4rem">$${parseFloat(c.deuda).toLocaleString('es-AR')}</b></div>
+        <div style="color:var(--txt3);font-size:.8rem;margin-top:4px">📱 ${c.whatsapp||'Sin número'}</div>
+        ${montoSel>0?`<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
+            <button class="btn" style="margin:0;padding:12px" onclick="operar('${c.id}','fiar')">🔴 FIAR $${montoSel.toLocaleString('es-AR')}</button>
             <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <button class="btn" style="margin:0;padding:10px;font-size:.85rem;background:linear-gradient(135deg,#22c55e,#15803d)" onclick="operar('\${c.id}','cobrar','efectivo')">💵 EFECTIVO</button>
-                <button class="btn" style="margin:0;padding:10px;font-size:.85rem" onclick="operar('\${c.id}','cobrar','transferencia')">🏦 TRANSF</button>
-            </div></div>\`:\`<div style="display:flex;gap:8px;margin-top:10px">
-            <button onclick="borrarCli('\${c.id}','\${c.nombre}')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--borde);background:transparent;cursor:pointer;font-weight:700">BORRAR</button>
-            <button class="btn" style="margin:0;padding:8px;flex:2;font-size:.85rem" onclick="wa('\${c.nombre}',\${c.deuda},'\${c.whatsapp||''}')">💬 COBRAR</button></div>\`}
-    </div>\`).join(''):'<p style="color:var(--txt3);text-align:center;padding:20px;border-radius:12px" class="vidrio">Sin clientes</p>';
+                <button class="btn" style="margin:0;padding:10px;font-size:.85rem;background:linear-gradient(135deg,#22c55e,#15803d)" onclick="operar('${c.id}','cobrar','efectivo')">💵 EFECTIVO</button>
+                <button class="btn" style="margin:0;padding:10px;font-size:.85rem" onclick="operar('${c.id}','cobrar','transferencia')">🏦 TRANSF</button>
+            </div></div>`:`<div style="display:flex;gap:8px;margin-top:10px">
+            <button onclick="borrarCli('${c.id}','${c.nombre}')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--borde);background:transparent;cursor:pointer;font-weight:700">BORRAR</button>
+            <button class="btn" style="margin:0;padding:8px;flex:2;font-size:.85rem" onclick="wa('${c.nombre}',${c.deuda},'${c.whatsapp||''}')">💬 COBRAR</button></div>`}
+    </div>`).join(''):'<p style="color:var(--txt3);text-align:center;padding:20px;border-radius:12px" class="vidrio">Sin clientes</p>';
 }
 
 async function nuevoCliente(){
@@ -943,7 +943,7 @@ async function nuevoCliente(){
 }
 
 async function borrarCli(id,nm){
-    if(confirm(\`Eliminar a \${nm}?\`)){
+    if(confirm(`Eliminar a ${nm}?`)){
         try{
             let{error}=await sb.from('vigilante_clientes_libreta').delete().eq('id',id).eq('local_pin',String(pin).trim());
             if(!error){clientes=clientes.filter(c=>c.id!=id);filtrar();toast('Eliminado','#16a34a')}
@@ -953,7 +953,7 @@ async function borrarCli(id,nm){
 
 async function operar(id,ac,mt='sistema'){
     if(montoSel<=0)return;
-    if(!confirm(\`\${ac==='fiar'?'Fiar':'Cobrar'} $\${montoSel.toLocaleString('es-AR')}\${ac!=='fiar'?' · '+mt.toUpperCase():''}?\`))return;
+    if(!confirm(`${ac==='fiar'?'Fiar':'Cobrar'} $${montoSel.toLocaleString('es-AR')}${ac!=='fiar'?' · '+mt.toUpperCase():''}?`))return;
     toast('Procesando…');
     try{
         let pl=String(pin).trim(),nl=nom?String(nom).trim():'';
@@ -962,7 +962,7 @@ async function operar(id,ac,mt='sistema'){
         
         let m=parseInt(montoSel)||0,nd=parseFloat(cli.deuda);
         if(ac==='fiar')nd+=m;if(ac==='cobrar'){nd-=m;if(nd<0)nd=0}
-        let od=ac==='fiar'?\`Fiado: \${cli.nombre}\`:\`Cobro: \${cli.nombre}\`;
+        let od=ac==='fiar'?`Fiado: ${cli.nombre}`:`Cobro: ${cli.nombre}`;
         let mp=ac==='fiar'?'sistema':(mt&&mt!==''?String(mt).toLowerCase():'efectivo');
         
         await sb.from('vigilante_transacciones').insert([{monto_total:m,tipo_operacion:od,metodo_pago:mp,estado_auditoria_ia:'aprobado',local_pin:pl,nombre_local:nl}]);
@@ -975,9 +975,9 @@ async function operar(id,ac,mt='sistema'){
 
 function wa(nm,de,w){
     if(!w)return toast('Sin WhatsApp','#dc2626');
-    let x=w.replace(/\\D/g,'');if(x.length===10)x='549'+x;
+    let x=w.replace(/\D/g,'');if(x.length===10)x='549'+x;
     hablar('Abriendo WhatsApp');
-    open(\`https://wa.me/\${x}?text=\${encodeURIComponent(\`Hola \${nm}, de \${nom}. Te recuerdo tu saldo pendiente de $\${parseFloat(de).toLocaleString('es-AR')} pesos. Saludos!\`)}\`,'_blank');
+    open(`https://wa.me/${x}?text=${encodeURIComponent(`Hola ${nm}, de ${nom}. Te recuerdo tu saldo pendiente de $${parseFloat(de).toLocaleString('es-AR')} pesos. Saludos!`)}`,'_blank');
 }
 
 async function cerrarTurno(){
@@ -1001,8 +1001,8 @@ async function cerrarTurno(){
         f=(clientes||[]).reduce((s,c)=>s+parseFloat(c.deuda||0),0);
         await sb.from('vigilante_transacciones').insert([{monto_total:0,tipo_operacion:'cierre_caja',metodo_pago:'sistema',local_pin:pin,nombre_local:nom}]);
         limpiar();txs=[];
-        hablar(\`Cierre listo. Efectivo \${e}, transferencias \${tr}, tarjetas \${ta}, fiados \${f}\`);
-        location.href=\`https://wa.me/?text=\${encodeURIComponent(\`*📊 CIERRE DE TURNO · \${nom}*\\n\\n💵 EFECTIVO: $\${e.toLocaleString('es-AR')}\\n🏦 TRANSFERENCIAS: $\${tr.toLocaleString('es-AR')}\\n💳 TARJETAS: $\${ta.toLocaleString('es-AR')}\\n📒 FIADOS: $\${f.toLocaleString('es-AR')}\\n\\n— Vigilante IA —\`)}\`;
+        hablar(`Cierre listo. Efectivo ${e}, transferencias ${tr}, tarjetas ${ta}, fiados ${f}`);
+        location.href=`https://wa.me/?text=${encodeURIComponent(`*📊 CIERRE DE TURNO · ${nom}*\n\n💵 EFECTIVO: $${e.toLocaleString('es-AR')}\n🏦 TRANSFERENCIAS: $${tr.toLocaleString('es-AR')}\n💳 TARJETAS: $${ta.toLocaleString('es-AR')}\n📒 FIADOS: $${f.toLocaleString('es-AR')}\n\n— Vigilante IA —`)}`;
     }catch(e){toast('Error','#dc2626')}
 }
 
@@ -1021,7 +1021,7 @@ async function uploadFotoToSupabase(base64Str, localPin) {
         const byteArray = new Uint8Array(byteNumbers);
         const blob = new Blob([byteArray], {type: 'image/jpeg'});
         
-        const fileName = \`\${localPin.replace(/\\s+/g, '')}/FOTO-\${Date.now()}-\${Math.floor(Math.random()*1000)}.jpg\`;
+        const fileName = `${localPin.replace(/\s+/g, '')}/FOTO-${Date.now()}-${Math.floor(Math.random()*1000)}.jpg`;
         const { data, error } = await sb.storage.from('vigilante_comprobantes').upload(fileName, blob);
         
         if (error) return base64Str; // Si el balde falla, guarda el base64 como plan b
@@ -1046,7 +1046,7 @@ function subirFoto(e){
 // BISTURÍ: COBRAR GUARDA EL LINK DEL BALDE (foto_url)
 async function cobrar(mt,fb=null){
     const tot=total();if(tot===0)return;
-    if(fb){radar.style.display='flex';await new Promise(r=>setTimeout(r,1500))}else toast(\`Cobrando en \${mt}\`);
+    if(fb){radar.style.display='flex';await new Promise(r=>setTimeout(r,1500))}else toast(`Cobrando en ${mt}`);
     try{
         let m=Math.abs(tot),op=String(opActual).toLowerCase(),pl=String(pin).trim(),nl=nom?String(nom).trim():'';
         
@@ -1067,7 +1067,7 @@ async function cobrar(mt,fb=null){
 document.addEventListener('DOMContentLoaded',()=>{
     const w=document.getElementById('carrusel');if(!w)return;
     let i=0,pts=document.querySelectorAll('.punto');
-    const go=x=>{i=x;w.style.transform=\`translateX(-\${x*33.333}%)\`;pts.forEach((p,k)=>p.classList.toggle('activo',k===x))};
+    const go=x=>{i=x;w.style.transform=`translateX(-${x*33.333}%)`;pts.forEach((p,k)=>p.classList.toggle('activo',k===x))};
     setInterval(()=>go((i+1)%3),6500);
     pts.forEach((p,k)=>p.addEventListener('click',()=>go(k)));
 });
@@ -1134,4 +1134,3 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 </body></html>
-
