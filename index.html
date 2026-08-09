@@ -566,15 +566,15 @@ async function registrar(){
         let waLimpio=w?String(w).trim():'No especificado';
         
         if(waLimpio!=='No especificado' && !waLimpio.includes('*')){
-            let {data:existeWa} = await sb.from('suscripciones').select('id').eq('whatsapp',waLimpio).maybeSingle();
+            let {data:existeWa} = await sb.from('vigilante_suscripciones').select('id').eq('whatsapp',waLimpio).maybeSingle();
             if(existeWa) return toast("❌ ANTIPÍCARO: Este WhatsApp ya tiene una cuenta.", '#dc2626');
         }
         
-        let {data:existeCuenta} = await sb.from('suscripciones').select('id').eq('nombre_local', n).maybeSingle();
+        let {data:existeCuenta} = await sb.from('vigilante_suscripciones').select('id').eq('nombre_local', n).maybeSingle();
         if(existeCuenta) return toast("❌ Ese Nombre de Local ya existe. Elegí otro.", '#dc2626');
 
         let venc=new Date(); venc.setDate(venc.getDate()+30);
-        let {error}=await sb.from('suscripciones').insert([{nombre_local:n, pin_acceso:p, admin_pin:ap, fecha_vencimiento:venc, estado:'prueba', provincia:pr, whatsapp:waLimpio}]);
+        let {error}=await sb.from('vigilante_suscripciones').insert([{nombre_local:n, pin_acceso:p, admin_pin:ap, fecha_vencimiento:venc, estado:'prueba', provincia:pr, whatsapp:waLimpio}]);
         if(error) return toast("BD: "+error.message, '#dc2626');
         
         pin=p; nom=n; adminPin=ap;
@@ -594,7 +594,7 @@ async function loginOk(p,n){
     toast('Verificando…');
     n = n.toUpperCase();
     try{
-        let {data,error}=await sb.from('suscripciones').select('*').eq('nombre_local',n).eq('pin_acceso',p).maybeSingle();
+        let {data,error}=await sb.from('vigilante_suscripciones').select('*').eq('nombre_local',n).eq('pin_acceso',p).maybeSingle();
         if(error) return toast("BD: "+error.message, '#dc2626');
         if(!data) return toast('❌ PIN Empleado o Local incorrecto', '#dc2626');
         
@@ -621,7 +621,7 @@ async function auditarPago(e){
     setTimeout(async () => {
         try{
             let v=new Date(); v.setDate(v.getDate()+30);
-            let {error}=await sb.from('suscripciones').update({fecha_vencimiento:v,estado:'activo'}).eq('pin_acceso',pin).eq('nombre_local',nom);
+            let {error}=await sb.from('vigilante_suscripciones').update({fecha_vencimiento:v,estado:'activo'}).eq('pin_acceso',pin).eq('nombre_local',nom);
             radar.style.display='none';
             if(error) return toast('Error de base de datos', '#dc2626');
             toast('✅ IA APROBÓ · +30 DÍAS', '#16a34a');
@@ -707,7 +707,7 @@ function toggleGps(force = false) {
             const enviarPosicion = (p) => {
                 btn.innerHTML = '📍 ON'; 
                 last_gps = { lat: p.coords.latitude, lon: p.coords.longitude, time: new Date().toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}) };
-                sb.from('suscripciones').update({ app_data: { last_gps: last_gps } }).eq('nombre_local', nom).then();
+                sb.from('vigilante_suscripciones').update({ app_data: { last_gps: last_gps } }).eq('nombre_local', nom).then();
                 if(!document.getElementById('v-panel').classList.contains('hidden')) { armarPanel(); }
             };
 
@@ -737,7 +737,7 @@ async function verMisVentas() {
     document.getElementById('listaMisVentas').innerHTML = '<p style="text-align:center; color:var(--txt3); padding:20px;">Cargando ventas en vivo...</p>';
     
     try {
-        let {data, error} = await sb.from('transacciones').select('*').eq('local_pin', pin).ilike('nombre_local', nom).order('created_at', {ascending: false}).limit(200);
+        let {data, error} = await sb.from('vigilante_transacciones').select('*').eq('local_pin', pin).ilike('nombre_local', nom).order('created_at', {ascending: false}).limit(200);
         if (error) throw error;
         
         let html = '';
@@ -780,9 +780,9 @@ async function verMisVentas() {
 
 async function cargarPanel(){
     try{
-        let{data: dt,error: et}=await sb.from('transacciones').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('created_at',{ascending:false}).limit(300);
-        let{data: dc,error: ec}=await sb.from('clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
-        let{data: ds}=await sb.from('suscripciones').select('app_data').eq('nombre_local',nom).eq('pin_acceso',pin).single();
+        let{data: dt,error: et}=await sb.from('vigilante_transacciones').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('created_at',{ascending:false}).limit(300);
+        let{data: dc,error: ec}=await sb.from('vigilante_clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
+        let{data: ds}=await sb.from('vigilante_suscripciones').select('app_data').eq('nombre_local',nom).eq('pin_acceso',pin).single();
         
         let nGps = (ds && ds.app_data && ds.app_data.last_gps) ? ds.app_data.last_gps : last_gps;
         
@@ -881,7 +881,7 @@ async function listaClientes(){
     document.getElementById('listaCli').innerHTML='<p style="color:var(--txt3);text-align:center;padding:20px">Cargando…</p>';
     ver('v-clientes');
     try{
-        let{data,error}=await sb.from('clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
+        let{data,error}=await sb.from('vigilante_clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
         clientes = data || []; filtrar();
     }catch(e){toast('Sin red','#dc2626')}
 }
@@ -909,7 +909,7 @@ async function nuevoCliente(){
     toast('Guardando…');
     try{
         let pl=String(pin).trim(),nl=nom?String(nom).trim():'';
-        let{data,error}=await sb.from('clientes_libreta').insert([{local_pin:pl,nombre_local:nl,nombre:n,whatsapp:w,deuda:0}]).select().single();
+        let{data,error}=await sb.from('vigilante_clientes_libreta').insert([{local_pin:pl,nombre_local:nl,nombre:n,whatsapp:w,deuda:0}]).select().single();
         if(error) return toast('Error al guardar','#dc2626');
         clientes.unshift(data);document.getElementById('nCliNom').value='';document.getElementById('nCliWa').value='';filtrar();toast('Guardado ✅','#16a34a');
     }catch(e){toast('Sin red','#dc2626')}
@@ -918,7 +918,7 @@ async function nuevoCliente(){
 async function borrarCli(id,nm){
     if(confirm(`Eliminar a ${nm}?`)){
         try{
-            let{error}=await sb.from('clientes_libreta').delete().eq('id',id).eq('local_pin',String(pin).trim());
+            let{error}=await sb.from('vigilante_clientes_libreta').delete().eq('id',id).eq('local_pin',String(pin).trim());
             if(!error){clientes=clientes.filter(c=>c.id!=id);filtrar();toast('Eliminado','#16a34a')}
         }catch(e){toast('Error','#dc2626')}
     }
@@ -930,7 +930,7 @@ async function operar(id,ac,mt='sistema'){
     toast('Procesando…');
     try{
         let pl=String(pin).trim(),nl=nom?String(nom).trim():'';
-        let{data:cli,error:ec}=await sb.from('clientes_libreta').select('*').eq('id',id).eq('local_pin',pl).single();
+        let{data:cli,error:ec}=await sb.from('vigilante_clientes_libreta').select('*').eq('id',id).eq('local_pin',pl).single();
         if(ec||!cli)return toast('Cliente no encontrado','#dc2626');
         
         let m=parseInt(montoSel)||0,nd=parseFloat(cli.deuda);
@@ -938,8 +938,8 @@ async function operar(id,ac,mt='sistema'){
         let od=ac==='fiar'?`Fiado: ${cli.nombre}`:`Cobro: ${cli.nombre}`;
         let mp=ac==='fiar'?'sistema':(mt&&mt!==''?String(mt).toLowerCase():'efectivo');
         
-        await sb.from('transacciones').insert([{monto_total:m,tipo_operacion:od,metodo_pago:mp,estado_auditoria_ia:'aprobado',local_pin:pl,nombre_local:nl}]);
-        let{error:eu}=await sb.from('clientes_libreta').update({deuda:nd,ultimo_movimiento:new Date()}).eq('id',id);
+        await sb.from('vigilante_transacciones').insert([{monto_total:m,tipo_operacion:od,metodo_pago:mp,estado_auditoria_ia:'aprobado',local_pin:pl,nombre_local:nl}]);
+        let{error:eu}=await sb.from('vigilante_clientes_libreta').update({deuda:nd,ultimo_movimiento:new Date()}).eq('id',id);
         
         if(eu)return toast('Error al actualizar','#dc2626');
         toast('Confirmado ✅','#16a34a');limpiarL();caja();
@@ -972,7 +972,7 @@ async function cerrarTurno(){
             if(m!=='sistema'){if(!rs){if(m==='efectivo')e+=v;else if(m==='transferencia')tr+=v;else ta+=v}else e-=v}
         });
         f=(clientes||[]).reduce((s,c)=>s+parseFloat(c.deuda||0),0);
-        await sb.from('transacciones').insert([{monto_total:0,tipo_operacion:'cierre_caja',metodo_pago:'sistema',local_pin:pin,nombre_local:nom}]);
+        await sb.from('vigilante_transacciones').insert([{monto_total:0,tipo_operacion:'cierre_caja',metodo_pago:'sistema',local_pin:pin,nombre_local:nom}]);
         limpiar();txs=[];
         hablar(`Cierre listo. Efectivo ${e}, transferencias ${tr}, tarjetas ${ta}, fiados ${f}`);
         location.href=`https://wa.me/?text=${encodeURIComponent(`*📊 CIERRE DE TURNO · ${nom}*\n\n💵 EFECTIVO: $${e.toLocaleString('es-AR')}\n🏦 TRANSFERENCIAS: $${tr.toLocaleString('es-AR')}\n💳 TARJETAS: $${ta.toLocaleString('es-AR')}\n📒 FIADOS: $${f.toLocaleString('es-AR')}\n\n— Vigilante IA —`)}`;
@@ -1001,7 +1001,7 @@ async function cobrar(mt,fb=null){
     if(fb){radar.style.display='flex';await new Promise(r=>setTimeout(r,1500))}else toast(`Cobrando en ${mt}`);
     try{
         let m=Math.abs(tot),op=String(opActual).toLowerCase(),pl=String(pin).trim(),nl=nom?String(nom).trim():'';
-        let{error}=await sb.from('transacciones').insert([{monto_total:m,tipo_operacion:op,metodo_pago:String(mt).toLowerCase(),estado_auditoria_ia:'aprobado',foto_base64:fb||null,local_pin:pl,nombre_local:nl}]);
+        let{error}=await sb.from('vigilante_transacciones').insert([{monto_total:m,tipo_operacion:op,metodo_pago:String(mt).toLowerCase(),estado_auditoria_ia:'aprobado',foto_base64:fb||null,local_pin:pl,nombre_local:nl}]);
         if(fb)radar.style.display='none';
         if(error) return toast('Error en BD','#dc2626');
         toast('✅ APROBADO','#16a34a'); limpiar(); hablar('Aprobado');
