@@ -359,7 +359,6 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
   </div>
   <div class="display-container"><div class="monto-grande azul-texto" id="acu">0</div><div class="monto-chico" id="act"></div></div>
   
-  <!-- BISTURÍ: 4 BOTONES INCLUYENDO "VENTAS" -->
   <div class="top-ops">
     <button class="op vidrio" id="op-prov" onclick="modo('proveedor')">Prov.</button>
     <button class="op vidrio" onclick="irLibreta()">Fiados 📝</button>
@@ -551,34 +550,52 @@ function toast(m,c){
 
 async function mercadoPago(){toast('Abriendo Mercado Pago');location.href='https://mpago.la/1Wi2UXN'}
 
+// ¡BISTURÍ! Función modificada para llamar a Vercel
 async function registrar(){
-    const n=document.getElementById('rNom').value.trim().toUpperCase(); 
-    const p=document.getElementById('rPin').value.trim();
-    const ap=document.getElementById('rAdminPin').value.trim();
-    const pr=document.getElementById('rProv').value;
-    const w=document.getElementById('rWa').value.trim();
+    const n = document.getElementById('rNom').value.trim().toUpperCase(); 
+    const p = document.getElementById('rPin').value.trim();
+    const ap = document.getElementById('rAdminPin').value.trim();
+    const pr = document.getElementById('rProv').value;
+    const w = document.getElementById('rWa').value.trim();
     
-    if(!n||!p||!ap||!pr||!w) return toast('Completá todos los datos y PINs','#dc2626');
+    if(!n || !p || !ap || !pr || !w) return toast('Completá todos los datos y PINs','#dc2626');
     toast('Creando cuenta…');
-    try{
-        let waLimpio=w?String(w).trim():'No especificado';
-        
-        if(waLimpio!=='No especificado' && !waLimpio.includes('*')){
-            let {data:existeWa} = await sb.from('vigilante_suscripciones').select('id').eq('whatsapp',waLimpio).maybeSingle();
-            if(existeWa) return toast("❌ ANTIPÍCARO: Este WhatsApp ya tiene una cuenta.", '#dc2626');
+    
+    try {
+        let waLimpio = w ? String(w).trim() : 'No especificado';
+        let venc = new Date(); 
+        venc.setDate(venc.getDate() + 30);
+
+        // Llamamos a NUESTRO servidor seguro en Vercel
+        const respuesta = await fetch('/api/registro', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ 
+                n: n, 
+                p: p, 
+                ap: ap, 
+                pr: pr, 
+                waLimpio: waLimpio, 
+                venc: venc.toISOString() 
+            })
+        });
+
+        const data = await respuesta.json();
+
+        if (!data.success) {
+            return toast(data.mensaje, '#dc2626');
         }
         
-        let {data:existeCuenta} = await sb.from('vigilante_suscripciones').select('id').eq('nombre_local', n).maybeSingle();
-        if(existeCuenta) return toast("❌ Ese Nombre de Local ya existe. Elegí otro.", '#dc2626');
+        // Si todo salió bien en el servidor, guardamos localmente y entramos
+        pin = p; nom = n; adminPin = ap;
+        localStorage.setItem('v_pin', p); 
+        localStorage.setItem('v_nombre', n); 
+        localStorage.setItem('v_admin_pin', ap);
+        loginOk(p, n);
 
-        let venc=new Date(); venc.setDate(venc.getDate()+30);
-        let {error}=await sb.from('vigilante_suscripciones').insert([{nombre_local:n, pin_acceso:p, admin_pin:ap, fecha_vencimiento:venc, estado:'prueba', provincia:pr, whatsapp:waLimpio}]);
-        if(error) return toast("BD: "+error.message, '#dc2626');
-        
-        pin=p; nom=n; adminPin=ap;
-        localStorage.setItem('v_pin',p); localStorage.setItem('v_nombre',n); localStorage.setItem('v_admin_pin',ap);
-        loginOk(p,n);
-    }catch(e){toast('Sin red','#dc2626')}
+    } catch(e) {
+        toast('Sin red o error en servidor', '#dc2626');
+    }
 }
 
 async function ingresar(){
