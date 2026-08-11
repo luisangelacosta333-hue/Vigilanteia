@@ -8,126 +8,59 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ success: false, msg: 'Método no permitido' });
 
     try {
-        const { local, pin, fotoBase64 } = req.body;
-        if (!local || !pin || !fotoBase64) return res.status(400).json({ success: false, msg: 'Faltan datos.' });
+        const { local, fotoBase64 } = req.body;
+        if (!local || !fotoBase64) return res.status(400).json({ success: false, msg: 'Faltan datos.' });
 
         const openAiKey = process.env.OPENAI_API_KEY;
         const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-        if (!openAiKey || !supabaseKey) {
-            let faltantes = [];
-            if (!openAiKey) faltantes.push("OPENAI_API_KEY");
-            if (!supabaseKey) faltantes.push("SUPABASE_SERVICE_ROLE_KEY");
-            return res.status(500).json({ success: false, msg: 'Falta en Vercel: ' + faltantes.join(' y ') });
-        }
+        if (!openAiKey || !supabaseKey) return res.status(500).json({ success: false, msg: 'Faltan llaves en Vercel.' });
 
-        // 1. LA ORDEN CALIBRADA PARA OPENAI
-        const systemPrompt = `Sos un auditor financiero. Analizá este comprobante de transferencia bancaria o billetera virtual de Argentina.
-        Debe cumplir TODAS estas condiciones:
+        const fechaHoy = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+
+        // ORDEN ESTRICTA PARA VIGILANTE ($9.000)
+        const systemPrompt = `Sos un auditor financiero extremadamente estricto. Analizá este comprobante de transferencia bancaria. 
+        Tene en cuenta que la fecha de hoy es: ${fechaHoy}.
+        
+        Debe cumplir TODAS estas condiciones sin excepción:
         1. El monto transferido debe ser EXACTAMENTE $9.000 (nueve mil pesos argentinos).
-        2. El destinatario debe ser obligatoriamente: "Luis Ángel Acosta", O el Alias: "noir.elite.ceo", O el CBU: "0110257630025717844115".
-        3. El estado de la transferencia asumí que es EXITOSO si muestra los datos del envío. RECHAZÁ SOLAMENTE si dice explícitamente "programada", "pendiente", "en proceso" o "fallida". No exijas que diga la palabra "Aprobada".
+        2. El destinatario debe ser obligatoriamente: "Luis Angel Acosta" (o variaciones), O el Alias: "noir.elite.ceo", O el CBU: "0110257630025717844115".
+        3. ESTADO: Debe ser una transferencia real (Ej: dice "Comprobante de transferencia", "Aprobada", "Exitosa", o tiene un "Id Op."). Rechazá si dice "Programada" o "Pendiente".
+        4. ANTIFRAUDE: La fecha del comprobante debe ser de hoy o máximo 48 hs atrás. Si es vieja, rechazá diciendo: "El ticket es viejo o ya fue utilizado."
         
-        Buscá en el comprobante el "Número de Operación", "Código de Transacción" o "ID de transferencia". Si no aparece ninguno claro, poné "SIN_NUMERO".
-        
-        Devolveme UNICAMENTE un objeto JSON estricto con este formato: 
-        {"aprobado": true, "motivo": "Explicación corta", "numero_operacion": "123456789"}
-        Si el monto o el destinatario están mal, o si dice pendiente, respondé: 
-        {"aprobado": false, "motivo": "Por qué se rechazó", "numero_operacion": ""}`;
+        Devolveme UNICAMENTE un objeto JSON estricto con este formato: {"aprobado": true, "motivo": "Explicación corta"}.
+        Si falta un solo dato o algo es sospechoso, respondé {"aprobado": false, "motivo": "Por qué se rechazó"}.`;
 
         const openAiPayload = {
             model: "gpt-4o",
-            messages: [
-                {
-                    role: "user",
-                    content: [
-                        { type: "text", text: systemPrompt },
-                        { type: "image_url", image_url: { url: fotoBase64 } }
-                    ]
-                }
-            ],
+            messages: [{ role: "user", content: [{ type: "text", text: systemPrompt }, { type: "image_url", image_url: { url: fotoBase64 } }] }],
             response_format: { type: "json_object" },
             max_tokens: 200
         };
 
         const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
-            headers: {
-                'Authorization': `Bearer ${openAiKey}`,
-                'Content-Type': 'application/json'
-            },
+            headers: { 'Authorization': `Bearer ${openAiKey}`, 'Content-Type': 'application/json' },
             body: JSON.stringify(openAiPayload)
         });
 
         const openAiData = await openAiRes.json();
-        if (!openAiData.choices || !openAiData.choices[0].message) {
-            throw new Error("OpenAI no respondió correctamente.");
-        }
-
         const iaDecision = JSON.parse(openAiData.choices[0].message.content);
 
-        // 2. SI LA IA LO RECHAZA, CORTAMOS
-        if (!iaDecision.aprobado) {
-            return res.status(200).json({ success: false, msg: "Ticket Rechazado: " + iaDecision.motivo });
-        }
+        if (!iaDecision.aprobado) return res.status(200).json({ success: false, msg: "Ticket Rechazado: " + iaDecision.motivo });
 
+        // RENOVACIÓN EN TABLA VIGILANTE_SUSCRIPCIONES
         const supabaseUrl = 'https://drpjcmznauposqlhaveo.supabase.co';
-
-        // 3. CONSULTAMOS LA BASE DE DATOS PARA VER SI EL TICKET YA SE USÓ (EL QUEMADOR)
-        const getUserRes = await fetch(`${supabaseUrl}/rest/v1/vigilante_suscripciones?nombre_local=eq.${encodeURIComponent(local)}&pin_acceso=eq.${encodeURIComponent(pin)}&select=app_data`, {
-            method: 'GET',
-            headers: {
-                'apikey': supabaseKey,
-                'Authorization': `Bearer ${supabaseKey}`,
-                'Content-Type': 'application/json'
-            }
-        });
+        const nuevaFecha = new Date(Date.now() + (30 * 24 * 60 * 60 * 1000)).toISOString();
         
-        const userData = await getUserRes.json();
-        if (!userData || userData.length === 0) {
-            return res.status(400).json({ success: false, msg: 'Local no encontrado en Supabase.' });
-        }
-
-        let appData = userData[0].app_data || {};
-        let ticketsUsados = appData.tickets_usados || [];
-        let numOperacion = iaDecision.numero_operacion || "SIN_NUMERO";
-
-        // Si ya está quemado y tiene un número real, rebota
-        if (numOperacion !== "SIN_NUMERO" && ticketsUsados.includes(numOperacion)) {
-            return res.status(200).json({ success: false, msg: "TICKET RECHAZADO: Este comprobante ya fue utilizado anteriormente." });
-        }
-
-        // Si es nuevo y tiene número, lo guardamos en la lista negra
-        if (numOperacion !== "SIN_NUMERO") {
-            ticketsUsados.push(numOperacion);
-            appData.tickets_usados = ticketsUsados;
-        }
-
-        // 4. APROBADO: DAMOS LOS 30 DÍAS
-        const nuevaFecha = new Date();
-        nuevaFecha.setDate(nuevaFecha.getDate() + 30);
-
-        const updateRes = await fetch(`${supabaseUrl}/rest/v1/vigilante_suscripciones?nombre_local=eq.${encodeURIComponent(local)}&pin_acceso=eq.${encodeURIComponent(pin)}`, {
+        const updateRes = await fetch(`${supabaseUrl}/rest/v1/vigilante_suscripciones?nombre_local=eq.${encodeURIComponent(local)}`, {
             method: 'PATCH',
-            headers: {
-                'apikey': supabaseKey,
-                'Authorization': `Bearer ${supabaseKey}`,
-                'Content-Type': 'application/json',
-                'Prefer': 'return=minimal'
-            },
-            body: JSON.stringify({ 
-                fecha_vencimiento: nuevaFecha.toISOString(),
-                estado: 'activo',
-                app_data: appData
-            })
+            headers: { 'apikey': supabaseKey, 'Authorization': `Bearer ${supabaseKey}`, 'Content-Type': 'application/json', 'Prefer': 'return=minimal' },
+            body: JSON.stringify({ fecha_vencimiento: nuevaFecha, estado: 'premium' })
         });
 
-        if (!updateRes.ok) throw new Error("Error al actualizar la base de datos.");
-
+        if (!updateRes.ok) throw new Error("Error en BD.");
         return res.status(200).json({ success: true, msg: "¡Pago Aprobado y 30 días renovados!" });
 
-    } catch (error) {
-        return res.status(500).json({ success: false, msg: error.message });
-    }
+    } catch (error) { return res.status(500).json({ success: false, msg: error.message }); }
 }
-
