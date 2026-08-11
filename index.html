@@ -545,7 +545,6 @@ const $acu=document.getElementById('acu'),$act=document.getElementById('act');
 const $acuL=document.getElementById('acuL'),$actL=document.getElementById('actL');
 const radar=document.getElementById('radar');
 
-// 🚀 LÓGICA DEL NUEVO PAYWALL INTELIGENTE
 let isPaywallUpload = false;
 
 function procesarFotoPaywall(e) { 
@@ -562,12 +561,12 @@ function procesarFotoPaywall(e) {
         img.src = ev.target.result; 
         img.onload = async () => { 
             const c = document.createElement('canvas'); 
-            let targetWidth = 800; // ANTES 320 - CORREGIDO PARA QUE LA IA LEA BIEN
+            let targetWidth = 800;
             let scale = targetWidth / img.width; 
             c.width = targetWidth; 
             c.height = img.height * scale; 
             c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); 
-            let base64 = c.toDataURL('image/jpeg', 0.80); // ANTES 0.20 - CORREGIDO PARA MÁS CLARIDAD
+            let base64 = c.toDataURL('image/jpeg', 0.80);
             
             ejecutarValidacionPaywallIA(base64); 
         } 
@@ -603,7 +602,6 @@ async function ejecutarValidacionPaywallIA(base64str) {
     document.getElementById('foto-input-camara-paywall').value = ""; 
     document.getElementById('foto-input-galeria-paywall').value = ""; 
 }
-// ----------------------------------------------------
 
 if(pin&&nom) loginOk(pin,nom);
 
@@ -649,7 +647,6 @@ async function registrar(){
         let {data:existeCuenta} = await sb.from('vigilante_suscripciones').select('id').eq('nombre_local', n).maybeSingle();
         if(existeCuenta) return toast("❌ Ese Nombre de Local ya existe. Elegí otro.", '#dc2626');
 
-        // 🥷 MAGIA NINJA: Registro oficial en Supabase Auth
         const correoTrucho = `${waLimpio}@vigilante.com`;
         const passwordSegura = p + "IA";
         const { data: authData, error: authError } = await sb.auth.signUp({
@@ -686,7 +683,6 @@ async function loginOk(p,n){
         if(error) return toast("BD: "+error.message, '#dc2626');
         if(!data) return toast('❌ PIN Empleado o Local incorrecto', '#dc2626');
         
-        // 🥷 MAGIA NINJA (LOGIN): Abrimos la sesión Auth usando el WhatsApp de la BD
         if (data.whatsapp && data.whatsapp !== 'No especificado') {
             const correoTrucho = `${data.whatsapp}@vigilante.com`;
             const passwordSegura = p + "IA";
@@ -898,7 +894,6 @@ function armarPanel(){
         if(m!=='sistema'){if(!rs){if(m==='efectivo')e+=v;else if(m==='transferencia')tr+=v;else ta+=v}else e-=v;saldo=rs?saldo-v:saldo+v;eti.push(new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'}));dat.push(saldo)}
         const ic=m==='efectivo'?'💵':m==='transferencia'?'🏦':m==='tarjeta'?'💳':'📝';
         
-        // BISTURÍ: CÓDIGO CORREGIDO PARA MOSTRAR LA FOTO DESDE LA URL
         html = `<div class="tx-item vidrio"><div style="font-size:1.5rem">${ic}</div><div style="text-align:left"><b style="text-transform:uppercase;color:var(--txt)">${tx.tipo_operacion||'Operación'}</b><br><span style="color:var(--txt3);font-size:.7rem">${new Date(tx.created_at).toLocaleTimeString('es-AR',{hour:'2-digit',minute:'2-digit'})}</span>${tx.foto_url?`<br><button onclick="verFoto('${tx.id}')" style="background:var(--azul);color:#fff;border:none;padding:3px 8px;border-radius:999px;font-size:.68rem;margin-top:4px;font-weight:700">FOTO</button>`:''}</div><div style="color:${rs?'#dc2626':'#0284c7'};font-size:1.15rem;font-weight:900">${rs?'−':'+'}$${v.toLocaleString('es-AR')}</div></div>` + html;
     });
     document.getElementById('tEfe').innerText='$'+e.toLocaleString('es-AR');
@@ -1030,7 +1025,19 @@ async function operar(id,ac,mt='sistema'){
         let{error:eu}=await sb.from('vigilante_clientes_libreta').update({deuda:nd,ultimo_movimiento:new Date()}).eq('id',id);
         
         if(eu)return toast('Error al actualizar','#dc2626');
-        toast('Confirmado ✅','#16a34a');limpiarL();caja();
+        toast('Confirmado ✅','#16a34a');
+        
+        // 🔥 MAGIA WHATSAPP AUTOMÁTICO 🔥
+        let w = cli.whatsapp;
+        if(w && w !== 'Sin número' && w !== 'No especificado'){
+            let x=w.replace(/\D/g,'');if(x.length===10)x='549'+x;
+            let msg = ac === 'fiar' 
+                ? `Hola ${cli.nombre}, se agregó a tu cuenta $${m.toLocaleString('es-AR')} en el local ${nl}. Tu saldo a pagar es de $${nd.toLocaleString('es-AR')}. ¡Gracias!` 
+                : `Hola ${cli.nombre}, registramos tu pago de $${m.toLocaleString('es-AR')} en el local ${nl}. Tu saldo restante es de $${nd.toLocaleString('es-AR')}. ¡Gracias!`;
+            open(`https://wa.me/${x}?text=${encodeURIComponent(msg)}`,'_blank');
+        }
+
+        limpiarL();caja();
     }catch(e){toast('Sin red','#dc2626')}
 }
 
