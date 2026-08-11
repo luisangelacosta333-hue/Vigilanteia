@@ -553,7 +553,7 @@ function procesarFotoPaywall(e) {
     if(!f) return; 
     
     document.getElementById('ia-status').style.display = 'block'; 
-    document.getElementById('ia-status').innerText = "⏳ COMPRIMIENDO FOTO...";
+    document.getElementById('ia-status').innerText = "⏳ LEYENDO COMPROBANTE...";
     
     const r = new FileReader(); 
     r.readAsDataURL(f); 
@@ -562,12 +562,12 @@ function procesarFotoPaywall(e) {
         img.src = ev.target.result; 
         img.onload = async () => { 
             const c = document.createElement('canvas'); 
-            let targetWidth = 320; 
+            let targetWidth = 800; // ANTES 320 - CORREGIDO PARA QUE LA IA LEA BIEN
             let scale = targetWidth / img.width; 
             c.width = targetWidth; 
             c.height = img.height * scale; 
             c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); 
-            let base64 = c.toDataURL('image/jpeg', 0.20); 
+            let base64 = c.toDataURL('image/jpeg', 0.80); // ANTES 0.20 - CORREGIDO PARA MÁS CLARIDAD
             
             ejecutarValidacionPaywallIA(base64); 
         } 
@@ -1097,9 +1097,9 @@ function subirFoto(e){
     hablar('Procesando imagen');
     const rd=new FileReader();rd.readAsDataURL(f);rd.onload=ev=>{
         const im=new Image();im.src=ev.target.result;im.onload=()=>{
-            const cv=document.createElement('canvas');cv.width=520;cv.height=im.height*(520/im.width);
+            const cv=document.createElement('canvas');cv.width=800;cv.height=im.height*(800/im.width);
             cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
-            cobrar('transferencia',cv.toDataURL('image/jpeg',.65));
+            cobrar('transferencia',cv.toDataURL('image/jpeg',.80));
         }
     }
 }
