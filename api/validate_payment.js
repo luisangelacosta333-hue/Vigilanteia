@@ -8,14 +8,12 @@ export default async function handler(req, res) {
     if (req.method !== 'POST') return res.status(405).json({ success: false, msg: 'Método no permitido' });
 
     try {
-        // En Vigilante mandamos el local, el pin y la foto
         const { local, pin, fotoBase64 } = req.body;
         if (!local || !pin || !fotoBase64) return res.status(400).json({ success: false, msg: 'Faltan datos.' });
 
         const openAiKey = process.env.OPENAI_API_KEY;
         const supabaseKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
 
-        // 🔥 EL DETECTIVE: Acá descubrimos cuál falta
         if (!openAiKey || !supabaseKey) {
             let faltantes = [];
             if (!openAiKey) faltantes.push("OPENAI_API_KEY");
@@ -23,15 +21,22 @@ export default async function handler(req, res) {
             return res.status(500).json({ success: false, msg: 'Falta en Vercel: ' + faltantes.join(' y ') });
         }
 
-        // 1. LA ORDEN ESTRICTA PARA OPENAI
-        const systemPrompt = `Sos un auditor financiero extremadamente estricto. Analizá este comprobante de transferencia bancaria.
-        Debe cumplir TODAS estas condiciones sin excepción:
+        const fechaActual = new Date().toLocaleDateString('es-AR', { timeZone: 'America/Argentina/Buenos_Aires' });
+
+        // 1. LA ORDEN ESTRICTA PARA OPENAI (AHORA PIDE EL NÚMERO DE OPERACIÓN)
+        const systemPrompt = `Sos un auditor financiero extremadamente estricto. Hoy es la fecha: ${fechaActual}. Analizá este comprobante de transferencia.
+        Debe cumplir TODAS estas condiciones:
         1. El monto transferido debe ser EXACTAMENTE $9.000 (nueve mil pesos argentinos).
         2. El destinatario debe ser obligatoriamente: "Luis Ángel Acosta", O el Alias: "noir.elite.ceo", O el CBU: "0110257630025717844115".
-        3. El estado de la transferencia debe ser "Aprobada", "Exitosa" o similar. No se aceptan transferencias programadas ni pendientes.
+        3. El estado debe ser "Aprobada", "Exitosa" o similar. No programadas ni pendientes.
+        4. La fecha del comprobante debe ser de los últimos 3 días como máximo (${fechaActual}). No aceptes comprobantes viejos.
         
-        Devolveme UNICAMENTE un objeto JSON estricto con este formato: {"aprobado": true, "motivo": "Explicación corta"}.
-        Si falta un solo dato o algo es sospechoso, respondé {"aprobado": false, "motivo": "Por qué se rechazó"}.`;
+        Buscá en el comprobante el "Número de Operación", "Código de Transacción" o "ID de transferencia".
+        
+        Devolveme UNICAMENTE un objeto JSON estricto con este formato: 
+        {"aprobado": true, "motivo": "Explicación corta", "numero_operacion": "123456789"}
+        Si falta un solo dato o es viejo, respondé: 
+        {"aprobado": false, "motivo": "Por qué se rechazó", "numero_operacion": ""}`;
 
         const openAiPayload = {
             model: "gpt-4o",
@@ -48,7 +53,6 @@ export default async function handler(req, res) {
             max_tokens: 200
         };
 
-        // 2. MANDAMOS EL COMPROBANTE AL OJO BIÓNICO
         const openAiRes = await fetch('https://api.openai.com/v1/chat/completions', {
             method: 'POST',
             headers: {
@@ -59,26 +63,53 @@ export default async function handler(req, res) {
         });
 
         const openAiData = await openAiRes.json();
-        
         if (!openAiData.choices || !openAiData.choices[0].message) {
             throw new Error("OpenAI no respondió correctamente.");
         }
 
         const iaDecision = JSON.parse(openAiData.choices[0].message.content);
 
-        // 3. SI LA IA LO RECHAZA, CORTAMOS ACÁ Y LE AVISAMOS AL CLIENTE
+        // 2. SI LA IA LO RECHAZA DE ENTRADA, CORTAMOS
         if (!iaDecision.aprobado) {
             return res.status(200).json({ success: false, msg: "Ticket Rechazado: " + iaDecision.motivo });
         }
 
-        // 4. SI LA IA APRUEBA, ABRIMOS LA BÓVEDA Y DAMOS LOS 30 DÍAS
         const supabaseUrl = 'https://drpjcmznauposqlhaveo.supabase.co';
+
+        // 3. CONSULTAMOS LA BASE DE DATOS PARA VER SI EL TICKET YA SE USÓ
+        const getUserRes = await fetch(`${supabaseUrl}/rest/v1/vigilante_suscripciones?nombre_local=eq.${encodeURIComponent(local)}&pin_acceso=eq.${encodeURIComponent(pin)}&select=app_data`, {
+            method: 'GET',
+            headers: {
+                'apikey': supabaseKey,
+                'Authorization': `Bearer ${supabaseKey}`,
+                'Content-Type': 'application/json'
+            }
+        });
         
-        // Sumamos 30 días a partir de hoy
+        const userData = await getUserRes.json();
+        if (!userData || userData.length === 0) {
+            return res.status(400).json({ success: false, msg: 'Local no encontrado en Supabase.' });
+        }
+
+        let appData = userData[0].app_data || {};
+        let ticketsUsados = appData.tickets_usados || [];
+        let numOperacion = iaDecision.numero_operacion || "DESCONOCIDO";
+
+        // EL CONTROL DE FUEGO: ¿Ya existe el ticket?
+        if (numOperacion !== "DESCONOCIDO" && ticketsUsados.includes(numOperacion)) {
+            return res.status(200).json({ success: false, msg: "TICKET RECHAZADO: Este comprobante ya fue utilizado anteriormente." });
+        }
+
+        // Si es un ticket nuevo, lo guardamos en la lista de quemados
+        if (numOperacion !== "DESCONOCIDO") {
+            ticketsUsados.push(numOperacion);
+            appData.tickets_usados = ticketsUsados;
+        }
+
+        // 4. APROBADO: DAMOS LOS 30 DÍAS Y QUEMAMOS EL TICKET EN LA BD
         const nuevaFecha = new Date();
         nuevaFecha.setDate(nuevaFecha.getDate() + 30);
 
-        // Apuntamos a la tabla de Vigilante: vigilante_suscripciones
         const updateRes = await fetch(`${supabaseUrl}/rest/v1/vigilante_suscripciones?nombre_local=eq.${encodeURIComponent(local)}&pin_acceso=eq.${encodeURIComponent(pin)}`, {
             method: 'PATCH',
             headers: {
@@ -89,15 +120,13 @@ export default async function handler(req, res) {
             },
             body: JSON.stringify({ 
                 fecha_vencimiento: nuevaFecha.toISOString(),
-                estado: 'activo'
+                estado: 'activo',
+                app_data: appData // Guardamos el ticket quemado acá
             })
         });
 
-        if (!updateRes.ok) {
-            throw new Error("Error al abrir el candado de la base de datos.");
-        }
+        if (!updateRes.ok) throw new Error("Error al actualizar la base de datos.");
 
-        // ¡ÉXITO TOTAL!
         return res.status(200).json({ success: true, msg: "¡Pago Aprobado y 30 días renovados!" });
 
     } catch (error) {
