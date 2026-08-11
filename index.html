@@ -332,20 +332,35 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
 </div>
 
 <div id="v-vencido" class="view-container hidden">
-  <div class="vidrio2" style="text-align:center;padding:24px 14px;border-radius:16px;margin-top:16px">
-    <h1 style="margin:0 0 6px;font-size:1.5rem">⏳ LICENCIA VENCIDA</h1>
-    <p style="color:var(--txt2)">Transferí <b class="azul-texto" style="font-size:1.1rem">$9.000 ARS</b> · 30 días</p>
-    <div class="vidrio" style="padding:12px;border-radius:11px;text-align:left;font-family:monospace;font-size:.84rem;margin:10px 0">
-      TITULAR: <b class="azul-texto">Luis Ángel Acosta</b><br><br>
-      ALIAS: <b class="azul-texto">noir.elite.ceo</b><br><br>
-      CBU: <b class="azul-texto">0110257630025717844115</b>
+    <!-- 🚀 ACÁ ESTÁ EL NUEVO PAYWALL CON OPENAI (ESTILO VIGILANTE) -->
+    <div class="vidrio2" style="border-top: 4px solid var(--c3); text-align:center; padding:24px 14px; border-radius:16px; margin-top:16px;">
+        <div style="font-size: 2.5rem; margin-bottom: 10px;">⏳</div>
+        <h1 style="font-size:1.5rem; margin-top:0; font-weight: 900; font-family:'Montserrat',sans-serif;">Licencia Expirada</h1>
+        <p style="color:var(--txt2); margin-bottom: 15px; font-size:0.9rem; line-height: 1.5;">Tu prueba gratis terminó. Renovate por 30 días para seguir usando el sistema.</p>
+        
+        <div class="vidrio" style="padding:15px; border-radius:16px; margin-bottom:15px;">
+            <h2 style="margin:0; font-size: 2rem; font-weight: 900; letter-spacing: -1px; font-family:'Montserrat',sans-serif;" class="azul-texto">$9.000</h2>
+            <span style="font-size:0.8rem; color:var(--txt3); display: block; margin-top: 5px; font-weight: 600;">ARS / MES</span>
+        </div>
+
+        <div class="vidrio" style="padding: 15px; border-radius: 16px; margin-bottom: 15px; border: 1px dashed var(--c3); text-align: left; background: rgba(14, 165, 233, 0.05);">
+            <p style="margin: 0 0 5px 0; color: var(--txt2); font-size: 0.85rem; text-align:center; font-weight:600;">1. Transferí exactamente $9.000 a este Alias:</p>
+            <p style="margin: 0 0 15px 0; font-size: 1.3rem; font-weight: 900; letter-spacing: 1px; text-align: center; font-family:'Montserrat',sans-serif; background:rgba(255,255,255,0.7); padding:8px; border-radius:10px; border: 1px solid var(--borde-azul); box-shadow: var(--sombra-md);" class="azul-texto">noir.elite.ceo</p>
+            
+            <p style="margin: 0 0 10px 0; color: var(--txt2); font-size: 0.85rem; text-align:center; font-weight:600;">2. Subí la foto de la transferencia:</p>
+            <div style="display: flex; gap: 10px;">
+                <button class="btn" style="background: var(--c3); color: white; flex: 1; padding: 12px; font-size: 0.85rem; margin: 0; box-shadow: var(--sombra-azul);" onclick="isPaywallUpload=true; document.getElementById('foto-input-galeria-paywall').click();">🖼️ GALERÍA</button>
+                <button class="btn" style="background: rgba(14, 165, 233, 0.1); border: 1px solid var(--c3); color: var(--c4); flex: 1; padding: 12px; font-size: 0.85rem; margin: 0; box-shadow: none;" onclick="isPaywallUpload=true; document.getElementById('foto-input-camara-paywall').click();">📷 CÁMARA</button>
+            </div>
+        </div>
+        
+        <p id="ia-status" style="display:none; color:#16a34a; font-weight:900; margin-bottom: 15px; font-size:0.85rem; text-transform: uppercase;">🤖 La IA está verificando el ticket...</p>
+        
+        <button class="btn" style="background:transparent; border:1px solid var(--borde); color:var(--txt3); font-size:0.85rem; box-shadow: none; margin-top: 10px;" onclick="salir()">Cerrar Sesión</button>
     </div>
-    <input id="pagoIA" type="file" accept="image/*" style="display:none" onchange="auditarPago(event)">
-    <button class="btn" onclick="document.getElementById('pagoIA').click()">🤖 IA AUDITA EL COMPROBANTE</button>
-    <p style="color:var(--txt3);font-size:.74rem;margin:8px 0 12px">Subí la foto · Respuesta al instante</p>
-    <button class="btn" style="background:#0ea5e9" onclick="mercadoPago()">💳 Mercado Pago</button>
-    <button class="btn" style="margin-top:12px;background:transparent;border:1px solid var(--borde);color:var(--txt);box-shadow:none" onclick="salir()">Salir</button>
-  </div>
+    
+    <input type="file" id="foto-input-camara-paywall" accept="image/*" capture="environment" style="display:none;" onchange="procesarFotoPaywall(event)">
+    <input type="file" id="foto-input-galeria-paywall" accept="image/*" style="display:none;" onchange="procesarFotoPaywall(event)">
 </div>
 
 <div id="v-caja" class="view-container hidden" style="padding:0 12px 12px">
@@ -524,6 +539,66 @@ const $acu=document.getElementById('acu'),$act=document.getElementById('act');
 const $acuL=document.getElementById('acuL'),$actL=document.getElementById('actL');
 const radar=document.getElementById('radar');
 
+// 🚀 LÓGICA DEL NUEVO PAYWALL INTELIGENTE
+let isPaywallUpload = false;
+
+function procesarFotoPaywall(e) { 
+    const f = e.target.files[0]; 
+    if(!f) return; 
+    
+    document.getElementById('ia-status').style.display = 'block'; 
+    document.getElementById('ia-status').innerText = "⏳ COMPRIMIENDO FOTO...";
+    
+    const r = new FileReader(); 
+    r.readAsDataURL(f); 
+    r.onload = ev => { 
+        const img = new Image(); 
+        img.src = ev.target.result; 
+        img.onload = async () => { 
+            const c = document.createElement('canvas'); 
+            let targetWidth = 320; 
+            let scale = targetWidth / img.width; 
+            c.width = targetWidth; 
+            c.height = img.height * scale; 
+            c.getContext('2d').drawImage(img, 0, 0, c.width, c.height); 
+            let base64 = c.toDataURL('image/jpeg', 0.20); 
+            
+            ejecutarValidacionPaywallIA(base64); 
+        } 
+        img.onerror = () => { 
+            document.getElementById('ia-status').style.display = 'none'; 
+            toast("Error procesando imagen", "#dc2626"); 
+        }
+    } 
+}
+
+async function ejecutarValidacionPaywallIA(base64str) { 
+    document.getElementById('ia-status').innerText = '🤖 IA verificando ticket...'; 
+    document.getElementById('ia-status').style.display = 'block';
+    try { 
+        let r = await fetch('/api/validate_payment', { 
+            method: 'POST', 
+            headers: {'Content-Type': 'application/json'}, 
+            body: JSON.stringify({ local: nom, pin: pin, fotoBase64: base64str }) 
+        }); 
+        let d = await r.json(); 
+        document.getElementById('ia-status').style.display = 'none'; 
+        if(d.success) { 
+            toast("✅ " + d.msg, "#16a34a"); 
+            setTimeout(()=>loginOk(pin,nom),1500); 
+        } else { 
+            toast("❌ " + d.msg, "#dc2626"); 
+        } 
+    } catch(e) { 
+        toast("❌ Falló el enlace con la IA.", "#dc2626"); 
+        document.getElementById('ia-status').style.display = 'none'; 
+    } 
+    isPaywallUpload = false; 
+    document.getElementById('foto-input-camara-paywall').value = ""; 
+    document.getElementById('foto-input-galeria-paywall').value = ""; 
+}
+// ----------------------------------------------------
+
 if(pin&&nom) loginOk(pin,nom);
 
 function ver(id){
@@ -547,8 +622,6 @@ function toast(m,c){
     hablar(m);
     setTimeout(()=>t.classList.remove('ver'),3800);
 }
-
-async function mercadoPago(){toast('Abriendo Mercado Pago');location.href='https://mpago.la/1Wi2UXN'}
 
 async function registrar(){
     const n=document.getElementById('rNom').value.trim().toUpperCase(); 
@@ -631,24 +704,6 @@ async function loginOk(p,n){
             cargarPanel();
         }
     }catch(e){toast('Sin red','#dc2626')}
-}
-
-async function auditarPago(e){
-    const f=e.target.files[0];if(!f)return;
-    document.getElementById('radarTxt').innerText='🤖 IA revisando comprobante';radar.style.display='flex';
-    hablar('Inteligencia Artificial revisando el comprobante');
-    
-    setTimeout(async () => {
-        try{
-            let v=new Date(); v.setDate(v.getDate()+30);
-            let {error}=await sb.from('vigilante_suscripciones').update({fecha_vencimiento:v,estado:'activo'}).eq('pin_acceso',pin).eq('nombre_local',nom);
-            radar.style.display='none';
-            if(error) return toast('Error de base de datos', '#dc2626');
-            toast('✅ IA APROBÓ · +30 DÍAS', '#16a34a');
-            setTimeout(()=>loginOk(pin,nom),1800);
-        }catch(err){radar.style.display='none';toast('Error','#dc2626')}
-    }, 2500);
-    e.target.value='';
 }
 
 function confirmarSalir(){if(confirm('¿Salir?'))salir()}
@@ -1134,3 +1189,4 @@ if ('serviceWorker' in navigator) {
 }
 </script>
 </body></html>
+
