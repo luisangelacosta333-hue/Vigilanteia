@@ -21,18 +21,18 @@ export default async function handler(req, res) {
             return res.status(500).json({ success: false, msg: 'Falta en Vercel: ' + faltantes.join(' y ') });
         }
 
-        // 1. LA ORDEN PARA OPENAI (¡SIN REGLAS DE FECHAS ESTÚPIDAS!)
-        const systemPrompt = `Sos un auditor financiero. Analizá este comprobante de transferencia bancaria o billetera virtual.
+        // 1. LA ORDEN CALIBRADA PARA OPENAI
+        const systemPrompt = `Sos un auditor financiero. Analizá este comprobante de transferencia bancaria o billetera virtual de Argentina.
         Debe cumplir TODAS estas condiciones:
         1. El monto transferido debe ser EXACTAMENTE $9.000 (nueve mil pesos argentinos).
         2. El destinatario debe ser obligatoriamente: "Luis Ángel Acosta", O el Alias: "noir.elite.ceo", O el CBU: "0110257630025717844115".
-        3. El estado debe ser "Aprobada", "Exitosa", "Completado" o similar. No programadas ni pendientes.
+        3. El estado de la transferencia asumí que es EXITOSO si muestra los datos del envío. RECHAZÁ SOLAMENTE si dice explícitamente "programada", "pendiente", "en proceso" o "fallida". No exijas que diga la palabra "Aprobada".
         
-        Buscá en el comprobante el "Número de Operación", "Código de Transacción" o "ID de transferencia".
+        Buscá en el comprobante el "Número de Operación", "Código de Transacción" o "ID de transferencia". Si no aparece ninguno claro, poné "SIN_NUMERO".
         
         Devolveme UNICAMENTE un objeto JSON estricto con este formato: 
         {"aprobado": true, "motivo": "Explicación corta", "numero_operacion": "123456789"}
-        Si falta un solo dato de los 3 de arriba, respondé: 
+        Si el monto o el destinatario están mal, o si dice pendiente, respondé: 
         {"aprobado": false, "motivo": "Por qué se rechazó", "numero_operacion": ""}`;
 
         const openAiPayload = {
@@ -66,7 +66,7 @@ export default async function handler(req, res) {
 
         const iaDecision = JSON.parse(openAiData.choices[0].message.content);
 
-        // 2. SI LA IA LO RECHAZA POR MONTO, NOMBRE O ESTADO
+        // 2. SI LA IA LO RECHAZA, CORTAMOS
         if (!iaDecision.aprobado) {
             return res.status(200).json({ success: false, msg: "Ticket Rechazado: " + iaDecision.motivo });
         }
@@ -90,15 +90,15 @@ export default async function handler(req, res) {
 
         let appData = userData[0].app_data || {};
         let ticketsUsados = appData.tickets_usados || [];
-        let numOperacion = iaDecision.numero_operacion || "DESCONOCIDO";
+        let numOperacion = iaDecision.numero_operacion || "SIN_NUMERO";
 
-        // Si ya está quemado, rebota
-        if (numOperacion !== "DESCONOCIDO" && ticketsUsados.includes(numOperacion)) {
+        // Si ya está quemado y tiene un número real, rebota
+        if (numOperacion !== "SIN_NUMERO" && ticketsUsados.includes(numOperacion)) {
             return res.status(200).json({ success: false, msg: "TICKET RECHAZADO: Este comprobante ya fue utilizado anteriormente." });
         }
 
-        // Si es nuevo, lo guardamos en la lista negra
-        if (numOperacion !== "DESCONOCIDO") {
+        // Si es nuevo y tiene número, lo guardamos en la lista negra
+        if (numOperacion !== "SIN_NUMERO") {
             ticketsUsados.push(numOperacion);
             appData.tickets_usados = ticketsUsados;
         }
