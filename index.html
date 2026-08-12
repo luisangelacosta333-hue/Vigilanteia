@@ -577,6 +577,7 @@ function procesarFotoPaywall(e) {
     } 
 }
 
+// 🟢 FIX PAYWALL: SE OCULTA LA VENTANA Y CARGA LOS DATOS AL INSTANTE
 async function ejecutarValidacionPaywallIA(base64str) { 
     document.getElementById('ia-status').innerText = '🤖 IA verificando ticket...'; 
     document.getElementById('ia-status').style.display = 'block';
@@ -590,7 +591,8 @@ async function ejecutarValidacionPaywallIA(base64str) {
         document.getElementById('ia-status').style.display = 'none'; 
         if(d.success) { 
             toast("✅ " + d.msg, "#16a34a"); 
-            setTimeout(()=>loginOk(pin,nom),1500); 
+            document.getElementById('v-vencido').classList.add('hidden'); // Ocultar el paywall
+            setTimeout(()=>loginOk(pin,nom), 500); // loginOk llamará a cargarPanel() automáticamente
         } else { 
             toast("❌ " + d.msg, "#dc2626"); 
         } 
@@ -934,6 +936,7 @@ function verFoto(id){
 }
 function cerrarFoto(){document.getElementById('visorFoto').classList.add('hidden');document.getElementById('laFoto').src=''}
 
+// 🟢 FIX PDF: FORZAR DESCARGA BLOB PARA CELULARES
 async function pdf(){
     toast('Generando PDF…');
     await cargarPanel(); 
@@ -950,8 +953,19 @@ async function pdf(){
         filas.push([new Date(tx.created_at).toLocaleString('es-AR',{day:'2-digit',month:'2-digit',hour:'2-digit',minute:'2-digit'}),(tx.tipo_operacion||'').toUpperCase(),(tx.metodo_pago||'').toUpperCase(),'$'+parseFloat(tx.monto_total).toLocaleString('es-AR')]);
     }
     doc.autoTable({startY:34,head:[['Fecha y Hora','Operación','Método','Monto']],body:filas,theme:'grid',headStyles:{fillColor:[2,132,199]}});
-    doc.save(`VigilanteIA-${nom}-TodasLasVentas.pdf`);
-    toast('PDF Descargado','#16a34a');
+    
+    let pdfBlob = doc.output('blob');
+    let blobUrl = URL.createObjectURL(pdfBlob);
+    let a = document.createElement('a');
+    a.href = blobUrl;
+    a.download = `VigilanteIA-${nom.replace(/\s+/g,'_')}-TodasLasVentas.pdf`;
+    a.target = '_blank';
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+
+    toast('✅ PDF listo para abrir','#16a34a');
+    setTimeout(() => URL.revokeObjectURL(blobUrl), 8000);
 }
 
 function liquidar(){toast('IA procesando liquidación…');setTimeout(()=>toast('Liquidación analizada ✅','#16a34a'),1800)}
@@ -1079,7 +1093,7 @@ function cerrarSheet(){document.getElementById('cortina').classList.remove('abie
 function camara(){cerrarSheet();document.getElementById('cam').click()}
 function galeria(){cerrarSheet();document.getElementById('gal').click()}
 
-// BISTURÍ: SUBIDA DIRECTA A STORAGE (BALDE)
+// 🟢 FIX STORAGE: SI FALLA EL BALDE, RETORNA NULL PARA NO GUARDAR BASE64 EN LA BD
 async function uploadFotoToSupabase(base64Str, localPin) {
     try {
         const base64Data = base64Str.split(',')[1];
@@ -1092,10 +1106,10 @@ async function uploadFotoToSupabase(base64Str, localPin) {
         const fileName = `${localPin.replace(/\s+/g, '')}/FOTO-${Date.now()}-${Math.floor(Math.random()*1000)}.jpg`;
         const { data, error } = await sb.storage.from('vigilante_comprobantes').upload(fileName, blob);
         
-        if (error) return base64Str; // Si el balde falla, guarda el base64 como plan b
+        if (error) return null; // Nunca guardamos Base64 en la BD
         const { data: publicUrlData } = sb.storage.from('vigilante_comprobantes').getPublicUrl(fileName);
         return publicUrlData.publicUrl; 
-    } catch(e) { return base64Str; }
+    } catch(e) { return null; }
 }
 
 function subirFoto(e){
@@ -1111,7 +1125,6 @@ function subirFoto(e){
     }
 }
 
-// BISTURÍ: COBRAR GUARDA EL LINK DEL BALDE (foto_url)
 async function cobrar(mt,fb=null){
     const tot=total();if(tot===0)return;
     if(fb){radar.style.display='flex';await new Promise(r=>setTimeout(r,1500))}else toast(`Cobrando en ${mt}`);
