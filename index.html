@@ -332,7 +332,6 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
 </div>
 
 <div id="v-vencido" class="view-container hidden">
-    <!-- 🚀 ACÁ ESTÁ EL NUEVO PAYWALL CON OPENAI (ESTILO VIGILANTE) -->
     <div class="vidrio2" style="border-top: 4px solid var(--c3); text-align:center; padding:24px 14px; border-radius:16px; margin-top:16px;">
         <div style="font-size: 2.5rem; margin-bottom: 10px;">⏳</div>
         <h1 style="font-size:1.5rem; margin-top:0; font-weight: 900; font-family:'Montserrat',sans-serif;">Licencia Expirada</h1>
@@ -403,32 +402,41 @@ body{background:var(--fondo);margin:0;min-height:100vh;letter-spacing:.15px}
   <input id="gal" type="file" accept="image/*" style="display:none" onchange="subirFoto(event)">
 </div>
 
-<div id="v-libreta" class="view-container hidden" style="padding:0 12px 12px">
-  <div class="top-bar vidrio"><div style="font-weight:900;font-size:1rem;font-family:'Montserrat'">Libreta de Fiados 📝</div><button onclick="caja()" style="padding:5px 8px;border-radius:8px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer;font-size:.8rem">VOLVER</button></div>
-  <div class="vidrio" style="padding:10px;border-radius:11px;border:1.5px dashed #0284c7;background:rgba(224,242,254,.4);margin-bottom:8px;font-size:.8rem">
-    <b style="color:#0369a1">ℹ️ Pasos:</b> 1‑Monto · 2‑Seleccionar cliente · 3‑🔴Fiar / 💵Cobrar
-  </div>
-  <div class="display-container" style="min-height:70px"><div class="monto-grande azul-texto" id="acuL">0</div><div class="monto-chico" id="actL"></div></div>
-  <div class="teclado">
-    <button class="tecla vidrio" onclick="nL('7')">7</button><button class="tecla vidrio" onclick="nL('8')">8</button><button class="tecla vidrio" onclick="nL('9')">9</button><button class="tecla tecla-clara" onclick="borrarL()">⌫</button>
-    <button class="tecla vidrio" onclick="nL('4')">4</button><button class="tecla vidrio" onclick="nL('5')">5</button><button class="tecla vidrio" onclick="nL('6')">6</button><button class="tecla tecla-clara" onclick="opML('*')">×</button>
-    <button class="tecla vidrio" onclick="nL('1')">1</button><button class="tecla vidrio" onclick="nL('2')">2</button><button class="tecla vidrio" onclick="nL('3')">3</button><button class="tecla tecla-clara" onclick="opML('-')">−</button>
-    <button class="tecla vidrio" onclick="limpiarL()" style="color:#0284c7;font-weight:900">C</button><button class="tecla vidrio" onclick="nL('0')">0</button><button class="tecla tecla-clara" onclick="opML('+')">+</button><button class="tecla tecla-azul" onclick="igualL()">=</button>
-  </div>
-  <button class="btn" style="margin-top:10px;background:#fff;color:#0284c7;border:1.5px solid #0284c7;box-shadow:none;font-size:.86rem" onclick="listaClientes()">👥 SELECCIONAR CLIENTE</button>
-</div>
+<!-- LIBRETA PREMIUM A PANTALLA COMPLETA -->
+<div id="v-clientes" class="hidden" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; height: 100dvh; max-width: 100%; border-radius: 0; background: var(--bg); overflow: hidden; display: flex; flex-direction: column; z-index: 9999999;">
+    <div style="background: #ffffff; padding: 18px 20px; text-align: center; border-bottom: 1px solid var(--borde); z-index: 10; display:flex; justify-content:space-between; align-items:center; box-shadow: var(--sombra-md); flex-shrink: 0;">
+        <div style="width:24px;"></div>
+        <h2 style="margin:0; color:var(--c5); font-family:'Montserrat',sans-serif; font-size: 1.6rem; letter-spacing: -0.5px;" id="montoElegido">💰 MONTO: $0</h2>
+        <button style="background:transparent; border:none; font-size:2rem; color:var(--txt3); cursor:pointer; line-height:1;" onclick="caja()">×</button>
+    </div>
+    
+    <div style="padding: 15px 20px; flex: 1; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; background: var(--bg);">
+        
+        <div style="background: linear-gradient(135deg, #e0f2fe, #f0f9ff); border-left: 4px solid var(--c3); padding: 16px; border-radius: 12px; box-shadow: 0 4px 10px rgba(14, 165, 233, 0.1); flex-shrink: 0;">
+            <p style="margin: 0; color: var(--c5); font-size: 0.9rem; line-height: 1.5; font-weight: 600;">
+                <span style="font-size: 1.1rem; margin-right: 5px;">💡</span>
+                <strong>¿Cómo funciona?</strong> El monto de arriba es el que ingresaste en la calculadora. Elegí un cliente abajo y tocá <strong>SUMAR DEUDA</strong> para fiarle, o elegí <strong>EFECTIVO / TRANSF</strong> si viene a pagar.
+            </p>
+        </div>
 
-<div id="v-clientes" class="view-container hidden">
-  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px"><b style="font-size:1.1rem;font-weight:900;font-family:'Montserrat'">Mis Clientes</b><button onclick="ver('v-libreta')" style="padding:5px 8px;border-radius:8px;border:1px solid #0284c7;color:#0284c7;background:transparent;font-weight:700;cursor:pointer;font-size:.8rem">ATRÁS</button></div>
-  <div id="montoElegido" class="vidrio" style="padding:8px 12px;border-radius:10px;text-align:center;font-weight:800;color:#0369a1;margin-bottom:8px;display:none"></div>
-  <div class="vidrio" style="padding:12px;border-radius:12px;margin-bottom:10px">
-    <b style="font-family:'Montserrat'">➕ Nuevo Cliente</b>
-    <input id="nCliNom" class="input-text" placeholder="Nombre completo" autocomplete="off" style="margin-top:6px">
-    <input id="nCliWa" class="input-text" placeholder="WhatsApp" autocomplete="off">
-    <button class="btn" style="margin:0" onclick="nuevoCliente()">GUARDAR</button>
-  </div>
-  <input id="buscar" class="input-text" placeholder="🔎 Buscar cliente…" oninput="filtrar()" autocomplete="off">
-  <div id="listaCli" style="padding-bottom:14px"></div>
+        <div class="vidrio2" style="background:#ffffff; border-radius:20px; padding:22px; box-shadow: 0 8px 25px rgba(0,0,0,0.04); border:1px solid var(--borde-azul); flex-shrink: 0;">
+            <h4 style="margin:0 0 18px 0; color:var(--txt); font-family:'Montserrat',sans-serif; font-size:1.2rem; display: flex; align-items: center; gap: 8px;">
+                <span style="background: rgba(14,165,233,0.1); padding: 8px; border-radius: 10px; font-size: 1rem;">➕</span> Nuevo Cliente
+            </h4>
+            <input type="text" id="nCliNom" class="lp-input" placeholder="👤 Nombre completo del cliente" style="margin-bottom:12px; padding: 16px; font-size: 1rem; border-radius: 14px; background: #f8fafc; border: 1px solid var(--borde);">
+            <input type="tel" id="nCliWa" class="lp-input" placeholder="📱 WhatsApp (Opcional)" style="margin-bottom:18px; padding: 16px; font-size: 1rem; border-radius: 14px; background: #f8fafc; border: 1px solid var(--borde);">
+            <button class="btn-glam" style="padding:16px; font-size:1rem; border-radius: 14px; letter-spacing: 1px; box-shadow: var(--sombra-azul);" onclick="nuevoCliente()">GUARDAR CLIENTE</button>
+        </div>
+        
+        <div style="flex-shrink: 0;">
+            <div style="position: relative;">
+                <span style="position: absolute; left: 16px; top: 50%; transform: translateY(-50%); font-size: 1.2rem; color: var(--txt3);">🔍</span>
+                <input type="text" id="buscar" class="lp-input" placeholder="Buscar cliente..." style="padding: 16px 16px 16px 45px; font-size: 1.05rem; border-radius: 14px; border: 1px solid var(--borde-azul); background: #ffffff; margin-bottom: 0; box-shadow: var(--sombra-md);" oninput="filtrar()">
+            </div>
+        </div>
+        
+        <div id="listaCli" style="display:flex; flex-direction:column; gap:16px; padding-bottom:30px; flex: 1;"></div>
+    </div>
 </div>
 
 <div id="v-panel" class="view-container hidden">
@@ -524,8 +532,7 @@ function alEntrar(p){
         'v-landing':'Bienvenido a Vigilante I A. Tocá el micrófono abajo a la derecha y te explico todas las funciones que tenemos para controlar tu negocio las 24 horas los 30 días del mes.',
         'v-caja':'Caja principal. Usá la calculadora inteligente que suma y resta en vivo, y cobrá en efectivo, tarjeta o transferencia con foto.',
         'v-vencido':'Tu licencia expiró. Transferí 9 mil pesos a los datos en pantalla y la inteligencia artificial lo aprueba al instante.',
-        'v-libreta':'Libreta de fiados. Cargá monto, elegí cliente, fiar o cobrar, todo queda guardado.',
-        'v-clientes':'Lista de clientes. Buscá, agregá nuevos y cobrales por WhatsApp.',
+        'v-clientes':'Libreta de clientes. Buscá, agregá nuevos y cobrales por WhatsApp.',
         'v-panel':'Panel del dueño. Gráfico en vivo, totales por método, deudores y reporte en P D F.'
     };
     if(VOZ && map[p]) setTimeout(()=>hablar(map[p]),400);
@@ -536,13 +543,12 @@ let gpsInterval = null;
 let last_gps = null;
 window.panelInterval = null;
 let lastPanelDataStr = "";
+let pendingLibretaOp = null; 
 
 let pin=localStorage.getItem('v_pin'), nom=localStorage.getItem('v_nombre')||'', adminPin=localStorage.getItem('v_admin_pin')||'0000';
 let va='',ac=0,opActual='venta',ultOp=null;
-let vaL='',acL=0,ultOpL=null;
 let txs=[],graf=null,clientes=[],montoSel=0;
 const $acu=document.getElementById('acu'),$act=document.getElementById('act');
-const $acuL=document.getElementById('acuL'),$actL=document.getElementById('actL');
 const radar=document.getElementById('radar');
 
 let isPaywallUpload = false;
@@ -577,7 +583,6 @@ function procesarFotoPaywall(e) {
     } 
 }
 
-// 🟢 FIX PAYWALL: SE OCULTA LA VENTANA Y CARGA LOS DATOS AL INSTANTE
 async function ejecutarValidacionPaywallIA(base64str) { 
     document.getElementById('ia-status').innerText = '🤖 IA verificando ticket...'; 
     document.getElementById('ia-status').style.display = 'block';
@@ -591,8 +596,8 @@ async function ejecutarValidacionPaywallIA(base64str) {
         document.getElementById('ia-status').style.display = 'none'; 
         if(d.success) { 
             toast("✅ " + d.msg, "#16a34a"); 
-            document.getElementById('v-vencido').classList.add('hidden'); // Ocultar el paywall
-            setTimeout(()=>loginOk(pin,nom), 500); // loginOk llamará a cargarPanel() automáticamente
+            document.getElementById('v-vencido').classList.add('hidden'); 
+            setTimeout(()=>loginOk(pin,nom), 500); 
         } else { 
             toast("❌ " + d.msg, "#dc2626"); 
         } 
@@ -608,7 +613,10 @@ async function ejecutarValidacionPaywallIA(base64str) {
 if(pin&&nom) loginOk(pin,nom);
 
 function ver(id){
-    ['v-landing','v-vencido','v-caja','v-panel','v-libreta','v-clientes'].forEach(x=>document.getElementById(x).classList.add('hidden'));
+    ['v-landing','v-vencido','v-caja','v-panel','v-clientes'].forEach(x=>{
+        let el = document.getElementById(x);
+        if(el) el.classList.add('hidden');
+    });
     document.getElementById(id).classList.remove('hidden');
     window.scrollTo(0,0);
     alEntrar(id);
@@ -760,18 +768,31 @@ function modo(o){
     actualizar();
 }
 
-function totalL(){const v=parseInt(vaL)||0;if(ultOpL==='+')return acL+v;if(ultOpL==='-')return acL-v;if(ultOpL==='*')return acL===0?v:acL*v;return acL+v}
-function opML(o){if(vaL!==''){acL=totalL();vaL=''}ultOpL=o;actualizarL()}
-function igualL(){if(vaL!=='')acL=totalL();vaL='';ultOpL=null;actualizarL()}
-function actualizarL(){
-    let s='+ ';if(ultOpL==='*')s='× ';else if(ultOpL==='-')s='− ';
-    $actL.innerText=vaL===''?'':s+parseInt(vaL).toLocaleString('es-AR');
-    $acuL.innerText=(acL===0&&vaL==='')?'0':acL.toLocaleString('es-AR');
+async function irLibreta(){
+    let val = Math.abs(total());
+    if(val <= 0 && document.getElementById('acu').innerText !== '0') {
+        val = parseFloat(document.getElementById('acu').innerText.replace(/\./g, ''));
+    }
+    if(val <= 0) return toast("❌ Calculá el monto a fiar o cobrar primero en la caja.", "#dc2626");
+    
+    montoSel = val;
+    const m=document.getElementById('montoElegido');
+    if(m) {
+        m.innerText=`💰 MONTO: $${montoSel.toLocaleString('es-AR')}`;
+    }
+    document.getElementById('buscar').value='';
+    document.getElementById('nCliNom').value='';
+    document.getElementById('nCliWa').value='';
+    document.getElementById('listaCli').innerHTML='<p style="color:var(--txt3);text-align:center;padding:20px">Cargando…</p>';
+    
+    ver('v-clientes');
+    
+    try {
+        let{data,error}=await sb.from('vigilante_clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
+        clientes = data || []; 
+        filtrar();
+    } catch(e) { toast('Sin red','#dc2626'); }
 }
-function nL(x){if(vaL.length<8){vaL+=x;actualizarL()}}
-function borrarL(){vaL=vaL.slice(0,-1);actualizarL()}
-function limpiarL(){vaL='';acL=0;ultOpL=null;actualizarL()}
-function irLibreta(){limpiarL();ver('v-libreta')}
 
 function toggleGps(force = false) { 
     let btn = document.getElementById('btn-gps'); 
@@ -936,7 +957,6 @@ function verFoto(id){
 }
 function cerrarFoto(){document.getElementById('visorFoto').classList.add('hidden');document.getElementById('laFoto').src=''}
 
-// 🟢 FIX PDF: FORZAR DESCARGA BLOB PARA CELULARES
 async function pdf(){
     toast('Generando PDF…');
     await cargarPanel(); 
@@ -970,46 +990,95 @@ async function pdf(){
 
 function liquidar(){toast('IA procesando liquidación…');setTimeout(()=>toast('Liquidación analizada ✅','#16a34a'),1800)}
 
-async function listaClientes(){
-    montoSel=Math.abs(totalL());
-    const m=document.getElementById('montoElegido');
-    if(montoSel>0){m.innerText=`💰 MONTO: $${montoSel.toLocaleString('es-AR')}`;m.style.display='block';hablar(`Monto cargado ${montoSel} pesos`)}else m.style.display='none';
-    document.getElementById('buscar').value='';document.getElementById('nCliNom').value='';document.getElementById('nCliWa').value='';
-    document.getElementById('listaCli').innerHTML='<p style="color:var(--txt3);text-align:center;padding:20px">Cargando…</p>';
-    ver('v-clientes');
-    try{
-        let{data,error}=await sb.from('vigilante_clientes_libreta').select('*').eq('local_pin',pin).ilike('nombre_local',nom).order('ultimo_movimiento',{ascending:false});
-        clientes = data || []; filtrar();
-    }catch(e){toast('Sin red','#dc2626')}
+function filtrar(){
+    const q=document.getElementById('buscar').value.toLowerCase().trim();
+    let lista = [...clientes];
+    
+    lista.sort((a,b) => {
+        let dbA = Math.abs(parseFloat(a.deuda)||0);
+        let dbB = Math.abs(parseFloat(b.deuda)||0);
+        if(dbA !== dbB) return dbB - dbA;
+        return a.nombre.localeCompare(b.nombre);
+    });
+
+    let filtrados = lista.filter(c => {
+        let d = Math.abs(parseFloat(c.deuda)||0);
+        if (d === 0 && !q) return false; 
+        if (q && !c.nombre.toLowerCase().includes(q)) return false;
+        return true;
+    });
+    pintar(filtrados);
 }
 
-function filtrar(){const q=document.getElementById('buscar').value.toLowerCase().trim();pintar(clientes.filter(c=>c.nombre.toLowerCase().includes(q)))}
-
 function pintar(l){
-    document.getElementById('listaCli').innerHTML=l.length?l.map(c=>`<div class="vidrio" style="padding:14px;border-radius:16px;margin-bottom:10px">
-        <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:1.05rem">${c.nombre}</b><b class="azul-texto" style="font-size:1.4rem">$${parseFloat(c.deuda).toLocaleString('es-AR')}</b></div>
-        <div style="color:var(--txt3);font-size:.8rem;margin-top:4px">📱 ${c.whatsapp||'Sin número'}</div>
-        ${montoSel>0?`<div style="display:flex;flex-direction:column;gap:8px;margin-top:10px">
-            <button class="btn" style="margin:0;padding:12px" onclick="operar('${c.id}','fiar')">🔴 FIAR $${montoSel.toLocaleString('es-AR')}</button>
-            <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
-                <button class="btn" style="margin:0;padding:10px;font-size:.85rem;background:linear-gradient(135deg,#22c55e,#15803d)" onclick="operar('${c.id}','cobrar','efectivo')">💵 EFECTIVO</button>
-                <button class="btn" style="margin:0;padding:10px;font-size:.85rem" onclick="operar('${c.id}','cobrar','transferencia')">🏦 TRANSF</button>
-            </div></div>`:`<div style="display:flex;gap:8px;margin-top:10px">
-            <button onclick="borrarCli('${c.id}','${c.nombre}')" style="flex:1;padding:8px;border-radius:10px;border:1px solid var(--borde);background:transparent;cursor:pointer;font-weight:700">BORRAR</button>
-            <button class="btn" style="margin:0;padding:8px;flex:2;font-size:.85rem" onclick="wa('${c.nombre}',${c.deuda},'${c.whatsapp||''}')">💬 COBRAR</button></div>`}
-    </div>`).join(''):'<p style="color:var(--txt3);text-align:center;padding:20px;border-radius:12px" class="vidrio">Sin clientes</p>';
+    const q = document.getElementById('buscar').value.toLowerCase().trim();
+    if(l.length === 0) {
+        if(q) {
+            document.getElementById('listaCli').innerHTML = '<div style="text-align:center; color:var(--txt3); padding:30px 20px; font-weight:600; font-size: 1.1rem; background: #ffffff; border-radius: 16px; border: 1px dashed var(--borde-azul);">No se encontraron clientes con ese nombre.</div>';
+        } else {
+            document.getElementById('listaCli').innerHTML = '<div style="text-align:center; color:var(--txt3); padding:30px 20px; font-weight:600; font-size: 1.1rem; background: #ffffff; border-radius: 16px; border: 1px dashed var(--borde-azul);">No hay clientes con deuda activa. Buscá por nombre para fiar.</div>';
+        }
+        return;
+    }
+
+    document.getElementById('listaCli').innerHTML = l.map(c => {
+        let pDebt = Math.abs(parseFloat(c.deuda) || 0);
+        let waText = (c.whatsapp && String(c.whatsapp).trim().length > 5) ? c.whatsapp : 'Sin número';
+        
+        return `
+        <div style="background:#ffffff; border-radius:20px; padding:20px; border:1px solid var(--borde-azul); box-shadow:0 8px 20px rgba(0,0,0,0.03);">
+            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:18px;">
+                <div>
+                    <div style="font-weight:900; color:var(--txt); font-size:1.25rem; font-family:'Montserrat',sans-serif; text-transform:uppercase; letter-spacing: -0.5px;">${c.nombre}</div>
+                    <div style="font-size:0.85rem; color:var(--txt3); margin-top:6px; font-weight: 500;">📱 ${waText}</div>
+                </div>
+                <div style="font-weight:900; font-size:1.6rem; color:var(--c4); font-family:'Montserrat',sans-serif; line-height: 1;">$${pDebt.toLocaleString('es-AR')}</div>
+            </div>
+            
+            <div style="display:flex; flex-direction: column; gap: 10px;">
+                <div style="background:#fef2f2; border: 1px solid #fecaca; border-radius:14px; padding:12px; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="font-size: 0.8rem; font-weight: 800; color: #dc2626; text-transform: uppercase; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1rem;">📈</span> ¿Aumentar deuda? (FIAR)</div>
+                    <button style="width:100%; background:#ef4444; color:white; border:none; border-radius:10px; padding:14px; font-weight:900; font-size:1rem; box-shadow:0 6px 15px rgba(239,68,68,0.25); cursor:pointer; transition: 0.2s;" onclick="operar('${c.id}','fiar')">SUMAR DEUDA</button>
+                </div>
+
+                <div style="background:#ecfdf5; border: 1px solid #a7f3d0; border-radius:14px; padding:12px; display: flex; flex-direction: column; gap: 10px;">
+                    <div style="font-size: 0.8rem; font-weight: 800; color: #059669; text-transform: uppercase; display: flex; align-items: center; gap: 6px;"><span style="font-size: 1rem;">📉</span> ¿Vino a pagar? (COBRAR)</div>
+                    <div style="display:flex; gap:10px;">
+                        <button style="flex:1; background:#10b981; color:white; border:none; border-radius:10px; padding:14px; font-weight:900; font-size:0.95rem; box-shadow:0 6px 15px rgba(16,185,129,0.25); cursor:pointer; transition: 0.2s;" onclick="operar('${c.id}','cobrar','efectivo')">EFECTIVO</button>
+                        <button style="flex:1; background:var(--c3); color:white; border:none; border-radius:10px; padding:14px; font-weight:900; font-size:0.95rem; box-shadow:0 6px 15px rgba(14,165,233,0.25); cursor:pointer; transition: 0.2s;" onclick="operar('${c.id}','cobrar','transferencia')">TRANSF.</button>
+                    </div>
+                </div>
+            </div>
+            
+            <div style="margin-top: 15px; border-top: 1px dashed var(--borde); padding-top: 10px; text-align: center;">
+                <button onclick="borrarCli('${c.id}','${c.nombre}')" style="background:transparent; border:none; color:var(--txt3); font-size:0.8rem; font-weight:600; cursor:pointer;">BORRAR CLIENTE</button>
+            </div>
+        </div>`;
+    }).join('');
 }
 
 async function nuevoCliente(){
     const n=document.getElementById('nCliNom').value.trim(),w=document.getElementById('nCliWa').value.trim();
     if(!n)return toast('Nombre','#dc2626');
-    toast('Guardando…');
-    try{
-        let pl=String(pin).trim(),nl=nom?String(nom).trim():'';
-        let{data,error}=await sb.from('vigilante_clientes_libreta').insert([{local_pin:pl,nombre_local:nl,nombre:n,whatsapp:w,deuda:0}]).select().single();
-        if(error) return toast('Error al guardar','#dc2626');
-        clientes.unshift(data);document.getElementById('nCliNom').value='';document.getElementById('nCliWa').value='';filtrar();toast('Guardado ✅','#16a34a');
-    }catch(e){toast('Sin red','#dc2626')}
+    
+    let exists = clientes.find(c => c.nombre.toLowerCase() === n.toLowerCase());
+    if(exists) {
+        toast("Ese cliente ya existe. Buscalo en la lista.", "#dc2626");
+    } else {
+        toast('Guardando…');
+        try{
+            let pl=String(pin).trim(),nl=nom?String(nom).trim():'';
+            let{data,error}=await sb.from('vigilante_clientes_libreta').insert([{local_pin:pl,nombre_local:nl,nombre:n,whatsapp:w,deuda:0}]).select().single();
+            if(error) return toast('Error al guardar','#dc2626');
+            clientes.unshift(data);
+            toast('Guardado ✅','#16a34a');
+        }catch(e){ return toast('Sin red','#dc2626'); }
+    }
+    
+    document.getElementById('buscar').value = n;
+    document.getElementById('nCliNom').value='';
+    document.getElementById('nCliWa').value='';
+    filtrar();
 }
 
 async function borrarCli(id,nm){
@@ -1021,10 +1090,24 @@ async function borrarCli(id,nm){
     }
 }
 
-async function operar(id,ac,mt='sistema'){
-    if(montoSel<=0)return;
-    if(!confirm(`${ac==='fiar'?'Fiar':'Cobrar'} $${montoSel.toLocaleString('es-AR')}${ac!=='fiar'?' · '+mt.toUpperCase():''}?`))return;
+function operar(id, ac, mt='sistema') {
+    if(montoSel <= 0) return;
+    if(ac === 'cobrar' && mt === 'transferencia') {
+        pendingLibretaOp = { id: id, ac: ac, mt: mt };
+        document.getElementById('cortina').classList.add('abierto');
+        document.getElementById('sheet').classList.add('abierto');
+        return;
+    }
+    if(!confirm(`${ac==='fiar'?'Fiar':'Cobrar'} $${montoSel.toLocaleString('es-AR')}${ac!=='fiar'?' · '+mt.toUpperCase():''}?`)) return;
+    ejecutarOperar(id, ac, mt, null);
+}
+
+async function ejecutarOperar(id, ac, mt, fbBase64) {
     toast('Procesando…');
+    if(fbBase64) {
+        radar.style.display='flex';
+        document.getElementById('radarTxt').innerText='🛡️ IA subiendo comprobante';
+    }
     try{
         let pl=String(pin).trim(),nl=nom?String(nom).trim():'';
         let{data:cli,error:ec}=await sb.from('vigilante_clientes_libreta').select('*').eq('id',id).eq('local_pin',pl).single();
@@ -1035,24 +1118,34 @@ async function operar(id,ac,mt='sistema'){
         let od=ac==='fiar'?`Fiado: ${cli.nombre}`:`Cobro: ${cli.nombre}`;
         let mp=ac==='fiar'?'sistema':(mt&&mt!==''?String(mt).toLowerCase():'efectivo');
         
-        await sb.from('vigilante_transacciones').insert([{monto_total:m,tipo_operacion:od,metodo_pago:mp,estado_auditoria_ia:'aprobado',local_pin:pl,nombre_local:nl}]);
+        let finalFotoUrl = null;
+        if(fbBase64) {
+           finalFotoUrl = await uploadFotoToSupabase(fbBase64, pl);
+        }
+
+        await sb.from('vigilante_transacciones').insert([{monto_total:m,tipo_operacion:od,metodo_pago:mp,estado_auditoria_ia:'aprobado',foto_url:finalFotoUrl,local_pin:pl,nombre_local:nl}]);
         let{error:eu}=await sb.from('vigilante_clientes_libreta').update({deuda:nd,ultimo_movimiento:new Date()}).eq('id',id);
         
+        if(fbBase64) radar.style.display='none';
         if(eu)return toast('Error al actualizar','#dc2626');
         toast('Confirmado ✅','#16a34a');
         
-        // 🔥 MAGIA WHATSAPP AUTOMÁTICO 🔥
         let w = cli.whatsapp;
         if(w && w !== 'Sin número' && w !== 'No especificado'){
             let x=w.replace(/\D/g,'');if(x.length===10)x='549'+x;
-            let msg = ac === 'fiar' 
-                ? `Hola ${cli.nombre}, se agregó a tu cuenta $${m.toLocaleString('es-AR')} en el local ${nl}. Tu saldo a pagar es de $${nd.toLocaleString('es-AR')}. ¡Gracias!` 
-                : `Hola ${cli.nombre}, registramos tu pago de $${m.toLocaleString('es-AR')} en el local ${nl}. Tu saldo restante es de $${nd.toLocaleString('es-AR')}. ¡Gracias!`;
-            open(`https://wa.me/${x}?text=${encodeURIComponent(msg)}`,'_blank');
+            if(x.length >= 10) {
+                let msg = ac === 'fiar' 
+                    ? `Hola ${cli.nombre}, se agregó a tu cuenta $${m.toLocaleString('es-AR')} en ${nl}. Tu saldo a pagar es de $${nd.toLocaleString('es-AR')}. ¡Gracias!` 
+                    : `Hola ${cli.nombre}, registramos tu pago de $${m.toLocaleString('es-AR')} en ${nl}. Tu saldo restante es de $${nd.toLocaleString('es-AR')}. ¡Gracias!`;
+                open(`https://wa.me/${x}?text=${encodeURIComponent(msg)}`,'_blank');
+            }
         }
 
-        limpiarL();caja();
-    }catch(e){toast('Sin red','#dc2626')}
+        limpiar(); caja();
+    }catch(e){
+        if(fbBase64) radar.style.display='none';
+        toast('Sin red','#dc2626')
+    }
 }
 
 function wa(nm,de,w){
@@ -1088,12 +1181,16 @@ async function cerrarTurno(){
     }catch(e){toast('Error','#dc2626')}
 }
 
-function abrirSheet(){if(Math.abs(total())===0)return toast('Ingresá monto','#dc2626');document.getElementById('cortina').classList.add('abierto');document.getElementById('sheet').classList.add('abierto')}
+function abrirSheet(){
+    if(Math.abs(total())===0)return toast('Ingresá monto','#dc2626');
+    pendingLibretaOp = null; 
+    document.getElementById('cortina').classList.add('abierto');
+    document.getElementById('sheet').classList.add('abierto');
+}
 function cerrarSheet(){document.getElementById('cortina').classList.remove('abierto');document.getElementById('sheet').classList.remove('abierto')}
 function camara(){cerrarSheet();document.getElementById('cam').click()}
 function galeria(){cerrarSheet();document.getElementById('gal').click()}
 
-// 🟢 FIX STORAGE: SI FALLA EL BALDE, RETORNA NULL PARA NO GUARDAR BASE64 EN LA BD
 async function uploadFotoToSupabase(base64Str, localPin) {
     try {
         const base64Data = base64Str.split(',')[1];
@@ -1106,21 +1203,33 @@ async function uploadFotoToSupabase(base64Str, localPin) {
         const fileName = `${localPin.replace(/\s+/g, '')}/FOTO-${Date.now()}-${Math.floor(Math.random()*1000)}.jpg`;
         const { data, error } = await sb.storage.from('vigilante_comprobantes').upload(fileName, blob);
         
-        if (error) return null; // Nunca guardamos Base64 en la BD
+        if (error) return null; 
         const { data: publicUrlData } = sb.storage.from('vigilante_comprobantes').getPublicUrl(fileName);
         return publicUrlData.publicUrl; 
     } catch(e) { return null; }
 }
 
 function subirFoto(e){
-    const f=e.target.files[0];if(!f)return;
-    document.getElementById('radarTxt').innerText='🛡️ IA revisando comprobante';radar.style.display='flex';
+    const f=e.target.files[0];
+    if(!f){
+        pendingLibretaOp = null;
+        return;
+    }
+    document.getElementById('radarTxt').innerText='🛡️ IA revisando comprobante';
+    radar.style.display='flex';
     hablar('Procesando imagen');
     const rd=new FileReader();rd.readAsDataURL(f);rd.onload=ev=>{
         const im=new Image();im.src=ev.target.result;im.onload=()=>{
             const cv=document.createElement('canvas');cv.width=800;cv.height=im.height*(800/im.width);
             cv.getContext('2d').drawImage(im,0,0,cv.width,cv.height);
-            cobrar('transferencia',cv.toDataURL('image/jpeg',.80));
+            let base64 = cv.toDataURL('image/jpeg',.80);
+            
+            if(pendingLibretaOp) {
+                ejecutarOperar(pendingLibretaOp.id, pendingLibretaOp.ac, pendingLibretaOp.mt, base64);
+                pendingLibretaOp = null;
+            } else {
+                cobrar('transferencia', base64);
+            }
         }
     }
 }
